@@ -1,0 +1,26 @@
+# Iustus Mercatura - Robots.txt
+# https://www.iustus-mercatura.com
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.iustus-mercatura.com/sitemap.xml
+
+# Disallow admin areas (if any)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_private/
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Slurp
+Allow: /
