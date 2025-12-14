@@ -3813,9 +3813,29 @@ async function serveStatic(pathname: string, headers: Record<string, string>): P
         if (await bunFile.exists()) {
             const ext = extname(filePath);
             const contentType = MIME_TYPES[ext] || "application/octet-stream";
-            return new Response(bunFile, {
-                headers: { ...headers, "Content-Type": contentType },
-            });
+            
+            // Add cache headers based on file type
+            const cacheHeaders = { ...headers, "Content-Type": contentType };
+            
+            // Cache static assets for 1 year
+            if ([".css", ".js", ".jpg", ".jpeg", ".png", ".webp", ".svg", ".woff", ".woff2"].some(e => ext === e)) {
+                cacheHeaders["Cache-Control"] = "public, max-age=31536000, immutable";
+            } else if (ext === ".html") {
+                cacheHeaders["Cache-Control"] = "public, max-age=300";
+            }
+            
+            return new Response(bunFile, { headers: cacheHeaders });
+            
+            // Cache static assets for 1 year
+            if (['.css', '.js', '.jpg', '.jpeg', '.png', '.webp', '.svg', '.woff', '.woff2', '.ttf', '.eot'].includes(ext)) {
+                cacheHeaders["Cache-Control"] = "public, max-age=31536000, immutable";
+            } 
+            // Short cache for HTML
+            else if (ext === '.html') {
+                cacheHeaders["Cache-Control"] = "public, max-age=300";
+            }
+            
+            return new Response(bunFile, { headers: cacheHeaders });
         }
     } catch (e) {
         // File doesn't exist
