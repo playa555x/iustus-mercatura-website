@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun run server.ts)",
+      "Bash(start http://localhost:3005)",
+      "Bash(start http://localhost:3005/admin.html)",
+      "Bash(start:*)",
+      "Bash(del \"D:\\iustus-mercatura-website\\dev-admin.html\")",
+      "Bash(taskkill:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(powershell \"Stop-Process -Id 100588 -Force\")",
+      "Bash(powershell \"Get-Process bun -ErrorAction SilentlyContinue | Stop-Process -Force\")",
+      "Bash(curl:*)",
+      "Bash(dir:*)",
+      "Bash(powershell \"Stop-Process -Id 24136 -Force\")",
+      "Bash(powershell \"Stop-Process -Id 76588 -Force\")",
+      "Bash(powershell \"Stop-Process -Id 75560 -Force\")",
+      "Bash(powershell \"Stop-Process -Id 7976 -Force\")",
+      "Bash(mkdir:*)",
+      "Bash(copy \"D:\\iustus-mercatura-website\\quote.html\" \"D:\\iustus-mercatura-website\\backups\\quote.html.backup\")",
+      "Bash(copy \"D:\\iustus-mercatura-website\\quote.css\" \"D:\\iustus-mercatura-website\\backups\\quote.css.backup\")",
+      "Bash(copy \"D:\\iustus-mercatura-website\\quote.js\" \"D:\\iustus-mercatura-website\\backups\\quote.js.backup\")",
+      "Bash(powershell -Command:*)",
+      "Bash(powershell \"Stop-Process -Id 76488 -Force\")",
+      "Bash(cmd /c \"dir D:\\iustus-mercatura-website\\index.html\")",
+      "Bash(del \"D:\\iustus-mercatura-website\\dev-admin\\styles.css\")",
+      "Bash(git checkout:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(\"'''' | Select-Object -First 30\")",
+      "Bash(bun run:*)",
+      "Bash(git -C \"D:\\iustus-mercatura-website\" remote -v)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

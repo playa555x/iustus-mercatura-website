@@ -1,0 +1,59 @@
+{
+  "deployment": {
+    "projectName": "iustus-mercatura",
+    "productionUrl": "https://www.iustus-mercatura.com",
+    "apiUrl": "https://api.iustus-mercatura.com"
+  },
+  "github": {
+    "enabled": true,
+    "repository": "",
+    "branch": "main",
+    "autoCommit": true,
+    "commitPrefix": "[Deploy]"
+  },
+  "netlify": {
+    "enabled": true,
+    "siteId": "",
+    "siteName": "iustus-mercatura",
+    "productionBranch": "main",
+    "buildCommand": "",
+    "publishDirectory": "."
+  },
+  "render": {
+    "enabled": false,
+    "serviceId": "",
+    "apiKey": ""
+  },
+  "vercel": {
+    "enabled": false,
+    "projectId": "",
+    "teamId": ""
+  },
+  "preDeployChecks": {
+    "validateHtml": true,
+    "checkBrokenLinks": false,
+    "minifyAssets": false,
+    "backupFirst": true
+  },
+  "notifications": {
+    "onSuccess": true,
+    "onFailure": true,
+    "webhookUrl": ""
+  },
+  "excludeFromDeploy": [
+    "node_modules",
+    ".git",
+    ".claude",
+    "Informationen",
+    "logs",
+    "backups",
+    "*.log",
+    "deploy-config.json",
+    "server.ts",
+    "dev-admin.html",
+    "dev-admin.js",
+    "dev-admin.css",
+    "dev-admin/",
+    "developer.html"
+  ]
+}

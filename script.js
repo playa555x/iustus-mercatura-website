@@ -1175,141 +1175,119 @@ function initPageTransitionEffect() {
 }
 
 // ============================================
-// INTERACTIVE MAP - Bidirectional
+// INTERACTIVE MAP - Info Box on Hover
 // ============================================
 function initInteractiveMap() {
     const markers = document.querySelectorAll('.location-marker');
-    const cards = document.querySelectorAll('.location-card');
-    let activeMarker = null;
+    const infoBoxes = document.querySelectorAll('.map-info-box');
+    let activeInfoBox = null;
+    let hoverTimeout = null;
 
-    // Helper function to activate a location
-    function activateLocation(locationId) {
-        // Remove active from all markers and cards
+    // Helper function to show info box for a location
+    function showInfoBox(locationId) {
+        // Hide all info boxes first
+        infoBoxes.forEach(box => box.classList.remove('active'));
+
+        // Find and show matching info box
+        const infoBox = document.querySelector(`.map-info-box[data-location="${locationId}"]`);
+        if (infoBox) {
+            infoBox.classList.add('active');
+            activeInfoBox = infoBox;
+        }
+
+        // Highlight the marker
         markers.forEach(m => m.classList.remove('active'));
-        cards.forEach(c => c.classList.remove('active'));
-
-        // Find and activate matching marker
         const marker = document.querySelector(`.location-marker[data-location="${locationId}"]`);
         if (marker) {
             marker.classList.add('active');
-            activeMarker = marker;
 
-            // Animate the marker-dot inside (smooth, no jumping)
-            const dot = marker.querySelector('.marker-dot');
+            // Animate the marker-logo
+            const logo = marker.querySelector('.marker-logo');
             const pulse = marker.querySelector('.marker-pulse');
-            if (dot) {
-                gsap.to(dot, {
-                    attr: { r: 7 },
-                    fill: '#ffffff',
+            if (logo) {
+                gsap.to(logo, {
+                    attr: { r: 14 },
                     duration: 0.25,
                     ease: 'power2.out'
                 });
             }
             if (pulse) {
                 gsap.to(pulse, {
-                    attr: { r: 18 },
-                    opacity: 0.7,
+                    attr: { r: 20 },
+                    opacity: 0.8,
                     duration: 0.25,
                     ease: 'power2.out'
                 });
             }
         }
-
-        // Find and activate matching card
-        const card = document.querySelector(`.location-card[data-location="${locationId}"]`);
-        if (card) {
-            card.classList.add('active');
-            // Scroll card into view if needed
-            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        // Add blur effect class to locations list
-        const locationsList = document.querySelector('.locations-list');
-        if (locationsList) {
-            locationsList.classList.add('has-active-card');
-        }
     }
 
-    // Helper function to deactivate all locations
-    function deactivateAll() {
+    // Helper function to hide all info boxes
+    function hideAllInfoBoxes() {
+        infoBoxes.forEach(box => box.classList.remove('active'));
         markers.forEach(marker => {
             marker.classList.remove('active');
 
-            // Reset the inner elements
-            const dot = marker.querySelector('.marker-dot');
+            // Reset marker size
+            const logo = marker.querySelector('.marker-logo');
             const pulse = marker.querySelector('.marker-pulse');
-            if (dot) {
-                gsap.to(dot, {
-                    attr: { r: 5 },
-                    fill: '#c9a227',
+            if (logo) {
+                gsap.to(logo, {
+                    attr: { r: 12 },
                     duration: 0.2,
                     ease: 'power2.out'
                 });
             }
             if (pulse) {
                 gsap.to(pulse, {
-                    attr: { r: 12 },
+                    attr: { r: 14 },
                     opacity: 0.4,
                     duration: 0.2,
                     ease: 'power2.out'
                 });
             }
         });
-        cards.forEach(card => {
-            card.classList.remove('active');
-        });
-        activeMarker = null;
-
-        // Remove blur effect class from locations list
-        const locationsList = document.querySelector('.locations-list');
-        if (locationsList) {
-            locationsList.classList.remove('has-active-card');
-        }
+        activeInfoBox = null;
     }
 
     // Map marker hover events
     markers.forEach(marker => {
         marker.addEventListener('mouseenter', () => {
+            clearTimeout(hoverTimeout);
             const location = marker.dataset.location;
-            activateLocation(location);
+            showInfoBox(location);
         });
 
         marker.addEventListener('mouseleave', () => {
-            deactivateAll();
+            // Delay hiding to allow moving to info box
+            hoverTimeout = setTimeout(() => {
+                hideAllInfoBoxes();
+            }, 300);
         });
 
         // Click to toggle persistent selection
         marker.addEventListener('click', () => {
             const location = marker.dataset.location;
-            const isActive = marker.classList.contains('active');
+            const infoBox = document.querySelector(`.map-info-box[data-location="${location}"]`);
+            const isActive = infoBox && infoBox.classList.contains('active');
             if (isActive) {
-                deactivateAll();
+                hideAllInfoBoxes();
             } else {
-                activateLocation(location);
+                showInfoBox(location);
             }
         });
     });
 
-    // Location card hover events - highlight corresponding map marker
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            const location = card.dataset.location;
-            activateLocation(location);
+    // Info box hover events - keep visible while hovering
+    infoBoxes.forEach(box => {
+        box.addEventListener('mouseenter', () => {
+            clearTimeout(hoverTimeout);
         });
 
-        card.addEventListener('mouseleave', () => {
-            deactivateAll();
-        });
-
-        // Click to toggle persistent selection
-        card.addEventListener('click', () => {
-            const location = card.dataset.location;
-            const isActive = card.classList.contains('active');
-            if (isActive) {
-                deactivateAll();
-            } else {
-                activateLocation(location);
-            }
+        box.addEventListener('mouseleave', () => {
+            hoverTimeout = setTimeout(() => {
+                hideAllInfoBoxes();
+            }, 200);
         });
     });
 
@@ -2159,23 +2137,28 @@ function initContactForm() {
         }
 
         // Show loading state
-        submitBtn.classList.add('loading');
-        submitBtn.disabled = true;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+        }
 
-        // Simulate form submission (replace with actual API call)
+        // Send form data to server API
         try {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
 
-            // In production, you would send the data to your server:
-            // const response = await fetch('/api/contact', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify(formData)
-            // });
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || 'Failed to submit form');
+            }
 
             // Show success message
-            form.querySelectorAll('.form-row, .form-group, .btn-submit').forEach(el => {
+            form.querySelectorAll('.elegant-form-row, .elegant-checkboxes, .elegant-submit-btn').forEach(el => {
                 el.style.display = 'none';
             });
             formSuccess.hidden = false;
@@ -2184,8 +2167,10 @@ function initContactForm() {
         } catch (error) {
             console.error('Form submission error:', error);
             formError.hidden = false;
-            submitBtn.classList.remove('loading');
-            submitBtn.disabled = false;
+            if (submitBtn) {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
         }
     });
 }
@@ -2824,3 +2809,279 @@ function addGlowingNumberStyles() {
 }
 
 document.addEventListener('DOMContentLoaded', addGlowingNumberStyles);
+
+// ============================================
+// UNIVERSAL HOVER TRIGGER SYSTEM
+// Allows triggering effects on other elements via hover
+// Usage:
+//   Trigger: data-hover-trigger="myId"
+//   Target:  data-hover-target="myId"
+// ============================================
+class HoverTriggerSystem {
+    constructor() {
+        this.triggers = new Map();
+        this.targets = new Map();
+        this.connectorLine = null;
+        this.enabled = true; // Can be disabled (e.g., in admin edit mode)
+        this.init();
+    }
+
+    // Enable/Disable the hover trigger system
+    setEnabled(enabled) {
+        this.enabled = enabled;
+        console.log(`HoverTriggerSystem ${enabled ? 'enabled' : 'disabled'}`);
+
+        // Remove all active states when disabled
+        if (!enabled) {
+            document.querySelectorAll('.hover-triggered').forEach(el => {
+                el.classList.remove('hover-triggered');
+            });
+            this.hideConnectorLine();
+        }
+    }
+
+    // Check if in admin/edit mode
+    isInEditMode() {
+        // Check various indicators of edit mode
+        return (
+            window.adminEditMode === true ||
+            document.body.classList.contains('admin-edit-mode') ||
+            document.body.classList.contains('editing') ||
+            window.parent !== window || // In iframe (admin preview)
+            document.querySelector('.admin-editable.selected') !== null
+        );
+    }
+
+    init() {
+        // Find all triggers and targets
+        document.querySelectorAll('[data-hover-trigger]').forEach(trigger => {
+            const targetId = trigger.dataset.hoverTrigger;
+            if (!this.triggers.has(targetId)) {
+                this.triggers.set(targetId, []);
+            }
+            this.triggers.get(targetId).push(trigger);
+
+            // Bind events
+            trigger.addEventListener('mouseenter', () => this.handleTriggerEnter(targetId, trigger));
+            trigger.addEventListener('mouseleave', () => this.handleTriggerLeave(targetId));
+        });
+
+        // Find all targets
+        document.querySelectorAll('[data-hover-target]').forEach(target => {
+            const targetId = target.dataset.hoverTarget;
+            if (!this.targets.has(targetId)) {
+                this.targets.set(targetId, []);
+            }
+            this.targets.get(targetId).push(target);
+
+            // Also allow targets to trigger back (bidirectional)
+            target.addEventListener('mouseenter', () => this.handleTargetEnter(targetId, target));
+            target.addEventListener('mouseleave', () => this.handleTargetLeave(targetId));
+        });
+
+        // Create connector line SVG (optional visual connection)
+        this.createConnectorLine();
+
+        console.log(`HoverTriggerSystem initialized: ${this.triggers.size} trigger groups, ${this.targets.size} target groups`);
+    }
+
+    createConnectorLine() {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.classList.add('hover-connector-line');
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        svg.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998;';
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('stroke', 'url(#goldGradient)');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke-dasharray', '8 4');
+
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        defs.innerHTML = `
+            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#d4af37;stop-opacity:0.8" />
+                <stop offset="100%" style="stop-color:#e8c547;stop-opacity:0.4" />
+            </linearGradient>
+        `;
+
+        svg.appendChild(defs);
+        svg.appendChild(path);
+        document.body.appendChild(svg);
+        this.connectorLine = { svg, path };
+    }
+
+    handleTriggerEnter(targetId, triggerElement) {
+        // Skip if disabled or in edit mode
+        if (!this.enabled || this.isInEditMode()) return;
+
+        const targets = this.targets.get(targetId);
+        if (!targets) return;
+
+        targets.forEach(target => {
+            target.classList.add('hover-triggered');
+
+            // Scroll target into view if needed (optional)
+            if (target.dataset.hoverScrollIntoView !== undefined) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // Draw connector line if enabled
+            if (triggerElement.dataset.hoverShowLine !== undefined) {
+                this.drawConnectorLine(triggerElement, target);
+            }
+        });
+
+        // Add blur to siblings if parent has hover-blur-siblings class
+        targets.forEach(target => {
+            const parent = target.parentElement;
+            if (parent && parent.classList.contains('hover-blur-siblings')) {
+                parent.classList.add('has-active-hover');
+            }
+        });
+
+        // GSAP animation if available
+        if (typeof gsap !== 'undefined') {
+            targets.forEach(target => {
+                gsap.to(target, {
+                    scale: 1.02,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        }
+    }
+
+    handleTriggerLeave(targetId) {
+        const targets = this.targets.get(targetId);
+        if (!targets) return;
+
+        targets.forEach(target => {
+            target.classList.remove('hover-triggered');
+
+            const parent = target.parentElement;
+            if (parent) {
+                parent.classList.remove('has-active-hover');
+            }
+        });
+
+        // Hide connector line
+        this.hideConnectorLine();
+
+        // GSAP reset
+        if (typeof gsap !== 'undefined') {
+            targets.forEach(target => {
+                gsap.to(target, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        }
+    }
+
+    handleTargetEnter(targetId, targetElement) {
+        // Skip if disabled or in edit mode
+        if (!this.enabled || this.isInEditMode()) return;
+
+        // Highlight the corresponding triggers (bidirectional)
+        const triggers = this.triggers.get(targetId);
+        if (!triggers) return;
+
+        triggers.forEach(trigger => {
+            trigger.classList.add('hover-triggered');
+        });
+
+        targetElement.classList.add('hover-triggered');
+    }
+
+    handleTargetLeave(targetId) {
+        const triggers = this.triggers.get(targetId);
+        if (!triggers) return;
+
+        triggers.forEach(trigger => {
+            trigger.classList.remove('hover-triggered');
+        });
+
+        const targets = this.targets.get(targetId);
+        if (targets) {
+            targets.forEach(target => {
+                target.classList.remove('hover-triggered');
+            });
+        }
+    }
+
+    drawConnectorLine(from, to) {
+        if (!this.connectorLine) return;
+
+        const fromRect = from.getBoundingClientRect();
+        const toRect = to.getBoundingClientRect();
+
+        const fromX = fromRect.left + fromRect.width / 2;
+        const fromY = fromRect.top + fromRect.height / 2;
+        const toX = toRect.left + toRect.width / 2;
+        const toY = toRect.top + toRect.height / 2;
+
+        // Create curved path
+        const midX = (fromX + toX) / 2;
+        const midY = Math.min(fromY, toY) - 50;
+
+        const d = `M ${fromX} ${fromY} Q ${midX} ${midY} ${toX} ${toY}`;
+        this.connectorLine.path.setAttribute('d', d);
+        this.connectorLine.svg.classList.add('active');
+
+        // Animate dash
+        const length = this.connectorLine.path.getTotalLength();
+        this.connectorLine.path.style.strokeDasharray = length;
+        this.connectorLine.path.style.strokeDashoffset = length;
+
+        if (typeof gsap !== 'undefined') {
+            gsap.to(this.connectorLine.path, {
+                strokeDashoffset: 0,
+                duration: 0.5,
+                ease: 'power2.out'
+            });
+        } else {
+            this.connectorLine.path.style.strokeDashoffset = 0;
+        }
+    }
+
+    hideConnectorLine() {
+        if (!this.connectorLine) return;
+        this.connectorLine.svg.classList.remove('active');
+    }
+
+    // Public method to programmatically trigger
+    trigger(targetId) {
+        this.handleTriggerEnter(targetId, document.querySelector(`[data-hover-trigger="${targetId}"]`));
+    }
+
+    // Public method to programmatically untrigger
+    untrigger(targetId) {
+        this.handleTriggerLeave(targetId);
+    }
+}
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    window.hoverTriggerSystem = new HoverTriggerSystem();
+
+    // Auto-connect location cards with map markers (existing data-location attributes)
+    document.querySelectorAll('.location-card[data-location]').forEach(card => {
+        const location = card.dataset.location;
+        // Add hover trigger attributes
+        card.setAttribute('data-hover-trigger', `location-${location}`);
+        card.setAttribute('data-hover-target', `location-${location}`);
+    });
+
+    document.querySelectorAll('.location-marker[data-location]').forEach(marker => {
+        const location = marker.dataset.location;
+        // Add hover target attributes
+        marker.setAttribute('data-hover-trigger', `location-${location}`);
+        marker.setAttribute('data-hover-target', `location-${location}`);
+    });
+
+    // Reinitialize after adding attributes
+    window.hoverTriggerSystem = new HoverTriggerSystem();
+});

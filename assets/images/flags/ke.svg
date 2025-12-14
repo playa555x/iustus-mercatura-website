@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect fill="#000" width="1200" height="200"/>
+  <rect fill="#bb0000" y="225" width="1200" height="350"/>
+  <rect fill="#006600" y="600" width="1200" height="200"/>
+  <rect fill="#fff" y="200" width="1200" height="25"/>
+  <rect fill="#fff" y="575" width="1200" height="25"/>
+  <g transform="translate(600,400)">
+    <ellipse fill="#fff" rx="200" ry="300"/>
+    <ellipse fill="#bb0000" rx="180" ry="280"/>
+    <rect fill="#000" x="-20" y="-280" width="40" height="560"/>
+  </g>
+</svg>

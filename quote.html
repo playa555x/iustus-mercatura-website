@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Request a Quote | Iustus Mercatura</title>
+    <meta name="description" content="Request a quote for Brazilian commodities - Sugar IC45, VHP, Soybeans, and Corn from Iustus Mercatura.">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="quote.css">
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body class="quote-page">
+    <!-- Page Transition Overlay -->
+    <div class="page-transition-overlay">
+        <div class="transition-panels">
+            <div class="transition-panel panel-1"></div>
+            <div class="transition-panel panel-2"></div>
+            <div class="transition-panel panel-3"></div>
+            <div class="transition-panel panel-4"></div>
+            <div class="transition-panel panel-5"></div>
+        </div>
+        <div class="transition-logo">
+            <svg class="transition-icon" viewBox="0 0 60 60">
+                <circle cx="30" cy="30" r="28" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="176" stroke-dashoffset="176"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Three.js Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Floating Particles -->
+    <div class="floating-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Quote Container -->
+    <div class="quote-container">
+        <!-- Header -->
+        <header class="quote-header">
+            <a href="index.html" class="quote-logo" data-transition>
+                <div class="logo-icon">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                        <path d="M20 8L26 16H14L20 8Z" fill="currentColor" opacity="0.8"/>
+                        <path d="M20 32L14 24H26L20 32Z" fill="currentColor" opacity="0.8"/>
+                        <circle cx="20" cy="20" r="4" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-main">IUSTUS MERCATURA</span>
+                    <span class="logo-sub">JUST TRADE</span>
+                </div>
+            </a>
+            <a href="index.html" class="close-btn" aria-label="Close" data-transition>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </a>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-glow"></div>
+            </div>
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Product</span>
+                    <span class="step-tooltip">Select your commodity</span>
+                </div>
+                <div class="step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Contact</span>
+                    <span class="step-tooltip">Your information</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-wrapper">
+            <form id="quoteForm" class="quote-form" novalidate>
+                <!-- Step 1: Product Selection -->
+                <div class="form-step active" data-step="1">
+                    <div class="step-content glass-card">
+                        <div class="step-header">
+                            <div class="step-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                </svg>
+                            </div>
+                            <div class="step-header-text">
+                                <h2>Select Your Product</h2>
+                                <p class="step-description">Choose the commodity you're interested in purchasing</p>
+                            </div>
+                        </div>
+
+                        <div class="product-grid">
+                            <label class="product-card" data-product="sugar_ic45">
+                                <input type="radio" name="product" value="sugar_ic45" required>
+                                <div class="card-content">
+                                    <div class="card-shine"></div>
+                                    <div class="product-icon">
+                                        <svg viewBox="0 0 64 64" fill="none">
+                                            <rect x="18" y="20" width="28" height="32" rx="3" stroke="currentColor" stroke-width="2"/>
+                                            <path d="M22 20V16a10 10 0 0 1 20 0v4" stroke="currentColor" stroke-width="2"/>
+                                            <circle cx="32" cy="36" r="8" fill="currentColor" opacity="0.2"/>
+                                            <text x="32" y="40" text-anchor="middle" fill="currentColor" font-size="10" font-weight="bold">IC45</text>
+                                        </svg>
+                                    </div>
+                                    <h3>Sugar IC45</h3>
+                                    <p>Premium refined cane sugar</p>
+                                    <ul class="specs">
+                                        <li><span class="spec-icon">&check;</span> ICUMSA: 45 max</li>
+                                        <li><span class="spec-icon">&check;</span> Polarization: 99.8%</li>
+                                        <li><span class="spec-icon">&check;</span> Food grade quality</li>
+                                    </ul>
+                                    <div class="card-badge">Premium</div>
+                                </div>
+                            </label>
+
+                            <label class="product-card" data-product="sugar_vhp">
+                                <input type="radio" name="product" value="sugar_vhp">
+                                <div class="card-content">
+                                    <div class="card-shine"></div>
+                                    <div class="product-icon">
+                                        <svg viewBox="0 0 64 64" fill="none">
+                                            <rect x="18" y="20" width="28" height="32" rx="3" stroke="currentColor" stroke-width="2"/>
+                                            <path d="M22 20V16a10 10 0 0 1 20 0v4" stroke="currentColor" stroke-width="2"/>
+                                            <circle cx="32" cy="36" r="8" fill="currentColor" opacity="0.2"/>
+                                            <text x="32" y="40" text-anchor="middle" fill="currentColor" font-size="8" font-weight="bold">VHP</text>
+                                        </svg>
+                                    </div>
+                                    <h3>Sugar VHP</h3>
+                                    <p>Very High Polarization sugar</p>
+                                    <ul class="specs">
+                                        <li><span class="spec-icon">&check;</span> ICUMSA: 600-1200</li>
+                                        <li><span class="spec-icon">&check;</span> Ideal for refining</li>
+                                        <li><span class="spec-icon">&check;</span> Industrial use</li>
+                                    </ul>
+                                    <div class="card-badge">Industrial</div>
+                                </div>
+                            </label>
+
+                            <label class="product-card" data-product="soybeans">
+                                <input type="radio" name="product" value="soybeans">
+                                <div class="card-content">
+                                    <div class="card-shine"></div>
+                                    <div class="product-icon">
+                                        <svg viewBox="0 0 64 64" fill="none">
+                                            <ellipse cx="32" cy="32" rx="16" ry="12" stroke="currentColor" stroke-width="2"/>
+                                            <ellipse cx="32" cy="32" rx="10" ry="7" fill="currentColor" opacity="0.2"/>
+                                            <path d="M32 20c0 0 8 6 8 12s-8 12-8 12" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                                        </svg>
+                                    </div>
+                                    <h3>Soybeans</h3>
+                                    <p>Premium yellow soybeans</p>
+                                    <ul class="specs">
+                                        <li><span class="spec-icon">&check;</span> Protein: 36% min</li>
+                                        <li><span class="spec-icon">&check;</span> Non-GMO available</li>
+                                        <li><span class="spec-icon">&check;</span> Export quality</li>
+                                    </ul>
+                                    <div class="card-badge">Non-GMO</div>
+                                </div>
+                            </label>
+
+                            <label class="product-card" data-product="corn">
+                                <input type="radio" name="product" value="corn">
+                                <div class="card-content">
+                                    <div class="card-shine"></div>
+                                    <div class="product-icon">
+                                        <svg viewBox="0 0 64 64" fill="none">
+                                            <path d="M32 10c-4 0-8 4-10 10-2 6-2 14 0 22 2 6 6 12 10 12s8-6 10-12c2-8 2-16 0-22-2-6-6-10-10-10z" stroke="currentColor" stroke-width="2"/>
+                                            <path d="M26 24h12M24 32h16M26 40h12" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                                            <circle cx="32" cy="32" r="4" fill="currentColor" opacity="0.3"/>
+                                        </svg>
+                                    </div>
+                                    <h3>Yellow Corn</h3>
+                                    <p>High-quality feed corn</p>
+                                    <ul class="specs">
+                                        <li><span class="spec-icon">&check;</span> Moisture: 14% max</li>
+                                        <li><span class="spec-icon">&check;</span> Animal feed grade</li>
+                                        <li><span class="spec-icon">&check;</span> Industrial use</li>
+                                    </ul>
+                                    <div class="card-badge">Feed Grade</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Contact Information -->
+                <div class="form-step" data-step="2">
+                    <div class="step-content glass-card">
+                        <div class="step-header">
+                            <div class="step-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            <div class="step-header-text">
+                                <h2>Contact Information</h2>
+                                <p class="step-description">Your company and contact details for the quote</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <!-- Company Information Section -->
+                            <div class="form-section-title full-width">
+                                <h3>Company Information</h3>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="company_name">
+                                    <span class="label-text">Company Name</span>
+                                    <span class="label-required">*</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="company_name" name="company_name" placeholder="Your company name" required>
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="registration_number">
+                                    <span class="label-text">Registration No.</span>
+                                    <span class="label-required">*</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="registration_number" name="registration_number" placeholder="Company registration number" required>
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="4" width="18" height="16" rx="2"/>
+                                            <line x1="7" y1="8" x2="17" y2="8"/>
+                                            <line x1="7" y1="12" x2="17" y2="12"/>
+                                            <line x1="7" y1="16" x2="13" y2="16"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tax_id">
+                                    <span class="label-text">Tax ID / VAT Number</span>
+                                    <span class="label-required">*</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="tax_id" name="tax_id" placeholder="Tax identification number" required>
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                            <polyline points="14 2 14 8 20 8"/>
+                                            <line x1="12" y1="18" x2="12" y2="12"/>
+                                            <line x1="9" y1="15" x2="15" y2="15"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="company_address">
+                                    <span class="label-text">Company Address</span>
+                                    <span class="label-required">*</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="company_address" name="company_address" placeholder="Street address, City, Postal Code" required>
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                            <circle cx="12" cy="10" r="3"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Contact Person Section -->
+                            <div class="form-section-title full-width" style="margin-top: 20px;">
+                                <h3>Contact Person</h3>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact_name">
+                                    <span class="label-text">Full Name</span>
+                                    <span class="label-required">*</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="contact_name" name="contact_name" placeholder="Full name" required>
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="position">
+                                    <span class="label-text">Title / Position</span>
+                                    <span class="label-required">*</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="position" name="position" placeholder="e.g., Procurement Manager" required>
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">
+                                    <span class="label-text">Email Address</span>
+                                    <span class="label-required">*</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="email" id="email" name="email" placeholder="email@company.com" required>
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                            <polyline points="22,6 12,13 2,6"></polyline>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">
+                                    <span class="label-text">Phone Number</span>
+                                    <span class="label-optional">(optional)</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900">
+                                    <span class="input-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="message">
+                                    <span class="label-text">Message / Requirements</span>
+                                </label>
+                                <div class="input-wrapper textarea-wrapper">
+                                    <textarea id="message" name="message" rows="4" placeholder="Tell us about your requirements, quantity, delivery preferences..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="checkbox-label consent">
+                                    <input type="checkbox" name="privacy" id="privacy" required>
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-text">I agree to the <a href="privacy.html" target="_blank">Privacy Policy</a> and consent to data processing</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Message -->
+                <div class="form-step success-step" data-step="success">
+                    <div class="step-content glass-card success-card">
+                        <div class="success-animation">
+                            <div class="success-circle">
+                                <svg class="checkmark" viewBox="0 0 52 52">
+                                    <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                                    <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                                </svg>
+                            </div>
+                            <div class="success-particles"></div>
+                        </div>
+                        <h2>Request Submitted!</h2>
+                        <p>Thank you for your inquiry. Our team will review your request and get back to you within 24 hours.</p>
+                        <p class="reference-number">Reference: <span id="referenceNumber"></span></p>
+                        <div class="success-actions">
+                            <a href="index.html" class="btn btn-primary" data-transition>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                </svg>
+                                Back to Home
+                            </a>
+                            <button type="button" class="btn btn-secondary" onclick="window.print()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                                    <rect x="6" y="14" width="12" height="8"></rect>
+                                </svg>
+                                Print Request
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary prev-btn" id="prevBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        Previous
+                    </button>
+                    <button type="button" class="btn btn-primary next-btn" id="nextBtn">
+                        Next
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                    <button type="submit" class="btn btn-primary submit-btn" id="submitBtn" style="display: none;">
+                        <span class="btn-text">Submit Request</span>
+                        <span class="btn-loader"></span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                            <path d="M22 2L11 13"></path>
+                            <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <footer class="quote-footer">
+            <p>&copy; 2025 Iustus Mercatura. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="quote.js"></script>
+</body>
+</html>

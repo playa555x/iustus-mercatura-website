@@ -1,0 +1,525 @@
+/**
+ * Request a Quote - Multi-Step Form with Three.js Background
+ * Iustus Mercatura
+ */
+
+// ============================================
+// THREE.JS BACKGROUND
+// ============================================
+let scene, camera, renderer, particles, animationId;
+
+function initThreeBackground() {
+    const canvas = document.getElementById('bg-canvas');
+    if (!canvas) return;
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;
+
+    renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        alpha: true,
+        antialias: true
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Create particles
+    const particleCount = 500;
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 20;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+
+        // Gold to white gradient
+        const goldIntensity = Math.random();
+        colors[i * 3] = 0.8 + goldIntensity * 0.2;     // R
+        colors[i * 3 + 1] = 0.6 + goldIntensity * 0.4; // G
+        colors[i * 3 + 2] = 0.1 + goldIntensity * 0.9; // B
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+        size: 0.05,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.6,
+        blending: THREE.AdditiveBlending
+    });
+
+    particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    // Animation
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+
+        particles.rotation.x += 0.0003;
+        particles.rotation.y += 0.0005;
+
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+}
+
+// ============================================
+// MULTI-STEP FORM
+// ============================================
+class QuoteForm {
+    constructor() {
+        this.currentStep = 1;
+        this.totalSteps = 5;
+        this.formData = {};
+        this.form = document.getElementById('quoteForm');
+        this.progressFill = document.getElementById('progressFill');
+        this.prevBtn = document.getElementById('prevBtn');
+        this.nextBtn = document.getElementById('nextBtn');
+        this.submitBtn = document.getElementById('submitBtn');
+
+        this.init();
+    }
+
+    init() {
+        this.bindEvents();
+        this.updateProgress();
+    }
+
+    bindEvents() {
+        // Next button
+        this.nextBtn.addEventListener('click', () => this.nextStep());
+
+        // Previous button
+        this.prevBtn.addEventListener('click', () => this.prevStep());
+
+        // Form submission
+        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+
+        // Product selection animation
+        document.querySelectorAll('.product-card input').forEach(input => {
+            input.addEventListener('change', () => {
+                this.animateSelection(input.closest('.product-card'));
+            });
+        });
+
+        // Real-time validation
+        this.form.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('blur', () => this.validateField(field));
+            field.addEventListener('input', () => {
+                if (field.closest('.form-group').classList.contains('error')) {
+                    this.validateField(field);
+                }
+            });
+        });
+    }
+
+    animateSelection(card) {
+        gsap.fromTo(card,
+            { scale: 0.98 },
+            { scale: 1, duration: 0.3, ease: 'back.out(2)' }
+        );
+    }
+
+    validateField(field) {
+        const group = field.closest('.form-group') || field.closest('.checkbox-label');
+        if (!group) return true;
+
+        let isValid = true;
+        let errorMessage = '';
+
+        // Required check
+        if (field.required && !field.value.trim()) {
+            isValid = false;
+            errorMessage = 'This field is required';
+        }
+
+        // Email validation
+        if (field.type === 'email' && field.value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(field.value)) {
+                isValid = false;
+                errorMessage = 'Please enter a valid email';
+            }
+        }
+
+        // Phone validation
+        if (field.type === 'tel' && field.value) {
+            const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,9}$/;
+            if (!phoneRegex.test(field.value.replace(/\s/g, ''))) {
+                isValid = false;
+                errorMessage = 'Please enter a valid phone number';
+            }
+        }
+
+        // Checkbox validation
+        if (field.type === 'checkbox' && field.required && !field.checked) {
+            isValid = false;
+            errorMessage = 'You must agree to continue';
+        }
+
+        // Update UI
+        if (!isValid) {
+            group.classList.add('error');
+            // Remove existing error message
+            const existingError = group.querySelector('.error-message');
+            if (existingError) existingError.remove();
+            // Add new error message
+            const errorEl = document.createElement('span');
+            errorEl.className = 'error-message';
+            errorEl.textContent = errorMessage;
+            group.appendChild(errorEl);
+        } else {
+            group.classList.remove('error');
+            const existingError = group.querySelector('.error-message');
+            if (existingError) existingError.remove();
+        }
+
+        return isValid;
+    }
+
+    validateStep(step) {
+        const stepElement = document.querySelector(`.form-step[data-step="${step}"]`);
+        const fields = stepElement.querySelectorAll('input:not([type="checkbox"]), select, textarea');
+        const requiredCheckboxes = stepElement.querySelectorAll('input[type="checkbox"][required]');
+
+        let isValid = true;
+
+        fields.forEach(field => {
+            if (field.required && !this.validateField(field)) {
+                isValid = false;
+            }
+        });
+
+        requiredCheckboxes.forEach(checkbox => {
+            if (!this.validateField(checkbox)) {
+                isValid = false;
+            }
+        });
+
+        // Special validation for step 1 (product selection)
+        if (step === 1) {
+            const productSelected = document.querySelector('input[name="product"]:checked');
+            if (!productSelected) {
+                isValid = false;
+                // Show error on first product card
+                const firstCard = document.querySelector('.product-card');
+                gsap.to(firstCard, {
+                    x: [-5, 5, -5, 5, 0],
+                    duration: 0.4,
+                    ease: 'power2.inOut'
+                });
+            }
+        }
+
+        return isValid;
+    }
+
+    nextStep() {
+        if (!this.validateStep(this.currentStep)) {
+            return;
+        }
+
+        if (this.currentStep < this.totalSteps) {
+            this.collectData();
+            this.transitionStep(this.currentStep, this.currentStep + 1);
+            this.currentStep++;
+            this.updateProgress();
+
+            // Generate review on last step
+            if (this.currentStep === this.totalSteps) {
+                this.generateReview();
+            }
+        }
+    }
+
+    prevStep() {
+        if (this.currentStep > 1) {
+            this.transitionStep(this.currentStep, this.currentStep - 1, true);
+            this.currentStep--;
+            this.updateProgress();
+        }
+    }
+
+    transitionStep(from, to, reverse = false) {
+        const fromStep = document.querySelector(`.form-step[data-step="${from}"]`);
+        const toStep = document.querySelector(`.form-step[data-step="${to}"]`);
+
+        // Animate out
+        gsap.to(fromStep, {
+            opacity: 0,
+            x: reverse ? 50 : -50,
+            duration: 0.3,
+            onComplete: () => {
+                fromStep.classList.remove('active');
+                toStep.classList.add('active');
+
+                // Animate in
+                gsap.fromTo(toStep,
+                    { opacity: 0, x: reverse ? -50 : 50 },
+                    { opacity: 1, x: 0, duration: 0.3 }
+                );
+            }
+        });
+    }
+
+    updateProgress() {
+        // Update progress bar
+        const progress = (this.currentStep / this.totalSteps) * 100;
+        gsap.to(this.progressFill, {
+            width: `${progress}%`,
+            duration: 0.5,
+            ease: 'power2.out'
+        });
+
+        // Update step indicators
+        document.querySelectorAll('.progress-steps .step').forEach((step, index) => {
+            const stepNum = index + 1;
+            step.classList.remove('active', 'completed');
+
+            if (stepNum < this.currentStep) {
+                step.classList.add('completed');
+            } else if (stepNum === this.currentStep) {
+                step.classList.add('active');
+            }
+        });
+
+        // Update buttons
+        this.prevBtn.classList.toggle('visible', this.currentStep > 1);
+
+        if (this.currentStep === this.totalSteps) {
+            this.nextBtn.style.display = 'none';
+            this.submitBtn.style.display = 'inline-flex';
+        } else {
+            this.nextBtn.style.display = 'inline-flex';
+            this.submitBtn.style.display = 'none';
+        }
+    }
+
+    collectData() {
+        const formData = new FormData(this.form);
+
+        formData.forEach((value, key) => {
+            if (this.formData[key] && key === 'certifications') {
+                if (!Array.isArray(this.formData[key])) {
+                    this.formData[key] = [this.formData[key]];
+                }
+                this.formData[key].push(value);
+            } else {
+                this.formData[key] = value;
+            }
+        });
+    }
+
+    generateReview() {
+        const reviewContent = document.getElementById('reviewContent');
+
+        const productNames = {
+            sugar_ic45: 'Sugar IC45',
+            sugar_vhp: 'Sugar VHP',
+            soybeans: 'Soybeans',
+            corn: 'Yellow Corn'
+        };
+
+        reviewContent.innerHTML = `
+            <div class="review-section">
+                <h4>Product Details</h4>
+                <div class="review-item">
+                    <span class="label">Product</span>
+                    <span class="value">${productNames[this.formData.product] || this.formData.product}</span>
+                </div>
+                <div class="review-item">
+                    <span class="label">Quantity</span>
+                    <span class="value">${this.formData.quantity} MT</span>
+                </div>
+                <div class="review-item">
+                    <span class="label">Frequency</span>
+                    <span class="value">${this.formData.frequency || 'N/A'}</span>
+                </div>
+                <div class="review-item">
+                    <span class="label">Quality</span>
+                    <span class="value">${this.formData.quality || 'N/A'}</span>
+                </div>
+                <div class="review-item">
+                    <span class="label">Packaging</span>
+                    <span class="value">${this.formData.packaging || 'N/A'}</span>
+                </div>
+            </div>
+
+            <div class="review-section">
+                <h4>Logistics</h4>
+                <div class="review-item">
+                    <span class="label">Incoterm</span>
+                    <span class="value">${this.formData.incoterm || 'N/A'}</span>
+                </div>
+                <div class="review-item">
+                    <span class="label">Destination</span>
+                    <span class="value">${this.formData.destination_port}, ${this.formData.destination_country}</span>
+                </div>
+                <div class="review-item">
+                    <span class="label">Delivery</span>
+                    <span class="value">${this.formData.delivery_date || 'N/A'}</span>
+                </div>
+                <div class="review-item">
+                    <span class="label">Payment</span>
+                    <span class="value">${this.formData.payment_terms || 'N/A'}</span>
+                </div>
+            </div>
+
+            <div class="review-section">
+                <h4>Contact Information</h4>
+                <div class="review-item">
+                    <span class="label">Company</span>
+                    <span class="value">${this.formData.company_name}</span>
+                </div>
+                <div class="review-item">
+                    <span class="label">Contact</span>
+                    <span class="value">${this.formData.contact_name}</span>
+                </div>
+                <div class="review-item">
+                    <span class="label">Email</span>
+                    <span class="value">${this.formData.email}</span>
+                </div>
+                <div class="review-item">
+                    <span class="label">Phone</span>
+                    <span class="value">${this.formData.phone}</span>
+                </div>
+            </div>
+
+            <div class="review-section">
+                <h4>Additional Info</h4>
+                <div class="review-item" style="flex-direction: column; gap: 8px;">
+                    <span class="label">Notes</span>
+                    <span class="value" style="text-align: left;">${this.formData.additional_notes || 'None'}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    async handleSubmit(e) {
+        e.preventDefault();
+
+        if (!this.validateStep(this.currentStep)) {
+            return;
+        }
+
+        this.collectData();
+        this.submitBtn.classList.add('loading');
+        this.submitBtn.disabled = true;
+
+        try {
+            // Generate reference number
+            const referenceNumber = 'IMQ-' + Date.now().toString(36).toUpperCase();
+
+            // Prepare data for encryption/export
+            const quoteData = {
+                reference: referenceNumber,
+                timestamp: new Date().toISOString(),
+                data: this.formData,
+                checksum: this.generateChecksum(this.formData)
+            };
+
+            // Encode data (base64 for now - in production use proper encryption)
+            const encodedData = btoa(JSON.stringify(quoteData));
+
+            // Store locally (can be sent to server/CRM)
+            localStorage.setItem('latestQuote', encodedData);
+
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Show success
+            document.getElementById('referenceNumber').textContent = referenceNumber;
+
+            // Hide current step and show success
+            document.querySelector('.form-step.active').classList.remove('active');
+            document.querySelector('.form-step[data-step="success"]').classList.add('active');
+
+            // Hide navigation
+            document.querySelector('.form-navigation').style.display = 'none';
+            document.querySelector('.progress-container').style.display = 'none';
+
+            // Success animation
+            gsap.from('.success-icon', {
+                scale: 0,
+                rotation: -180,
+                duration: 0.8,
+                ease: 'back.out(2)'
+            });
+
+            console.log('Quote submitted:', quoteData);
+            console.log('Encoded data for CRM/Email:', encodedData);
+
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert('There was an error submitting your request. Please try again.');
+        } finally {
+            this.submitBtn.classList.remove('loading');
+            this.submitBtn.disabled = false;
+        }
+    }
+
+    generateChecksum(data) {
+        // Simple checksum for data integrity
+        const str = JSON.stringify(data);
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        return hash.toString(16);
+    }
+}
+
+// ============================================
+// INITIALIZATION
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    initThreeBackground();
+    new QuoteForm();
+
+    // GSAP entrance animation
+    gsap.from('.quote-header', {
+        y: -50,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out'
+    });
+
+    gsap.from('.progress-container', {
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        delay: 0.2,
+        ease: 'power3.out'
+    });
+
+    gsap.from('.form-wrapper', {
+        y: 50,
+        opacity: 0,
+        duration: 0.8,
+        delay: 0.4,
+        ease: 'power3.out'
+    });
+});
+
+// Export quote data function (for CRM integration)
+window.exportQuoteData = function() {
+    const encoded = localStorage.getItem('latestQuote');
+    if (encoded) {
+        return JSON.parse(atob(encoded));
+    }
+    return null;
+};

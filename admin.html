@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Panel - Iustus Mercatura</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Error Screen - Wird bei schweren Fehlern angezeigt -->
+    <div class="error-screen" id="errorScreen" style="display: none;">
+        <div class="error-screen-content">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h1>Ein Fehler ist aufgetreten</h1>
+            <div class="error-details" id="errorDetails">
+                <p class="error-message" id="errorMessage">Unbekannter Fehler</p>
+                <div class="error-stack" id="errorStack"></div>
+            </div>
+            <div class="error-actions">
+                <button class="btn-restart" onclick="location.reload()">
+                    <i class="fas fa-redo"></i>
+                    Seite neu laden
+                </button>
+                <button class="btn-clear-cache" onclick="AdminErrorHandler.clearAndRestart()">
+                    <i class="fas fa-trash"></i>
+                    Cache leeren & Neustart
+                </button>
+                <button class="btn-safe-mode" onclick="AdminErrorHandler.startSafeMode()">
+                    <i class="fas fa-shield-alt"></i>
+                    Abgesicherter Modus
+                </button>
+            </div>
+            <div class="error-info">
+                <p>Falls das Problem weiterhin besteht:</p>
+                <ul>
+                    <li>Pruefe deine Internetverbindung</li>
+                    <li>Pruefe ob der Server laeuft: <code id="serverUrl">http://localhost:3005</code></li>
+                    <li>Kontaktiere den Administrator</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connection Lost Banner -->
+    <div class="connection-banner" id="connectionBanner" style="display: none;">
+        <i class="fas fa-wifi-slash"></i>
+        <span>Verbindung zum Server verloren</span>
+        <button onclick="AdminErrorHandler.reconnect()">
+            <i class="fas fa-sync"></i> Erneut verbinden
+        </button>
+        <button onclick="this.parentElement.style.display='none'">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-container">
+            <div class="login-logo">
+                <img src="assets/images/logo.png" alt="Iustus Mercatura">
+                <span class="login-badge">Admin Panel</span>
+            </div>
+            <form id="loginForm" class="login-form">
+                <h2>Secure Access</h2>
+                <p>Please enter the admin password to continue.</p>
+                <div class="login-input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="adminPassword" placeholder="Enter password" required autocomplete="current-password">
+                </div>
+                <div class="login-error" id="loginError">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Incorrect password. Please try again.
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Access Admin Panel
+                </button>
+            </form>
+            <p class="login-footer">Iustus Mercatura Holding Inc.</p>
+        </div>
+    </div>
+
+    <!-- Admin Content Wrapper -->
+    <div id="adminContent" style="display: none;">
+
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-logo">
+                <img src="assets/images/logo.png" alt="Iustus Mercatura" class="logo-img">
+                <span class="admin-badge">Admin Panel</span>
+            </div>
+            <nav class="admin-nav">
+                <button class="nav-btn active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-btn" data-section="content">
+                    <i class="fas fa-edit"></i>
+                    <span>Content</span>
+                </button>
+                <button class="nav-btn" data-section="images">
+                    <i class="fas fa-images"></i>
+                    <span>Images</span>
+                </button>
+                <button class="nav-btn" data-section="cards">
+                    <i class="fas fa-th-large"></i>
+                    <span>Cards</span>
+                </button>
+                <button class="nav-btn" data-section="team">
+                    <i class="fas fa-users"></i>
+                    <span>Team</span>
+                </button>
+                <button class="nav-btn" data-section="locations">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Locations</span>
+                </button>
+                <button class="nav-btn" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+                <button class="nav-btn" data-section="structure">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Struktur</span>
+                </button>
+            </nav>
+            <div class="admin-actions">
+                <!-- Live Sync Status -->
+                <div class="sync-status" id="syncStatusIndicator" title="Live Sync Status">
+                    <span class="sync-dot disconnected" id="syncDot"></span>
+                    <span class="sync-text" id="syncText">Verbinde...</span>
+                    <div class="sync-dropdown" id="syncDropdown">
+                        <div class="sync-dropdown-header">
+                            <i class="fas fa-sync-alt"></i> Live Sync
+                        </div>
+                        <div class="sync-dropdown-content">
+                            <div class="sync-info-row">
+                                <span class="sync-label">Status:</span>
+                                <span class="sync-value" id="syncStatusText">Getrennt</span>
+                            </div>
+                            <div class="sync-info-row">
+                                <span class="sync-label">Verbundene Clients:</span>
+                                <span class="sync-value" id="syncClientsCount">0</span>
+                            </div>
+                            <div class="sync-info-row">
+                                <span class="sync-label">Letztes Backup:</span>
+                                <span class="sync-value" id="syncLastBackup">-</span>
+                            </div>
+                            <div class="sync-info-row">
+                                <span class="sync-label">Naechstes Backup:</span>
+                                <span class="sync-value" id="syncNextBackup">23:59</span>
+                            </div>
+                            <div class="sync-info-row">
+                                <span class="sync-label">Naechster Sync:</span>
+                                <span class="sync-value" id="syncNextSync">03:00</span>
+                            </div>
+                        </div>
+                        <div class="sync-clients-list" id="syncClientsList">
+                            <!-- Connected clients will be shown here -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Multi-Site Selector -->
+                <div id="siteSelectorContainer"></div>
+                <button class="btn-preview" onclick="window.open('index.html', '_blank')">
+                    <i class="fas fa-external-link-alt"></i>
+                    Preview Site
+                </button>
+                <button class="btn-save" id="saveAllBtn">
+                    <i class="fas fa-save"></i>
+                    Save All Changes
+                </button>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-section">
+                <h3>Quick Actions</h3>
+                <button class="quick-action" onclick="adminPanel.exportData()">
+                    <i class="fas fa-download"></i>
+                    Export Data
+                </button>
+                <button class="quick-action" onclick="document.getElementById('importFile').click()">
+                    <i class="fas fa-upload"></i>
+                    Import Data
+                </button>
+                <input type="file" id="importFile" accept=".json" style="display:none" onchange="adminPanel.importData(event)">
+                <button class="quick-action" onclick="adminPanel.resetToDefaults()">
+                    <i class="fas fa-undo"></i>
+                    Reset Defaults
+                </button>
+            </div>
+            <div class="sidebar-section">
+                <h3>Status</h3>
+                <div class="status-item">
+                    <span class="status-dot green"></span>
+                    <span>Unsaved changes: <strong id="changeCount">0</strong></span>
+                </div>
+                <div class="status-item">
+                    <span class="status-dot blue"></span>
+                    <span>Last saved: <strong id="lastSaved">Never</strong></span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="admin-content">
+            <!-- Dashboard Section -->
+            <section class="admin-section active" id="section-dashboard">
+                <!-- Welcome Banner -->
+                <div class="dashboard-welcome">
+                    <div class="welcome-content">
+                        <div class="welcome-text">
+                            <span class="welcome-badge"><i class="fas fa-crown"></i> Admin Panel</span>
+                            <h1>Willkommen bei Iustus Mercatura</h1>
+                            <p>Verwalten Sie Ihre Website-Inhalte, Team-Mitglieder, Standorte und Einstellungen von einem zentralen Ort aus.</p>
+                        </div>
+                        <div class="welcome-actions">
+                            <button class="welcome-btn primary" onclick="window.open('index.html', '_blank')">
+                                <i class="fas fa-external-link-alt"></i>
+                                Website ansehen
+                            </button>
+                            <button class="welcome-btn secondary" onclick="adminPanel.navigateTo('settings')">
+                                <i class="fas fa-cog"></i>
+                                Einstellungen
+                            </button>
+                        </div>
+                    </div>
+                    <div class="welcome-illustration">
+                        <div class="illustration-circle">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="dashboard-stats">
+                    <div class="stat-card" onclick="adminPanel.navigateTo('team')">
+                        <div class="stat-icon team">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="teamCount">11</span>
+                            <span class="stat-label">Team Mitglieder</span>
+                        </div>
+                        <div class="stat-trend up">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="adminPanel.navigateTo('locations')">
+                        <div class="stat-icon locations">
+                            <i class="fas fa-globe-americas"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="locationCount">7</span>
+                            <span class="stat-label">Standorte weltweit</span>
+                        </div>
+                        <div class="stat-trend up">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="adminPanel.navigateTo('images')">
+                        <div class="stat-icon images">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="imageCount">0</span>
+                            <span class="stat-label">Bilder in Mediathek</span>
+                        </div>
+                        <div class="stat-trend up">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="adminPanel.navigateTo('cards')">
+                        <div class="stat-icon cards">
+                            <i class="fas fa-th-large"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="cardsCount">10</span>
+                            <span class="stat-label">Features & Cards</span>
+                        </div>
+                        <div class="stat-trend up">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Dashboard Content -->
+                <div class="dashboard-main">
+                    <!-- Quick Actions -->
+                    <div class="dashboard-panel quick-actions-panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-bolt"></i> Schnellzugriff</h3>
+                        </div>
+                        <div class="quick-actions-grid">
+                            <button class="quick-action-btn" onclick="adminPanel.navigateTo('content')">
+                                <div class="action-icon"><i class="fas fa-edit"></i></div>
+                                <span>Inhalte bearbeiten</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="adminPanel.navigateTo('team')">
+                                <div class="action-icon"><i class="fas fa-user-plus"></i></div>
+                                <span>Team verwalten</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="adminPanel.navigateTo('images')">
+                                <div class="action-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                <span>Bilder hochladen</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="adminPanel.navigateTo('settings')">
+                                <div class="action-icon"><i class="fas fa-palette"></i></div>
+                                <span>Farben anpassen</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Website Status -->
+                    <div class="dashboard-panel status-panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-heartbeat"></i> Website Status</h3>
+                            <span class="status-badge online"><i class="fas fa-circle"></i> Online</span>
+                        </div>
+                        <div class="status-list">
+                            <div class="status-row">
+                                <span class="status-name"><i class="fas fa-server"></i> Server</span>
+                                <span class="status-value good">Verbunden</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-name"><i class="fas fa-database"></i> Datenbank</span>
+                                <span class="status-value good">Synchronisiert</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-name"><i class="fas fa-save"></i> Letzte Speicherung</span>
+                                <span class="status-value" id="lastSavedDashboard">--</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-name"><i class="fas fa-clock"></i> Uptime</span>
+                                <span class="status-value good">99.9%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity & Help -->
+                <div class="dashboard-bottom">
+                    <!-- Social Links Preview -->
+                    <div class="dashboard-panel social-panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-share-alt"></i> Social Media</h3>
+                            <button class="panel-action" onclick="adminPanel.navigateTo('settings')">Bearbeiten</button>
+                        </div>
+                        <div class="social-links-preview">
+                            <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" class="social-link-item linkedin">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="https://www.instagram.com/iustusmercatura" target="_blank" class="social-link-item instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://www.facebook.com/iustusmercatura" target="_blank" class="social-link-item facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://x.com/iustusmercatura" target="_blank" class="social-link-item twitter">
+                                <i class="fab fa-x-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Help & Resources -->
+                    <div class="dashboard-panel help-panel">
+                        <div class="panel-header">
+                            <h3><i class="fas fa-question-circle"></i> Hilfe & Ressourcen</h3>
+                        </div>
+                        <div class="help-links">
+                            <a href="#" class="help-link">
+                                <i class="fas fa-book"></i>
+                                <span>Dokumentation</span>
+                            </a>
+                            <a href="#" class="help-link">
+                                <i class="fas fa-video"></i>
+                                <span>Video Tutorials</span>
+                            </a>
+                            <a href="#" class="help-link">
+                                <i class="fas fa-headset"></i>
+                                <span>Support kontaktieren</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Content Section -->
+            <section class="admin-section" id="section-content">
+                <!-- Content Header Banner -->
+                <div class="section-banner content-banner">
+                    <div class="banner-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div class="banner-content">
+                        <h1>Content Management</h1>
+                        <p>Bearbeiten Sie alle Texte und Inhalte Ihrer Website von einem zentralen Ort</p>
+                    </div>
+                    <div class="banner-stats">
+                        <div class="banner-stat">
+                            <span class="stat-num">7</span>
+                            <span class="stat-text">Sektionen</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Tabs - Modern Style -->
+                <div class="content-tabs-wrapper">
+                    <div class="content-tabs">
+                        <button class="tab-btn active" data-tab="hero">
+                            <i class="fas fa-home"></i>
+                            <span>Hero</span>
+                        </button>
+                        <button class="tab-btn" data-tab="about">
+                            <i class="fas fa-info-circle"></i>
+                            <span>About</span>
+                        </button>
+                        <button class="tab-btn" data-tab="ceo">
+                            <i class="fas fa-user-tie"></i>
+                            <span>CEO Message</span>
+                        </button>
+                        <button class="tab-btn" data-tab="products">
+                            <i class="fas fa-box"></i>
+                            <span>Products</span>
+                        </button>
+                        <button class="tab-btn" data-tab="services">
+                            <i class="fas fa-cogs"></i>
+                            <span>Services</span>
+                        </button>
+                        <button class="tab-btn" data-tab="contact">
+                            <i class="fas fa-envelope"></i>
+                            <span>Contact</span>
+                        </button>
+                        <button class="tab-btn" data-tab="footer">
+                            <i class="fas fa-grip-lines"></i>
+                            <span>Footer</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hero Tab -->
+                <div class="tab-content active" id="tab-hero">
+                    <div class="form-group">
+                        <label>Section Label</label>
+                        <input type="text" class="form-input" data-field="hero.label" value="Global Commodity Trading">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Title Line 1</label>
+                            <input type="text" class="form-input" data-field="hero.titleLine1" value="Connecting">
+                        </div>
+                        <div class="form-group">
+                            <label>Title Line 2</label>
+                            <input type="text" class="form-input" data-field="hero.titleLine2" value="Farmers to Consumers">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Title Line 3</label>
+                        <input type="text" class="form-input" data-field="hero.titleLine3" value="Worldwide">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-textarea" data-field="hero.description" rows="3">Iustus Mercatura - Latin for "Just Trade" - delivers essential food commodities with integrity, transparency, and a commitment to sustainable global commerce.</textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Primary Button Text</label>
+                            <input type="text" class="form-input" data-field="hero.button1" value="Discover Our Story">
+                        </div>
+                        <div class="form-group">
+                            <label>Secondary Button Text</label>
+                            <input type="text" class="form-input" data-field="hero.button2" value="View Products">
+                        </div>
+                    </div>
+                    <h4 class="form-section-title">Statistics</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Stat 1 - Value</label>
+                            <input type="text" class="form-input" data-field="hero.stat1Value" value="500000">
+                        </div>
+                        <div class="form-group">
+                            <label>Stat 1 - Suffix</label>
+                            <input type="text" class="form-input" data-field="hero.stat1Suffix" value="MT+">
+                        </div>
+                        <div class="form-group">
+                            <label>Stat 1 - Label</label>
+                            <input type="text" class="form-input" data-field="hero.stat1Label" value="Annual Capacity">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Stat 2 - Value</label>
+                            <input type="text" class="form-input" data-field="hero.stat2Value" value="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Stat 2 - Suffix</label>
+                            <input type="text" class="form-input" data-field="hero.stat2Suffix" value="+">
+                        </div>
+                        <div class="form-group">
+                            <label>Stat 2 - Label</label>
+                            <input type="text" class="form-input" data-field="hero.stat2Label" value="Countries Served">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Stat 3 - Value</label>
+                            <input type="text" class="form-input" data-field="hero.stat3Value" value="8">
+                        </div>
+                        <div class="form-group">
+                            <label>Stat 3 - Suffix</label>
+                            <input type="text" class="form-input" data-field="hero.stat3Suffix" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Stat 3 - Label</label>
+                            <input type="text" class="form-input" data-field="hero.stat3Label" value="Global Offices">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Tab -->
+                <div class="tab-content" id="tab-about">
+                    <div class="form-group">
+                        <label>Section Label</label>
+                        <input type="text" class="form-input" data-field="about.sectionLabel" value="About Us">
+                    </div>
+                    <div class="form-group">
+                        <label>Section Title</label>
+                        <input type="text" class="form-input" data-field="about.title" value="The Philosophy of Just Trade">
+                    </div>
+                    <div class="form-group">
+                        <label>Lead Text</label>
+                        <textarea class="form-textarea" data-field="about.leadText" rows="3">At Iustus Mercatura Holding Inc., we prioritize integrity, transparency, and long-term partnerships to create lasting value across global markets.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-textarea" data-field="about.description" rows="4">Our dual-location model in the British Virgin Islands and vibrant economic regions worldwide exemplifies our strategic approach. We are deeply committed to upholding the highest ethical and sustainable business practices, strictly adhering to UN standards and ISO 9001 quality management principles.</textarea>
+                    </div>
+                    <h4 class="form-section-title">Features</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Feature 1 - Title</label>
+                            <input type="text" class="form-input" data-field="about.feature1Title" value="Ethical Trading">
+                        </div>
+                        <div class="form-group">
+                            <label>Feature 1 - Description</label>
+                            <input type="text" class="form-input" data-field="about.feature1Desc" value="Fair pricing and transparent transactions">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Feature 2 - Title</label>
+                            <input type="text" class="form-input" data-field="about.feature2Title" value="Global Reach">
+                        </div>
+                        <div class="form-group">
+                            <label>Feature 2 - Description</label>
+                            <input type="text" class="form-input" data-field="about.feature2Desc" value="Operations across 5 continents">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Feature 3 - Title</label>
+                            <input type="text" class="form-input" data-field="about.feature3Title" value="Vertical Integration">
+                        </div>
+                        <div class="form-group">
+                            <label>Feature 3 - Description</label>
+                            <input type="text" class="form-input" data-field="about.feature3Desc" value="From field to final delivery">
+                        </div>
+                    </div>
+                    <h4 class="form-section-title">Foundation Card</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Year Founded</label>
+                            <input type="text" class="form-input" data-field="about.cardYear" value="2025">
+                        </div>
+                        <div class="form-group">
+                            <label>Card Title</label>
+                            <input type="text" class="form-input" data-field="about.cardTitle" value="Founded">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Card Description</label>
+                        <input type="text" class="form-input" data-field="about.cardDesc" value="Established on the principles of fair and ethical global trade">
+                    </div>
+                </div>
+
+                <!-- CEO Tab -->
+                <div class="tab-content" id="tab-ceo">
+                    <div class="form-group">
+                        <label>Section Label</label>
+                        <input type="text" class="form-input" data-field="ceo.sectionLabel" value="CEO Message">
+                    </div>
+                    <div class="form-group">
+                        <label>Section Title</label>
+                        <input type="text" class="form-input" data-field="ceo.title" value="A Word from Our CEO">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>CEO Name</label>
+                            <input type="text" class="form-input" data-field="ceo.name" value="Dr. Gerhard Kral">
+                        </div>
+                        <div class="form-group">
+                            <label>CEO Role</label>
+                            <input type="text" class="form-input" data-field="ceo.role" value="Founder & Chief Executive Officer">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Quote</label>
+                        <textarea class="form-textarea" data-field="ceo.quote" rows="3">We have not only positioned the Holding Company as a strategic management holding, but also moved away from purely trading in food commodities towards establishing the complete supply chain - from the field to the end customer.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea class="form-textarea" data-field="ceo.message" rows="3">From the fertile lands of Brazil to markets across the globe, we ensure that every transaction reflects our commitment to quality, integrity, and mutual prosperity.</textarea>
+                    </div>
+                </div>
+
+                <!-- Products Tab -->
+                <div class="tab-content" id="tab-products">
+                    <div class="form-group">
+                        <label>Section Label</label>
+                        <input type="text" class="form-input" data-field="products.sectionLabel" value="Our Products">
+                    </div>
+                    <div class="form-group">
+                        <label>Section Title</label>
+                        <input type="text" class="form-input" data-field="products.title" value="Premium Brazilian Commodities">
+                    </div>
+                    <div class="form-group">
+                        <label>Section Description</label>
+                        <textarea class="form-textarea" data-field="products.description" rows="3">Sourced ethically, processed meticulously, delivered globally</textarea>
+                    </div>
+                    <p class="info-text"><i class="fas fa-info-circle"></i> To manage individual product cards, go to the Cards section.</p>
+                </div>
+
+                <!-- Services Tab -->
+                <div class="tab-content" id="tab-services">
+                    <div class="form-group">
+                        <label>Section Label</label>
+                        <input type="text" class="form-input" data-field="services.sectionLabel" value="How We Work">
+                    </div>
+                    <div class="form-group">
+                        <label>Section Title</label>
+                        <input type="text" class="form-input" data-field="services.title" value="Our Services">
+                    </div>
+                    <div class="form-group">
+                        <label>Section Description</label>
+                        <textarea class="form-textarea" data-field="services.description" rows="3">Comprehensive trading solutions tailored to your needs.</textarea>
+                    </div>
+                </div>
+
+                <!-- Contact Tab -->
+                <div class="tab-content" id="tab-contact">
+                    <div class="form-group">
+                        <label>Section Label</label>
+                        <input type="text" class="form-input" data-field="contact.sectionLabel" value="Get In Touch">
+                    </div>
+                    <div class="form-group">
+                        <label>Section Title</label>
+                        <input type="text" class="form-input" data-field="contact.title" value="Let's Work Together">
+                    </div>
+                    <div class="form-group">
+                        <label>Section Description</label>
+                        <textarea class="form-textarea" data-field="contact.description" rows="3">Whether you're looking to expand your horizons or streamline your operations, our expertise and resources are here to support your goals.</textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" class="form-input" data-field="contact.email" value="info@imh-bvi.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" class="form-input" data-field="contact.phone" value="+1 281 816 7296">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Tab -->
+                <div class="tab-content" id="tab-footer">
+                    <div class="form-group">
+                        <label>Footer Tagline</label>
+                        <input type="text" class="form-input" data-field="footer.tagline" value="Connecting farmers to consumers to deliver essential food, feed and fuel to the world.">
+                    </div>
+                    <div class="form-group">
+                        <label>Copyright Text</label>
+                        <input type="text" class="form-input" data-field="footer.copyright" value="© 2025 Iustus Mercatura Holding Inc. All rights reserved.">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Images Section - Mediathek -->
+            <section class="admin-section" id="section-images">
+                <!-- Images Header Banner -->
+                <div class="section-banner images-banner">
+                    <div class="banner-icon">
+                        <i class="fas fa-photo-video"></i>
+                    </div>
+                    <div class="banner-content">
+                        <h1>Mediathek</h1>
+                        <p>Verwalten Sie alle Medien: Bilder, Videos, Logos und Dokumente</p>
+                    </div>
+                    <div class="banner-stats">
+                        <div class="banner-stat">
+                            <span class="stat-num" id="mediathekImageCount">0</span>
+                            <span class="stat-text">Bilder</span>
+                        </div>
+                        <div class="banner-stat">
+                            <span class="stat-num" id="mediathekVideoCount">0</span>
+                            <span class="stat-text">Videos</span>
+                        </div>
+                        <div class="banner-stat">
+                            <span class="stat-num" id="mediathekLogoCount">0</span>
+                            <span class="stat-text">Logos</span>
+                        </div>
+                        <div class="banner-stat">
+                            <span class="stat-num" id="mediathekDocCount">0</span>
+                            <span class="stat-text">Dokumente</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Media Type Tabs -->
+                <div class="mediathek-tabs-wrapper">
+                    <div class="mediathek-tabs">
+                        <button class="mediathek-tab active" data-media-type="images">
+                            <i class="fas fa-images"></i>
+                            <span>Bilder</span>
+                            <span class="tab-count" id="tabImagesCount">0</span>
+                        </button>
+                        <button class="mediathek-tab" data-media-type="videos">
+                            <i class="fas fa-video"></i>
+                            <span>Videos</span>
+                            <span class="tab-count" id="tabVideosCount">0</span>
+                        </button>
+                        <button class="mediathek-tab" data-media-type="logos">
+                            <i class="fas fa-copyright"></i>
+                            <span>Logos</span>
+                            <span class="tab-count" id="tabLogosCount">0</span>
+                        </button>
+                        <button class="mediathek-tab" data-media-type="documents">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Dokumente</span>
+                            <span class="tab-count" id="tabDocsCount">0</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Images Tab Content -->
+                <div class="mediathek-tab-content active" id="media-tab-images">
+                    <!-- Upload Zone - Images -->
+                    <div class="mediathek-upload-container">
+                        <div class="mediathek-upload-zone" id="mediathekUploadZone" data-type="images">
+                            <div class="upload-icon-wrapper">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h3>Bilder hochladen</h3>
+                            <p>Ziehen Sie Dateien hierher oder klicken Sie zum Auswaehlen</p>
+                            <input type="file" id="mediathekUpload" accept="image/*" multiple>
+                            <button class="upload-btn" onclick="document.getElementById('mediathekUpload').click()">
+                                <i class="fas fa-folder-open"></i> Dateien auswaehlen
+                            </button>
+                            <span class="upload-hint">PNG, JPG, WEBP, GIF bis 10MB</span>
+                        </div>
+                    </div>
+
+                    <!-- Image Grid -->
+                    <div class="mediathek-section">
+                        <div class="mediathek-toolbar">
+                            <div class="toolbar-left">
+                                <h3><i class="fas fa-images"></i> Alle Bilder</h3>
+                            </div>
+                            <div class="toolbar-right">
+                                <div class="view-toggle">
+                                    <button class="view-btn active" data-view="grid"><i class="fas fa-th"></i></button>
+                                    <button class="view-btn" data-view="list"><i class="fas fa-list"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mediathek-grid" id="mediathekGrid">
+                            <div class="mediathek-loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Bilder werden geladen...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Videos Tab Content -->
+                <div class="mediathek-tab-content" id="media-tab-videos">
+                    <!-- Upload Zone - Videos -->
+                    <div class="mediathek-upload-container">
+                        <div class="mediathek-upload-zone" id="videoUploadZone" data-type="videos">
+                            <div class="upload-icon-wrapper video">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            <h3>Videos hochladen</h3>
+                            <p>Ziehen Sie Videodateien hierher oder klicken Sie zum Auswaehlen</p>
+                            <input type="file" id="videoUpload" accept="video/*" multiple>
+                            <button class="upload-btn" onclick="document.getElementById('videoUpload').click()">
+                                <i class="fas fa-folder-open"></i> Videos auswaehlen
+                            </button>
+                            <span class="upload-hint">MP4, WEBM, MOV bis 100MB</span>
+                        </div>
+                    </div>
+
+                    <!-- Video Grid -->
+                    <div class="mediathek-section">
+                        <div class="mediathek-toolbar">
+                            <div class="toolbar-left">
+                                <h3><i class="fas fa-video"></i> Alle Videos</h3>
+                            </div>
+                            <div class="toolbar-right">
+                                <div class="view-toggle">
+                                    <button class="view-btn active" data-view="grid"><i class="fas fa-th"></i></button>
+                                    <button class="view-btn" data-view="list"><i class="fas fa-list"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mediathek-grid videos-grid" id="videosGrid">
+                            <div class="mediathek-empty">
+                                <i class="fas fa-video"></i>
+                                <h3>Keine Videos vorhanden</h3>
+                                <p>Lade dein erstes Video hoch!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- YouTube/Vimeo Embed -->
+                    <div class="mediathek-section">
+                        <div class="mediathek-toolbar">
+                            <div class="toolbar-left">
+                                <h3><i class="fab fa-youtube"></i> Video URLs einbetten</h3>
+                            </div>
+                        </div>
+                        <div class="video-embed-form">
+                            <div class="form-group">
+                                <label>Video URL (YouTube, Vimeo)</label>
+                                <div class="input-with-btn">
+                                    <input type="url" id="videoEmbedUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
+                                    <button class="btn-primary" onclick="adminPanel.addVideoEmbed()">
+                                        <i class="fas fa-plus"></i> Hinzufuegen
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="embedded-videos-list" id="embeddedVideosList">
+                                <!-- Embedded videos will be listed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logos Tab Content -->
+                <div class="mediathek-tab-content" id="media-tab-logos">
+                    <!-- Upload Zone - Logos -->
+                    <div class="mediathek-upload-container">
+                        <div class="mediathek-upload-zone" id="logoUploadZone" data-type="logos">
+                            <div class="upload-icon-wrapper logo">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <h3>Logos hochladen</h3>
+                            <p>Partner-Logos, Zertifikate, Badges</p>
+                            <input type="file" id="logoUpload" accept="image/*,.svg" multiple>
+                            <button class="upload-btn" onclick="document.getElementById('logoUpload').click()">
+                                <i class="fas fa-folder-open"></i> Logos auswaehlen
+                            </button>
+                            <span class="upload-hint">PNG, SVG, JPG (transparent empfohlen)</span>
+                        </div>
+                    </div>
+
+                    <!-- Logo Categories -->
+                    <div class="logo-categories">
+                        <!-- Partner Logos -->
+                        <div class="logo-category-panel">
+                            <div class="category-header">
+                                <div class="category-icon partners">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <div class="category-info">
+                                    <h3>Partner & Kunden</h3>
+                                    <span class="category-subtitle">Unternehmenslogos</span>
+                                </div>
+                                <button class="btn-add-small" onclick="adminPanel.addLogoToCategory('partners')">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="logos-grid" id="partnerLogosGrid">
+                                <div class="logo-placeholder" onclick="adminPanel.addLogoToCategory('partners')">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Logo hinzufuegen</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Certification Logos -->
+                        <div class="logo-category-panel">
+                            <div class="category-header">
+                                <div class="category-icon certifications">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                                <div class="category-info">
+                                    <h3>Zertifizierungen</h3>
+                                    <span class="category-subtitle">ISO, Qualitaetssiegel</span>
+                                </div>
+                                <button class="btn-add-small" onclick="adminPanel.addLogoToCategory('certifications')">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="logos-grid" id="certLogosGrid">
+                                <div class="logo-placeholder" onclick="adminPanel.addLogoToCategory('certifications')">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Logo hinzufuegen</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Flags -->
+                        <div class="logo-category-panel">
+                            <div class="category-header">
+                                <div class="category-icon flags">
+                                    <i class="fas fa-flag"></i>
+                                </div>
+                                <div class="category-info">
+                                    <h3>Flaggen & Laender</h3>
+                                    <span class="category-subtitle">Laenderflaggen</span>
+                                </div>
+                                <button class="btn-add-small" onclick="adminPanel.addLogoToCategory('flags')">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="logos-grid flags-grid" id="flagsGrid">
+                                <div class="logo-placeholder" onclick="adminPanel.addLogoToCategory('flags')">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Flagge hinzufuegen</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Tab Content -->
+                <div class="mediathek-tab-content" id="media-tab-documents">
+                    <!-- Upload Zone - Documents -->
+                    <div class="mediathek-upload-container">
+                        <div class="mediathek-upload-zone" id="docUploadZone" data-type="documents">
+                            <div class="upload-icon-wrapper document">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h3>Dokumente hochladen</h3>
+                            <p>PDFs, Praesentationen, Datenblaetter</p>
+                            <input type="file" id="docUpload" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" multiple>
+                            <button class="upload-btn" onclick="document.getElementById('docUpload').click()">
+                                <i class="fas fa-folder-open"></i> Dokumente auswaehlen
+                            </button>
+                            <span class="upload-hint">PDF, DOC, XLS, PPT bis 25MB</span>
+                        </div>
+                    </div>
+
+                    <!-- Documents List -->
+                    <div class="mediathek-section">
+                        <div class="mediathek-toolbar">
+                            <div class="toolbar-left">
+                                <h3><i class="fas fa-file-alt"></i> Alle Dokumente</h3>
+                            </div>
+                            <div class="toolbar-right">
+                                <select class="form-input" id="docFilterType" onchange="adminPanel.filterDocuments()">
+                                    <option value="all">Alle Typen</option>
+                                    <option value="pdf">PDF</option>
+                                    <option value="doc">Word</option>
+                                    <option value="xls">Excel</option>
+                                    <option value="ppt">PowerPoint</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="documents-list" id="documentsList">
+                            <div class="mediathek-empty">
+                                <i class="fas fa-file-alt"></i>
+                                <h3>Keine Dokumente vorhanden</h3>
+                                <p>Lade dein erstes Dokument hoch!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cards Section -->
+            <section class="admin-section" id="section-cards">
+                <!-- Cards Header Banner -->
+                <div class="section-banner cards-banner">
+                    <div class="banner-icon">
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <div class="banner-content">
+                        <h1>Cards & Features</h1>
+                        <p>Verwalten Sie Features, Werte und Nachhaltigkeitskarten</p>
+                    </div>
+                    <div class="banner-stats">
+                        <div class="banner-stat">
+                            <span class="stat-num" id="totalCardsCount">0</span>
+                            <span class="stat-text">Gesamt</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cards Categories Grid -->
+                <div class="cards-categories-grid">
+                    <!-- Features Category -->
+                    <div class="cards-category-panel">
+                        <div class="category-header">
+                            <div class="category-icon features">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="category-info">
+                                <h3>Features</h3>
+                                <span class="category-subtitle">About Section</span>
+                            </div>
+                            <span class="category-count" id="featuresCount">0</span>
+                        </div>
+                        <div class="cards-grid" id="featuresGrid">
+                            <!-- Features will be loaded from website -->
+                        </div>
+                    </div>
+
+                    <!-- Values Category -->
+                    <div class="cards-category-panel">
+                        <div class="category-header">
+                            <div class="category-icon values">
+                                <i class="fas fa-gem"></i>
+                            </div>
+                            <div class="category-info">
+                                <h3>Values</h3>
+                                <span class="category-subtitle">Unsere Prinzipien</span>
+                            </div>
+                            <span class="category-count" id="valuesCount">0</span>
+                        </div>
+                        <div class="cards-grid" id="valuesGrid">
+                            <!-- Values will be loaded from website -->
+                        </div>
+                    </div>
+
+                    <!-- Sustainability Category -->
+                    <div class="cards-category-panel">
+                        <div class="category-header">
+                            <div class="category-icon sustainability">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <div class="category-info">
+                                <h3>Sustainability</h3>
+                                <span class="category-subtitle">Nachhaltigkeit</span>
+                            </div>
+                            <span class="category-count" id="sustainabilityCount">0</span>
+                        </div>
+                        <div class="cards-grid" id="sustainabilityGrid">
+                            <!-- Sustainability cards will be loaded from website -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Team Section -->
+            <section class="admin-section" id="section-team">
+                <!-- Team Header Banner -->
+                <div class="section-banner team-banner">
+                    <div class="banner-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="banner-content">
+                        <h1>Team Management</h1>
+                        <p>Verwalten Sie Ihre Teammitglieder und deren Profile</p>
+                    </div>
+                    <div class="banner-stats">
+                        <div class="banner-stat">
+                            <span class="stat-num" id="totalTeamCount">11</span>
+                            <span class="stat-text">Mitglieder</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Add Button -->
+                <div class="team-actions-bar">
+                    <button class="btn-add-team" id="addTeamBtn">
+                        <i class="fas fa-user-plus"></i>
+                        Neues Teammitglied
+                    </button>
+                </div>
+
+                <!-- Team Categories -->
+                <div class="team-categories">
+                    <!-- Leadership Category -->
+                    <div class="team-category-panel">
+                        <div class="team-category-header">
+                            <div class="category-icon leadership">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="category-info">
+                                <h3>Leadership</h3>
+                                <span class="category-desc">Fuhrungsteam</span>
+                            </div>
+                            <span class="member-count">4</span>
+                        </div>
+                        <div class="team-grid" id="leadershipGrid">
+                            <!-- Leadership members will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- CEO Category -->
+                    <div class="team-category-panel">
+                        <div class="team-category-header">
+                            <div class="category-icon ceo">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div class="category-info">
+                                <h3>CEO</h3>
+                                <span class="category-desc">Geschaftsfuhrung</span>
+                            </div>
+                            <span class="member-count">2</span>
+                        </div>
+                        <div class="team-grid" id="ceoGrid">
+                            <!-- CEO members will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- COO & Regional Category -->
+                    <div class="team-category-panel">
+                        <div class="team-category-header">
+                            <div class="category-icon regional">
+                                <i class="fas fa-globe-americas"></i>
+                            </div>
+                            <div class="category-info">
+                                <h3>COO & Regional Heads</h3>
+                                <span class="category-desc">Operations & Regionale Leitung</span>
+                            </div>
+                            <span class="member-count">5</span>
+                        </div>
+                        <div class="team-grid" id="cooRegionalGrid">
+                            <!-- COO & Regional Heads will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Locations Section -->
+            <section class="admin-section" id="section-locations">
+                <!-- Locations Header Banner -->
+                <div class="section-banner locations-banner">
+                    <div class="banner-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <div class="banner-content">
+                        <h1>Standorte</h1>
+                        <p>Verwalten Sie Ihre weltweiten Burostandorte</p>
+                    </div>
+                    <div class="banner-stats">
+                        <div class="banner-stat">
+                            <span class="stat-num" id="totalLocationsCount">7</span>
+                            <span class="stat-text">Standorte</span>
+                        </div>
+                        <div class="banner-stat">
+                            <span class="stat-num">5</span>
+                            <span class="stat-text">Kontinente</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Locations Add Button -->
+                <div class="locations-actions-bar">
+                    <button class="btn-add-location" id="addLocationBtn">
+                        <i class="fas fa-plus-circle"></i>
+                        Neuer Standort
+                    </button>
+                </div>
+
+                <!-- Locations Grid -->
+                <div class="locations-container">
+                    <div class="locations-grid" id="locationsGrid">
+                        <!-- Locations will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Structure Section - Seitenstruktur bearbeiten -->
+            <section class="admin-section" id="section-structure">
+                <!-- Structure Header Banner -->
+                <div class="section-banner structure-banner">
+                    <div class="banner-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="banner-content">
+                        <h1>Page Builder</h1>
+                        <p>Gestalten Sie Ihre Seite visuell - verschieben und bearbeiten Sie Sektionen</p>
+                    </div>
+                    <div class="banner-stats">
+                        <div class="banner-stat">
+                            <span class="stat-num" id="activeSectionsCount">0</span>
+                            <span class="stat-text">Sektionen</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View Mode Toggle - Modern -->
+                <div class="builder-controls-bar">
+                    <div class="builder-mode-toggle">
+                        <button class="mode-btn active" data-mode="visual" onclick="adminPanel.setBuilderMode('visual')">
+                            <i class="fas fa-th-large"></i>
+                            <span>Visual Builder</span>
+                        </button>
+                        <button class="mode-btn" data-mode="list" onclick="adminPanel.setBuilderMode('list')">
+                            <i class="fas fa-list"></i>
+                            <span>Listen-Ansicht</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="structure-toolbar">
+                    <button class="btn-primary" onclick="adminPanel.openAddSectionModal()">
+                        <i class="fas fa-plus"></i> Sektion hinzufügen
+                    </button>
+                    <button class="btn-secondary" onclick="adminPanel.resetLayout()">
+                        <i class="fas fa-undo"></i> Layout zurücksetzen
+                    </button>
+                    <button class="btn-secondary" onclick="adminPanel.previewStructure()">
+                        <i class="fas fa-eye"></i> Live-Vorschau
+                    </button>
+                </div>
+
+                <!-- Visual Builder Mode - Live Website Preview -->
+                <div class="live-builder-container" id="visualBuilderContainer">
+                    <!-- Left Panel: Section Controls -->
+                    <div class="builder-controls">
+                        <div class="controls-header">
+                            <h3><i class="fas fa-layer-group"></i> Sektionen</h3>
+                            <span class="section-count" id="sectionCount">0 aktiv</span>
+                        </div>
+                        <div class="section-list" id="builderSectionList">
+                            <!-- Wird dynamisch gefüllt -->
+                        </div>
+                        <div class="controls-footer">
+                            <button class="btn-secondary btn-sm" onclick="adminPanel.openAddSectionModal()">
+                                <i class="fas fa-plus"></i> Neue Sektion
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Center: Live Website Preview -->
+                    <div class="live-preview-wrapper">
+                        <div class="preview-toolbar">
+                            <div class="preview-device-toggle">
+                                <button class="device-btn active" data-device="desktop" onclick="adminPanel.setPreviewDevice('desktop')">
+                                    <i class="fas fa-desktop"></i>
+                                </button>
+                                <button class="device-btn" data-device="tablet" onclick="adminPanel.setPreviewDevice('tablet')">
+                                    <i class="fas fa-tablet-alt"></i>
+                                </button>
+                                <button class="device-btn" data-device="mobile" onclick="adminPanel.setPreviewDevice('mobile')">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </button>
+                            </div>
+                            <div class="preview-zoom">
+                                <button onclick="adminPanel.zoomPreview(-10)"><i class="fas fa-minus"></i></button>
+                                <span id="zoomLevel">100%</span>
+                                <button onclick="adminPanel.zoomPreview(10)"><i class="fas fa-plus"></i></button>
+                            </div>
+                            <button class="device-btn" id="toggleDragMode" onclick="adminPanel.toggleDragMode()" title="Elemente auf der Website bearbeiten">
+                                <i class="fas fa-arrows-alt"></i>
+                            </button>
+                            <div class="undo-redo-buttons">
+                                <button class="device-btn" id="undoBtn" onclick="adminPanel.undo()" title="Rückgängig (Strg+Z)" disabled>
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                                <button class="device-btn" id="redoBtn" onclick="adminPanel.redo()" title="Wiederholen (Strg+Y)" disabled>
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            </div>
+                            <button class="device-btn" onclick="adminPanel.highlightImagesInIframe()" title="Bilder auf der Website markieren">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button class="device-btn" onclick="adminPanel.openImageGallery('background')" title="Mediathek öffnen">
+                                <i class="fas fa-images"></i>
+                            </button>
+                            <button class="device-btn" onclick="adminPanel.refreshSections()" title="Sektionen neu laden">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                            <button class="btn-save" onclick="adminPanel.saveWebsiteChanges()" title="Änderungen auf Website speichern" style="padding: 6px 12px; font-size: 12px;">
+                                <i class="fas fa-save"></i> Speichern
+                            </button>
+                            <button class="btn-primary btn-sm" onclick="adminPanel.openPreviewInNewTab()">
+                                <i class="fas fa-external-link-alt"></i> Öffnen
+                            </button>
+                        </div>
+                        <div class="live-preview-frame" id="livePreviewFrame">
+                            <iframe id="websitePreview" src="index.html?builder=true"></iframe>
+                            <!-- Drag Overlay für Sektions-Manipulation -->
+                            <div class="section-drag-overlay" id="sectionDragOverlay">
+                                <!-- Dynamisch generierte Sektions-Handles -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Section Properties -->
+                    <div class="section-properties" id="sectionProperties">
+                        <div class="properties-header">
+                            <h3><i class="fas fa-sliders-h"></i> Eigenschaften</h3>
+                        </div>
+                        <div class="properties-content" id="propertiesContent">
+                            <div class="no-selection">
+                                <i class="fas fa-mouse-pointer"></i>
+                                <p>Klicke auf eine Sektion in der linken Liste um sie zu bearbeiten</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List Mode (hidden by default) -->
+                <div class="structure-container" id="listModeContainer" style="display: none;">
+                    <div class="structure-list" id="structureList">
+                        <!-- Dynamisch generiert -->
+                    </div>
+                    <div class="structure-preview" id="structurePreview">
+                        <h3>Vorschau</h3>
+                        <div class="preview-frame" id="previewFrame">
+                            <!-- Mini-Vorschau der Seite -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- + Button wird dynamisch in der Sektionsliste generiert -->
+            </section>
+
+            <!-- Section Add Modal -->
+            <div class="section-add-modal" id="sectionAddModal">
+                <div class="section-add-modal-content">
+                    <div class="section-add-modal-header">
+                        <h2><i class="fas fa-plus-circle"></i> Neue Sektion hinzufügen</h2>
+                        <button class="section-add-modal-close" onclick="adminPanel.closeSectionModal()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="section-add-modal-body">
+                        <!-- Kategorien -->
+                        <div class="section-category">
+                            <h3><i class="fas fa-home"></i> Haupt-Sektionen</h3>
+                            <div class="section-items">
+                                <div class="section-add-item" onclick="adminPanel.addSection('hero')">
+                                    <i class="fas fa-image"></i>
+                                    <span>Hero Banner</span>
+                                    <small>Großes Titelbild mit Überschrift</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('about')">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Über uns</span>
+                                    <small>Firmenvorstellung</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('ceo-message')">
+                                    <i class="fas fa-quote-right"></i>
+                                    <span>CEO Message</span>
+                                    <small>Nachricht der Geschäftsführung</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-category">
+                            <h3><i class="fas fa-briefcase"></i> Business</h3>
+                            <div class="section-items">
+                                <div class="section-add-item" onclick="adminPanel.addSection('products')">
+                                    <i class="fas fa-box"></i>
+                                    <span>Produkte</span>
+                                    <small>Produktübersicht</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('services')">
+                                    <i class="fas fa-cogs"></i>
+                                    <span>Services</span>
+                                    <small>Dienstleistungen</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('features')">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Features</span>
+                                    <small>Eigenschaften & Vorteile</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('pricing')">
+                                    <i class="fas fa-tag"></i>
+                                    <span>Preise</span>
+                                    <small>Preistabelle</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-category">
+                            <h3><i class="fas fa-users"></i> Team & Kontakt</h3>
+                            <div class="section-items">
+                                <div class="section-add-item" onclick="adminPanel.addSection('team')">
+                                    <i class="fas fa-users"></i>
+                                    <span>Team</span>
+                                    <small>Teammitglieder</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('locations')">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Standorte</span>
+                                    <small>Büros & Niederlassungen</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('contact')">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>Kontakt</span>
+                                    <small>Kontaktformular</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-category">
+                            <h3><i class="fas fa-star"></i> Social Proof</h3>
+                            <div class="section-items">
+                                <div class="section-add-item" onclick="adminPanel.addSection('testimonials')">
+                                    <i class="fas fa-star"></i>
+                                    <span>Testimonials</span>
+                                    <small>Kundenbewertungen</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('partners')">
+                                    <i class="fas fa-handshake"></i>
+                                    <span>Partner</span>
+                                    <small>Partnerlogos</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('stats')">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <span>Statistiken</span>
+                                    <small>Zahlen & Fakten</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-category">
+                            <h3><i class="fas fa-images"></i> Medien</h3>
+                            <div class="section-items">
+                                <div class="section-add-item" onclick="adminPanel.addSection('gallery')">
+                                    <i class="fas fa-images"></i>
+                                    <span>Galerie</span>
+                                    <small>Bildergalerie</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('video')">
+                                    <i class="fas fa-video"></i>
+                                    <span>Video</span>
+                                    <small>Video-Bereich</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('blog')">
+                                    <i class="fas fa-newspaper"></i>
+                                    <span>Blog</span>
+                                    <small>Neuigkeiten & Artikel</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-category">
+                            <h3><i class="fas fa-puzzle-piece"></i> Elemente</h3>
+                            <div class="section-items">
+                                <div class="section-add-item" onclick="adminPanel.addSection('cta')">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <span>Call to Action</span>
+                                    <small>Handlungsaufforderung</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('faq')">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>FAQ</span>
+                                    <small>Häufige Fragen</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('divider')">
+                                    <i class="fas fa-minus"></i>
+                                    <span>Trenner</span>
+                                    <small>Visuelle Trennung</small>
+                                </div>
+                                <div class="section-add-item" onclick="adminPanel.addSection('spacer')">
+                                    <i class="fas fa-arrows-alt-v"></i>
+                                    <span>Abstand</span>
+                                    <small>Leerer Abstand</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <section class="admin-section" id="section-settings">
+                <!-- Settings Header Banner -->
+                <div class="section-banner settings-banner">
+                    <div class="banner-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="banner-content">
+                        <h1>Einstellungen</h1>
+                        <p>Website-Konfiguration, Kontaktdaten und Branding</p>
+                    </div>
+                </div>
+
+                <!-- General Settings -->
+                <div class="settings-group">
+                    <h3><i class="fas fa-cog"></i> Allgemeine Einstellungen</h3>
+                    <div class="form-group">
+                        <label>Website Titel</label>
+                        <input type="text" class="form-input" data-setting="siteTitle" value="Iustus Mercatura - Global Commodity Trading">
+                    </div>
+                    <div class="form-group">
+                        <label>Meta Beschreibung (SEO)</label>
+                        <textarea class="form-textarea" data-setting="metaDescription" rows="3">Iustus Mercatura - Your trusted partner for Brazilian commodity trading. Sugar, soybeans, corn, and more.</textarea>
+                    </div>
+                </div>
+
+                <!-- Contact Settings -->
+                <div class="settings-group">
+                    <h3><i class="fas fa-envelope"></i> Kontakt & Nachrichten</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-at"></i> E-Mail (Kontaktformular)</label>
+                            <input type="email" class="form-input" data-setting="contactEmail" placeholder="info@iustus-mercatura.com">
+                            <small class="form-hint">Wohin gehen Nachrichten vom Kontaktformular?</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-phone"></i> Telefon (Hauptnummer)</label>
+                            <input type="text" class="form-input" data-setting="contactPhone" placeholder="+1-281-816-7296">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-box"></i> E-Mail (Produktanfragen)</label>
+                            <input type="email" class="form-input" data-setting="quoteEmail" placeholder="quotes@iustus-mercatura.com">
+                            <small class="form-hint">Wohin gehen Produktanfragen/Quote Requests?</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-briefcase"></i> E-Mail (Bewerbungen)</label>
+                            <input type="email" class="form-input" data-setting="careerEmail" placeholder="careers@iustus-mercatura.com">
+                            <small class="form-hint">Wohin gehen Bewerbungen?</small>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fab fa-whatsapp"></i> WhatsApp Nummer</label>
+                            <input type="text" class="form-input" data-setting="whatsappNumber" placeholder="+1234567890">
+                            <small class="form-hint">Nur Ziffern, ohne Leerzeichen (z.B. +491234567890)</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-comment-dots"></i> WhatsApp Nachricht</label>
+                            <input type="text" class="form-input" data-setting="whatsappMessage" placeholder="Hello, I would like to inquire about your products">
+                            <small class="form-hint">Vorgefertigte Nachricht beim Klick auf WhatsApp</small>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope-open-text"></i> E-Mail Format</label>
+                            <select class="form-input" data-setting="emailFormat">
+                                <option value="html">HTML (formatiert)</option>
+                                <option value="plain">Nur Text</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-bell"></i> Benachrichtigungen</label>
+                            <select class="form-input" data-setting="notifyOnContact">
+                                <option value="always">Immer benachrichtigen</option>
+                                <option value="daily">Tägliche Zusammenfassung</option>
+                                <option value="never">Keine Benachrichtigung</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-copy"></i> CC E-Mail (optional)</label>
+                        <input type="email" class="form-input" data-setting="contactCcEmail" placeholder="backup@iustus-mercatura.com">
+                        <small class="form-hint">Kopie aller Nachrichten an diese Adresse</small>
+                    </div>
+                </div>
+
+                <!-- SMTP Email Server Settings -->
+                <div class="settings-group">
+                    <h3><i class="fas fa-server"></i> E-Mail Server (SMTP)</h3>
+                    <p class="settings-description">Konfigurieren Sie den SMTP-Server für den E-Mail-Versand. Ohne diese Einstellungen werden keine E-Mails versendet.</p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-network-wired"></i> SMTP Server</label>
+                            <input type="text" class="form-input" data-setting="smtpHost" placeholder="smtp.office365.com">
+                            <small class="form-hint">z.B. smtp.office365.com, smtp.gmail.com</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-plug"></i> Port</label>
+                            <input type="number" class="form-input" data-setting="smtpPort" placeholder="587" value="587">
+                            <small class="form-hint">587 für STARTTLS, 465 für SSL</small>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Benutzername</label>
+                            <input type="email" class="form-input" data-setting="smtpUser" placeholder="ihre-email@domain.com">
+                            <small class="form-hint">Ihre E-Mail-Adresse für den Login</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-key"></i> Passwort</label>
+                            <input type="password" class="form-input" data-setting="smtpPassword" placeholder="••••••••">
+                            <small class="form-hint">Ihr E-Mail-Passwort oder App-Passwort</small>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> Absender E-Mail</label>
+                            <input type="email" class="form-input" data-setting="smtpFrom" placeholder="noreply@iustus-mercatura.com">
+                            <small class="form-hint">Von welcher Adresse werden E-Mails gesendet?</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-signature"></i> Absender Name</label>
+                            <input type="text" class="form-input" data-setting="smtpFromName" placeholder="Iustus Mercatura" value="Iustus Mercatura">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar-check"></i> E-Mail (Terminanfragen)</label>
+                            <input type="email" class="form-input" data-setting="bookingEmail" placeholder="meetings@iustus-mercatura.com">
+                            <small class="form-hint">Wohin gehen Terminbuchungen?</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-shield-alt"></i> Verschlüsselung</label>
+                            <select class="form-input" data-setting="smtpSecure">
+                                <option value="starttls" selected>STARTTLS (Port 587)</option>
+                                <option value="ssl">SSL/TLS (Port 465)</option>
+                                <option value="none">Keine (nicht empfohlen)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="settings-actions" style="margin-top: 15px;">
+                        <button class="btn btn-secondary" onclick="adminPanel.testSmtpConnection()">
+                            <i class="fas fa-vial"></i> Verbindung testen
+                        </button>
+                        <button class="btn btn-secondary" onclick="adminPanel.sendTestEmail()">
+                            <i class="fas fa-paper-plane"></i> Test-E-Mail senden
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="settings-group">
+                    <h3><i class="fas fa-share-alt"></i> Social Media Links</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fab fa-linkedin"></i> LinkedIn</label>
+                            <input type="url" class="form-input" data-setting="socialLinkedin" value="https://www.linkedin.com/company/iustus-mercatura">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fab fa-instagram"></i> Instagram</label>
+                            <input type="url" class="form-input" data-setting="socialInstagram" value="https://www.instagram.com/iustusmercatura">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fab fa-facebook"></i> Facebook</label>
+                            <input type="url" class="form-input" data-setting="socialFacebook" value="https://www.facebook.com/iustusmercatura">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fab fa-x-twitter"></i> X (Twitter)</label>
+                            <input type="url" class="form-input" data-setting="socialTwitter" value="https://x.com/iustusmercatura">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fab fa-whatsapp"></i> WhatsApp</label>
+                            <input type="text" class="form-input" data-setting="socialWhatsapp" placeholder="+1234567890">
+                            <small class="form-hint">Nur Telefonnummer mit Ländercode</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fab fa-youtube"></i> YouTube</label>
+                            <input type="url" class="form-input" data-setting="socialYoutube" placeholder="https://youtube.com/@...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brand Colors -->
+                <div class="settings-group">
+                    <h3><i class="fas fa-palette"></i> Markenfarben (Brand Colors)</h3>
+                    <p class="settings-description">Diese Farben werden auf der gesamten Website verwendet. Änderungen werden sofort übernommen.</p>
+
+                    <h4 class="color-category">Primärfarben</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Primary Navy (--primary-navy)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorPrimaryNavy" value="#0a1628">
+                                <input type="text" class="form-input color-text" data-color-text="colorPrimaryNavy" value="#0a1628">
+                            </div>
+                            <small class="form-hint">Hauptfarbe für Header, Footer, Buttons</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Primary Navy Light (--primary-navy-light)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorPrimaryNavyLight" value="#152238">
+                                <input type="text" class="form-input color-text" data-color-text="colorPrimaryNavyLight" value="#152238">
+                            </div>
+                            <small class="form-hint">Hellere Variante für Hover-Effekte</small>
+                        </div>
+                    </div>
+
+                    <h4 class="color-category">Akzentfarben (Gold)</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Accent Gold (--accent-gold)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorAccentGold" value="#c9a227">
+                                <input type="text" class="form-input color-text" data-color-text="colorAccentGold" value="#c9a227">
+                            </div>
+                            <small class="form-hint">Hauptakzentfarbe</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Accent Gold Light (--accent-gold-light)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorAccentGoldLight" value="#e8c547">
+                                <input type="text" class="form-input color-text" data-color-text="colorAccentGoldLight" value="#e8c547">
+                            </div>
+                            <small class="form-hint">Hover-Effekte & Highlights</small>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Accent Gold Dark (--accent-gold-dark)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorAccentGoldDark" value="#9a7b1c">
+                                <input type="text" class="form-input color-text" data-color-text="colorAccentGoldDark" value="#9a7b1c">
+                            </div>
+                            <small class="form-hint">Dunklere Variante für Kontraste</small>
+                        </div>
+                        <div class="form-group"></div>
+                    </div>
+
+                    <h4 class="color-category">Themenfarben</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Sugar White (--sugar-white)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorSugarWhite" value="#fafafa">
+                                <input type="text" class="form-input color-text" data-color-text="colorSugarWhite" value="#fafafa">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Sugar Cream (--sugar-cream)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorSugarCream" value="#f5f0e8">
+                                <input type="text" class="form-input color-text" data-color-text="colorSugarCream" value="#f5f0e8">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="color-category">Zusatzfarben</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Green Agriculture (--green-agriculture)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorGreenAgriculture" value="#4a7c59">
+                                <input type="text" class="form-input color-text" data-color-text="colorGreenAgriculture" value="#4a7c59">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Brown Earth (--brown-earth)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorBrownEarth" value="#8b6914">
+                                <input type="text" class="form-input color-text" data-color-text="colorBrownEarth" value="#8b6914">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Blue Ocean (--blue-ocean)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorBlueOcean" value="#1e4d6b">
+                                <input type="text" class="form-input color-text" data-color-text="colorBlueOcean" value="#1e4d6b">
+                            </div>
+                        </div>
+                        <div class="form-group"></div>
+                    </div>
+
+                    <h4 class="color-category">Textfarben</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Text Dark (--text-dark)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorTextDark" value="#1a1a1a">
+                                <input type="text" class="form-input color-text" data-color-text="colorTextDark" value="#1a1a1a">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Text Gray (--text-gray)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorTextGray" value="#6b7280">
+                                <input type="text" class="form-input color-text" data-color-text="colorTextGray" value="#6b7280">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Text Light (--text-light)</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" class="form-color" data-setting="colorTextLight" value="#9ca3af">
+                                <input type="text" class="form-input color-text" data-color-text="colorTextLight" value="#9ca3af">
+                            </div>
+                        </div>
+                        <div class="form-group"></div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button class="btn-secondary" onclick="adminPanel.resetColors()">
+                            <i class="fas fa-undo"></i> Standardfarben wiederherstellen
+                        </button>
+                        <button class="btn-primary" onclick="adminPanel.applyColors()">
+                            <i class="fas fa-check"></i> Farben anwenden
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Footer Settings -->
+                <div class="settings-group">
+                    <h3><i class="fas fa-copyright"></i> Footer & Rechtliches</h3>
+                    <div class="form-group">
+                        <label>Copyright Text</label>
+                        <input type="text" class="form-input" data-setting="copyrightText" value="© 2025 Iustus Mercatura Holding Inc. All rights reserved.">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Impressum URL</label>
+                            <input type="text" class="form-input" data-setting="imprintUrl" placeholder="/impressum">
+                        </div>
+                        <div class="form-group">
+                            <label>Datenschutz URL</label>
+                            <input type="text" class="form-input" data-setting="privacyUrl" placeholder="/datenschutz">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    </div><!-- End adminContent -->
+
+    <!-- Modal for editing -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="editModal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Edit Item</h2>
+                <button class="modal-close" onclick="adminPanel.closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="adminPanel.closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="adminPanel.saveModalData()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- API Configuration -->
+    <script>
+        // Konfiguration für diese Site - ändern wenn API läuft
+        window.CMS_API_URL = 'http://localhost:3005';
+        window.CMS_SITE_ID = 'iustus-mercatura';
+    </script>
+
+    <!-- CMS API Client -->
+    <script src="api-client.js"></script>
+    <script src="sync-bridge.js"></script>
+    <script src="admin-error-handler.js"></script>
+    <script src="live-sync-client.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

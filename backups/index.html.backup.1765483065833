@@ -1,187 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" style="scroll-behavior: smooth;"><div id="in-page-channel-node-id" data-channel-name="in_page_channel_qWK49k"></div><head><style>
-    @keyframes rippleExpand {
-        to {
-            transform: scale(4);
-            opacity: 0;
-        }
-    }
-
-    @keyframes countUp {
-        0% { opacity: 0; transform: translateY(10px); }
-        100% { opacity: 1; transform: translateY(0); }
-    }
-
-    .scramble-char {
-        color: var(--accent-gold);
-        opacity: 0.7;
-    }
-
-    .dropdown-particles-canvas {
-        opacity: 0;
-        transition: opacity 0.5s ease;
-    }
-
-    .nav-item.has-dropdown:hover .dropdown-particles-canvas {
-        opacity: 1;
-    }
-</style><style>
-        .page-transition-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            pointer-events: none;
-            visibility: hidden;
-        }
-
-        .page-transition-overlay.active {
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .transition-panels {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
-        .transition-panel {
-            flex: 1;
-            height: 100%;
-            background: var(--primary-navy);
-            transform: translateY(100%);
-            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-
-        .transition-panel.panel-1 { transition-delay: 0s; background: #0a1628; }
-        .transition-panel.panel-2 { transition-delay: 0.05s; background: #0d1c32; }
-        .transition-panel.panel-3 { transition-delay: 0.1s; background: #10223c; }
-        .transition-panel.panel-4 { transition-delay: 0.15s; background: #132846; }
-        .transition-panel.panel-5 { transition-delay: 0.2s; background: #162e50; }
-
-        .page-transition-overlay.active .transition-panel {
-            transform: translateY(0);
-        }
-
-        .page-transition-overlay.exit .transition-panel {
-            transform: translateY(-100%);
-            transition-delay: 0s;
-        }
-
-        .page-transition-overlay.exit .transition-panel.panel-1 { transition-delay: 0.2s; }
-        .page-transition-overlay.exit .transition-panel.panel-2 { transition-delay: 0.15s; }
-        .page-transition-overlay.exit .transition-panel.panel-3 { transition-delay: 0.1s; }
-        .page-transition-overlay.exit .transition-panel.panel-4 { transition-delay: 0.05s; }
-        .page-transition-overlay.exit .transition-panel.panel-5 { transition-delay: 0s; }
-
-        .transition-logo {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            transition: opacity 0.3s ease 0.3s;
-        }
-
-        .page-transition-overlay.active .transition-logo {
-            opacity: 1;
-        }
-
-        .page-transition-overlay.exit .transition-logo {
-            opacity: 0;
-            transition-delay: 0s;
-        }
-
-        .transition-icon {
-            width: 60px;
-            height: 60px;
-            color: var(--accent-gold);
-        }
-
-        .transition-icon circle {
-            animation: none;
-        }
-
-        .page-transition-overlay.active .transition-icon circle {
-            animation: drawCircle 0.8s ease-out 0.3s forwards;
-        }
-
-        @keyframes drawCircle {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-
-        /* Goldener Glow beim Laden */
-        .transition-logo::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, transparent 70%);
-            opacity: 0;
-            animation: none;
-        }
-
-        .page-transition-overlay.active .transition-logo::after {
-            animation: pulseGlow 1s ease-in-out infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-        }
-    </style><style>
-        .hero-stats .stat-number {
-            transition: transform 0.3s ease, text-shadow 0.3s ease;
-        }
-
-        .hero-stats.animated .stat-number {
-            text-shadow:
-                0 0 10px rgba(212, 175, 55, 0.5),
-                0 0 20px rgba(212, 175, 55, 0.3),
-                0 0 30px rgba(212, 175, 55, 0.2);
-        }
-
-        .hero-stats .stat-item {
-            transition: background 0.3s ease;
-        }
-
-        .hero-stats .stat-item:hover {
-            background: rgba(212, 175, 55, 0.1);
-        }
-
-        .stats-particles-canvas {
-            opacity: 0.8;
-        }
-
-        @media (max-width: 768px) {
-            .hero-stats.animated .stat-number {
-                text-shadow:
-                    0 0 8px rgba(212, 175, 55, 0.6),
-                    0 0 15px rgba(212, 175, 55, 0.4);
-            }
-        }
-    </style><style>
-        .reveal-element {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            transition-delay: var(--reveal-delay, 0s);
-        }
-
-        .reveal-element.revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style></head><body style=""><div id="in-page-channel-node-id" data-channel-name="in_page_channel_NZyVKU"></div><style>
+<html lang="en" dir="ltr" style="scroll-behavior: smooth;"><div id="in-page-channel-node-id" data-channel-name="in_page_channel_NZyVKU"></div><head><style>
     @keyframes rippleExpand {
         to {
             transform: scale(4);
@@ -370,7 +188,7 @@
                     box-shadow: 0 0 20px rgba(40, 167, 69, 0.5) !important;
                     transition: all 0.3s ease !important;
                 }
-            </style><div id="in-page-channel-node-id" data-channel-name="in_page_channel_K-sEFL"></div>
+            </style></head><body class="" style=""><div id="in-page-channel-node-id" data-channel-name="in_page_channel_K-sEFL"></div>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -747,7 +565,7 @@
     <div class="cursor-follower" style="display: none;"></div>
 
     <!-- Preloader -->
-    <div class="preloader">
+    <div class="preloader" style="opacity: 0; display: none;">
         <div class="preloader-content">
             <div class="sugar-cube-loader">
                 <div class="cube"></div>
@@ -770,14 +588,14 @@
                     </span>
                 </div>
                 <div class="top-nav-right">
-                    <a href="#team">Careers</a>
-                    <a href="#locations">Locations</a>
-                    <a href="#projects">Investor Relations</a>
-                    <a href="#contact">Contact</a>
+                    <a href="#team" class="">Careers</a>
+                    <a href="#locations" class="">Locations</a>
+                    <a href="#projects" class="">Investor Relations</a>
+                    <a href="#contact" class="">Contact</a>
                     <span class="separator">|</span>
                     <div class="lang-selector lang-dropdown">
                         <button class="lang-btn" aria-label="Select language">
-                            <span>EN</span>
+                            <span class="">EN</span>
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
@@ -785,11 +603,11 @@
                         <div class="lang-menu" role="menu">
                             <a href="#" data-lang="en" role="menuitem" class="active">
                                 <span class="lang-flag">🇬🇧</span>
-                                <span>English</span>
+                                <span class="">English</span>
                             </a>
-                            <a href="#" data-lang="de" role="menuitem">
+                            <a href="#" data-lang="de" role="menuitem" class="">
                                 <span class="lang-flag">🇩🇪</span>
-                                <span>Deutsch</span>
+                                <span class="">Deutsch</span>
                             </a>
                         </div>
                     </div>
@@ -815,7 +633,7 @@
                     <ul class="nav-menu">
                         <li class="nav-item has-dropdown">
                             <button class="nav-link">About Us</button>
-                            <div class="mega-dropdown"><canvas class="dropdown-particles-canvas" width="1531" height="572" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1531" height="572" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1800" height="573" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
+                            <div class="mega-dropdown"><canvas class="dropdown-particles-canvas" width="1531" height="572" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1800" height="573" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
                                 <div class="dropdown-content">
                                     <div class="dropdown-sidebar">
                                         <div class="dropdown-title-section">
@@ -823,11 +641,11 @@
                                             <p class="dropdown-desc">Founded on the principle of "Just Trade", we are committed to ethical business practices and responsible global commerce.</p>
                                         </div>
                                         <ul class="dropdown-nav-list">
-                                            <li><a href="#about" data-panel="story">Our Story</a></li>
-                                            <li><a href="#team" data-panel="leadership">Leadership Team</a></li>
-                                            <li><a href="#about" data-panel="values">Corporate Values</a></li>
-                                            <li><a href="#locations" data-panel="presence">Global Presence</a></li>
-                                            <li><a href="#sustainability" data-panel="certifications">Certifications</a></li>
+                                            <li class=""><a href="#about" data-panel="story" class="">Our Story</a></li>
+                                            <li class=""><a href="#team" data-panel="leadership" class="">Leadership Team</a></li>
+                                            <li class=""><a href="#about" data-panel="values" class="">Corporate Values</a></li>
+                                            <li class=""><a href="#locations" data-panel="presence" class="">Global Presence</a></li>
+                                            <li class=""><a href="#sustainability" data-panel="certifications" class="">Certifications</a></li>
                                         </ul>
                                     </div>
                                     <div class="dropdown-image-section about-image">
@@ -839,7 +657,7 @@
                                                         <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                                                     </svg>
                                                 </div>
-                                                <h3>Our Story</h3>
+                                                <h3 class="">Our Story</h3>
                                                 <p class="panel-text">Founded in 2025 in the British Virgin Islands, Iustus Mercatura embodies the Latin principle of "Just Trade" - fair, transparent, and ethical commerce.</p>
                                                 <div class="panel-stats">
                                                     <div class="panel-stat">
@@ -856,9 +674,9 @@
                                         <div class="dropdown-panel" data-panel="leadership">
                                             <div class="panel-content">
                                                 <div class="panel-avatar">
-                                                    <span>GK</span>
+                                                    <span class="">GK</span>
                                                 </div>
-                                                <h3>Dr. Gerhard Kral</h3>
+                                                <h3 class="">Dr. Gerhard Kral</h3>
                                                 <span class="panel-role">Founder &amp; CEO</span>
                                                 <p class="panel-text">Leading our vision of ethical global trade with decades of experience in international commodity markets.</p>
                                                 <div class="panel-quote">"From field to customer - complete supply chain excellence."</div>
@@ -866,30 +684,30 @@
                                         </div>
                                         <div class="dropdown-panel" data-panel="values">
                                             <div class="panel-content">
-                                                <h3>Our Core Values</h3>
+                                                <h3 class="">Our Core Values</h3>
                                                 <div class="panel-values-grid">
                                                     <div class="value-item">
                                                         <span class="value-icon">⚖️</span>
-                                                        <span>Integrity</span>
+                                                        <span class="">Integrity</span>
                                                     </div>
                                                     <div class="value-item">
                                                         <span class="value-icon">🌍</span>
-                                                        <span>Sustainability</span>
+                                                        <span class="">Sustainability</span>
                                                     </div>
                                                     <div class="value-item">
                                                         <span class="value-icon">🤝</span>
-                                                        <span>Partnership</span>
+                                                        <span class="">Partnership</span>
                                                     </div>
                                                     <div class="value-item">
                                                         <span class="value-icon">✨</span>
-                                                        <span>Excellence</span>
+                                                        <span class="">Excellence</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="dropdown-panel" data-panel="presence">
                                             <div class="panel-content">
-                                                <h3>Global Footprint</h3>
+                                                <h3 class="">Global Footprint</h3>
                                                 <div class="panel-map">
                                                     <div class="map-dots">
                                                         <span class="dot" style="top:30%;left:20%"></span>
@@ -900,17 +718,17 @@
                                                     </div>
                                                 </div>
                                                 <div class="panel-locations">
-                                                    <span>🇻🇬 BVI</span>
-                                                    <span>🇺🇸 USA</span>
-                                                    <span>🇦🇪 UAE</span>
-                                                    <span>🇧🇷 Brazil</span>
-                                                    <span>🇺🇬 Uganda</span>
+                                                    <span class="">🇻🇬 BVI</span>
+                                                    <span class="">🇺🇸 USA</span>
+                                                    <span class="">🇦🇪 UAE</span>
+                                                    <span class="">🇧🇷 Brazil</span>
+                                                    <span class="">🇺🇬 Uganda</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="dropdown-panel" data-panel="certifications">
                                             <div class="panel-content">
-                                                <h3>Quality Standards</h3>
+                                                <h3 class="">Quality Standards</h3>
                                                 <div class="panel-certifications">
                                                     <div class="cert-badge">
                                                         <span class="cert-icon">ISO</span>
@@ -924,13 +742,13 @@
                                                 <p class="panel-text">Committed to the highest international quality and sustainability standards.</p>
                                             </div>
                                         </div>
-                                    <div class="light-sweep"></div><div class="light-sweep"></div><div class="light-sweep"></div></div>
+                                    <div class="light-sweep"></div><div class="light-sweep"></div></div>
                                 </div>
                             </div>
                         </li>
                         <li class="nav-item has-dropdown">
                             <button class="nav-link">Products</button>
-                            <div class="mega-dropdown"><canvas class="dropdown-particles-canvas" width="1531" height="450" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1531" height="450" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1800" height="450" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
+                            <div class="mega-dropdown"><canvas class="dropdown-particles-canvas" width="1531" height="450" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1800" height="450" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
                                 <div class="dropdown-content">
                                     <div class="dropdown-sidebar">
                                         <div class="dropdown-title-section">
@@ -938,10 +756,10 @@
                                             <p class="dropdown-desc">Premium Brazilian commodities sourced ethically and delivered globally with uncompromising quality.</p>
                                         </div>
                                         <ul class="dropdown-nav-list">
-                                            <li><a href="#products" data-panel="sugar-ic45">Brazilian Sugar IC45</a></li>
-                                            <li><a href="#products" data-panel="sugar-vhp">Sugar IC600/1200 VHP</a></li>
-                                            <li><a href="#products" data-panel="soybeans">Yellow Soybeans</a></li>
-                                            <li><a href="#products" data-panel="corn">Yellow Corn</a></li>
+                                            <li class=""><a href="#products" data-panel="sugar-ic45" class="">Brazilian Sugar IC45</a></li>
+                                            <li class=""><a href="#products" data-panel="sugar-vhp" class="">Sugar IC600/1200 VHP</a></li>
+                                            <li class=""><a href="#products" data-panel="soybeans" class="">Yellow Soybeans</a></li>
+                                            <li class=""><a href="#products" data-panel="corn" class="">Yellow Corn</a></li>
                                         </ul>
                                     </div>
                                     <div class="dropdown-image-section products-image">
@@ -956,7 +774,7 @@
                                                         <span class="crystal"></span>
                                                     </div>
                                                 </div>
-                                                <h3>Brazilian Sugar IC45</h3>
+                                                <h3 class="">Brazilian Sugar IC45</h3>
                                                 <p class="panel-text">Premium refined cane sugar with 99.8% polarization. Crystal clear quality for industrial applications.</p>
                                                 <div class="panel-specs">
                                                     <div class="spec-item">
@@ -979,7 +797,7 @@
                                                         <span class="flow-line"></span>
                                                     </div>
                                                 </div>
-                                                <h3>Sugar VHP</h3>
+                                                <h3 class="">Sugar VHP</h3>
                                                 <p class="panel-text">Very High Polarization sugar ideal for refining. Available in IC600 and IC1200 grades.</p>
                                                 <div class="panel-specs">
                                                     <div class="spec-item">
@@ -1002,7 +820,7 @@
                                                         <span class="bean"></span>
                                                     </div>
                                                 </div>
-                                                <h3>Yellow Soybeans</h3>
+                                                <h3 class="">Yellow Soybeans</h3>
                                                 <p class="panel-text">Premium grade soybeans from Brazil's finest agricultural regions.</p>
                                                 <div class="panel-specs">
                                                     <div class="spec-item">
@@ -1025,7 +843,7 @@
                                                         <span class="kernel"></span>
                                                     </div>
                                                 </div>
-                                                <h3>Yellow Corn</h3>
+                                                <h3 class="">Yellow Corn</h3>
                                                 <p class="panel-text">High-quality feed corn meeting international specifications for animal nutrition.</p>
                                                 <div class="panel-specs">
                                                     <div class="spec-item">
@@ -1039,13 +857,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    <div class="light-sweep"></div><div class="light-sweep"></div><div class="light-sweep"></div></div>
+                                    <div class="light-sweep"></div><div class="light-sweep"></div></div>
                                 </div>
                             </div>
                         </li>
                         <li class="nav-item has-dropdown">
                             <button class="nav-link">Services</button>
-                            <div class="mega-dropdown"><canvas class="dropdown-particles-canvas" width="1531" height="503" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1531" height="503" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1800" height="504" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
+                            <div class="mega-dropdown"><canvas class="dropdown-particles-canvas" width="1531" height="503" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1800" height="504" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
                                 <div class="dropdown-content">
                                     <div class="dropdown-sidebar">
                                         <div class="dropdown-title-section">
@@ -1053,11 +871,11 @@
                                             <p class="dropdown-desc">End-to-end supply chain solutions from field to customer with complete transparency.</p>
                                         </div>
                                         <ul class="dropdown-nav-list">
-                                            <li><a href="#about" data-panel="producers">For Producers &amp; Refineries</a></li>
-                                            <li><a href="#about" data-panel="buyers">For Buyers &amp; Purchasers</a></li>
-                                            <li><a href="#projects" data-panel="finance">Trade Finance</a></li>
-                                            <li><a href="#locations" data-panel="logistics">Logistics &amp; Shipping</a></li>
-                                            <li><a href="#contact" data-panel="risk">Risk Management</a></li>
+                                            <li class=""><a href="#about" data-panel="producers" class="">For Producers &amp; Refineries</a></li>
+                                            <li class=""><a href="#about" data-panel="buyers" class="">For Buyers &amp; Purchasers</a></li>
+                                            <li class=""><a href="#projects" data-panel="finance" class="">Trade Finance</a></li>
+                                            <li class=""><a href="#locations" data-panel="logistics" class="">Logistics &amp; Shipping</a></li>
+                                            <li class=""><a href="#contact" data-panel="risk" class="">Risk Management</a></li>
                                         </ul>
                                     </div>
                                     <div class="dropdown-image-section services-image">
@@ -1068,12 +886,12 @@
                                                         <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                                     </svg>
                                                 </div>
-                                                <h3>For Producers</h3>
+                                                <h3 class="">For Producers</h3>
                                                 <p class="panel-text">Direct market access, fair pricing, and reliable offtake agreements for refineries and producers.</p>
                                                 <div class="panel-benefits">
-                                                    <span class="benefit">&check; Fair Pricing</span>
-                                                    <span class="benefit">&check; Long-term Contracts</span>
-                                                    <span class="benefit">&check; Technical Support</span>
+                                                    <span class="benefit">✓ Fair Pricing</span>
+                                                    <span class="benefit">✓ Long-term Contracts</span>
+                                                    <span class="benefit">✓ Technical Support</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1084,12 +902,12 @@
                                                         <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                                     </svg>
                                                 </div>
-                                                <h3>For Buyers</h3>
+                                                <h3 class="">For Buyers</h3>
                                                 <p class="panel-text">Reliable supply, quality assurance, and competitive pricing for global purchasers.</p>
                                                 <div class="panel-benefits">
-                                                    <span class="benefit">&check; Quality Guaranteed</span>
-                                                    <span class="benefit">&check; Flexible Terms</span>
-                                                    <span class="benefit">&check; Global Delivery</span>
+                                                    <span class="benefit">✓ Quality Guaranteed</span>
+                                                    <span class="benefit">✓ Flexible Terms</span>
+                                                    <span class="benefit">✓ Global Delivery</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1100,13 +918,13 @@
                                                         <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
                                                 </div>
-                                                <h3>Trade Finance</h3>
+                                                <h3 class="">Trade Finance</h3>
                                                 <p class="panel-text">Flexible financing solutions through our DIFC-licensed entity Mercatura Finance.</p>
                                                 <div class="panel-finance-flow">
                                                     <div class="flow-step">LC</div>
-                                                    <span class="flow-arrow">&rarr;</span>
+                                                    <span class="flow-arrow">→</span>
                                                     <div class="flow-step">Financing</div>
-                                                    <span class="flow-arrow">&rarr;</span>
+                                                    <span class="flow-arrow">→</span>
                                                     <div class="flow-step">Settlement</div>
                                                 </div>
                                             </div>
@@ -1123,12 +941,12 @@
                                                         <span class="wave"></span>
                                                     </div>
                                                 </div>
-                                                <h3>Logistics &amp; Shipping</h3>
+                                                <h3 class="">Logistics &amp; Shipping</h3>
                                                 <p class="panel-text">Complete maritime logistics from major Brazilian ports to destinations worldwide.</p>
                                                 <div class="panel-ports">
-                                                    <span>Santos</span>
-                                                    <span>Paranaguá</span>
-                                                    <span>Rio Grande</span>
+                                                    <span class="">Santos</span>
+                                                    <span class="">Paranaguá</span>
+                                                    <span class="">Rio Grande</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1139,7 +957,7 @@
                                                         <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                                                     </svg>
                                                 </div>
-                                                <h3>Risk Management</h3>
+                                                <h3 class="">Risk Management</h3>
                                                 <p class="panel-text">Comprehensive hedging and risk mitigation strategies for commodity price volatility.</p>
                                                 <div class="panel-risk-meter">
                                                     <div class="risk-bar">
@@ -1149,13 +967,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    <div class="light-sweep"></div><div class="light-sweep"></div><div class="light-sweep"></div></div>
+                                    <div class="light-sweep"></div><div class="light-sweep"></div></div>
                                 </div>
                             </div>
                         </li>
                         <li class="nav-item has-dropdown">
                             <button class="nav-link">Projects</button>
-                            <div class="mega-dropdown"><canvas class="dropdown-particles-canvas" width="1531" height="450" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;" width="1531" height="450"></canvas><canvas class="dropdown-particles-canvas" width="1800" height="450" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
+                            <div class="mega-dropdown"><canvas class="dropdown-particles-canvas" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;" width="1531" height="450"></canvas><canvas class="dropdown-particles-canvas" width="1800" height="450" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
                                 <div class="dropdown-content">
                                     <div class="dropdown-sidebar">
                                         <div class="dropdown-title-section">
@@ -1163,10 +981,10 @@
                                             <p class="dropdown-desc">Driving vertical integration and sustainable growth across global markets.</p>
                                         </div>
                                         <ul class="dropdown-nav-list">
-                                            <li><a href="#projects" data-panel="uganda">Uganda Refinery 2026</a></li>
-                                            <li><a href="#projects" data-panel="agricultura">Iustus Agricultura Brazil</a></li>
-                                            <li><a href="#projects" data-panel="mercatura-finance">Mercatura Finance DIFC</a></li>
-                                            <li><a href="#projects" data-panel="maritime">Maritime Logistics</a></li>
+                                            <li class=""><a href="#projects" data-panel="uganda" class="">Uganda Refinery 2026</a></li>
+                                            <li class=""><a href="#projects" data-panel="agricultura" class="">Iustus Agricultura Brazil</a></li>
+                                            <li class=""><a href="#projects" data-panel="mercatura-finance" class="">Mercatura Finance DIFC</a></li>
+                                            <li class=""><a href="#projects" data-panel="maritime" class="">Maritime Logistics</a></li>
                                         </ul>
                                     </div>
                                     <div class="dropdown-image-section projects-image">
@@ -1176,7 +994,7 @@
                                                     <span class="badge-year">2026</span>
                                                     <span class="badge-status">In Development</span>
                                                 </div>
-                                                <h3>Uganda Refinery</h3>
+                                                <h3 class="">Uganda Refinery</h3>
                                                 <p class="panel-text">State-of-the-art sugar refinery in Uganda, processing 500MT daily with cutting-edge technology.</p>
                                                 <div class="panel-progress">
                                                     <div class="progress-bar">
@@ -1204,7 +1022,7 @@
                                                         <span class="sun"></span>
                                                     </div>
                                                 </div>
-                                                <h3>Iustus Agricultura</h3>
+                                                <h3 class="">Iustus Agricultura</h3>
                                                 <p class="panel-text">Sustainable farming operations in Brazil, controlling the complete agricultural supply chain.</p>
                                                 <div class="panel-features">
                                                     
@@ -1221,7 +1039,7 @@
                                                         <span class="building b3"></span>
                                                     </div>
                                                 </div>
-                                                <h3>Mercatura Finance</h3>
+                                                <h3 class="">Mercatura Finance</h3>
                                                 <span class="panel-location">📍 DIFC, Dubai</span>
                                                 <p class="panel-text">Licensed trade finance entity providing innovative funding solutions for commodity transactions.</p>
                                                 <div class="panel-license">
@@ -1238,7 +1056,7 @@
                                                         <span class="ship-dot"></span>
                                                     </div>
                                                 </div>
-                                                <h3>Maritime Logistics</h3>
+                                                <h3 class="">Maritime Logistics</h3>
                                                 <p class="panel-text">Comprehensive shipping solutions connecting Brazilian ports to global destinations.</p>
                                                 <div class="panel-route-stats">
                                                     <div class="route-stat">
@@ -1252,13 +1070,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    <div class="light-sweep"></div><div class="light-sweep"></div><div class="light-sweep"></div></div>
+                                    <div class="light-sweep"></div><div class="light-sweep"></div></div>
                                 </div>
                             </div>
                         </li>
                         <li class="nav-item has-dropdown">
                             <button class="nav-link">Sustainability</button>
-                            <div class="mega-dropdown"><canvas class="dropdown-particles-canvas" width="1531" height="442" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1531" height="442" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1800" height="421" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
+                            <div class="mega-dropdown"><canvas class="dropdown-particles-canvas" width="1531" height="442" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="dropdown-particles-canvas" width="1800" height="421" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
                                 <div class="dropdown-content">
                                     <div class="dropdown-grid">
                                         <!-- Column 1: Environmental -->
@@ -1271,20 +1089,20 @@
                                                 Environmental
                                             </h4>
                                             <ul class="dropdown-links">
-                                                <li>
-                                                    <a href="#sustainability">
+                                                <li class="">
+                                                    <a href="#sustainability" class="">
                                                         <span class="link-title">Carbon Neutrality</span>
                                                         <span class="link-desc">Our path to net-zero emissions by 2030</span>
                                                     </a>
                                                 </li>
-                                                <li>
-                                                    <a href="#sustainability">
+                                                <li class="">
+                                                    <a href="#sustainability" class="">
                                                         <span class="link-title">Sustainable Sourcing</span>
                                                         <span class="link-desc">Ethical partnerships with certified farms</span>
                                                     </a>
                                                 </li>
-                                                <li>
-                                                    <a href="#sustainability">
+                                                <li class="">
+                                                    <a href="#sustainability" class="">
                                                         <span class="link-title">Water Conservation</span>
                                                         <span class="link-desc">Reducing water usage across operations</span>
                                                     </a>
@@ -1303,20 +1121,20 @@
                                                 Social Impact
                                             </h4>
                                             <ul class="dropdown-links">
-                                                <li>
-                                                    <a href="#sustainability">
+                                                <li class="">
+                                                    <a href="#sustainability" class="">
                                                         <span class="link-title">Farmer Support</span>
                                                         <span class="link-desc">5,000+ farmers in our network</span>
                                                     </a>
                                                 </li>
-                                                <li>
-                                                    <a href="#sustainability">
+                                                <li class="">
+                                                    <a href="#sustainability" class="">
                                                         <span class="link-title">Community Programs</span>
                                                         <span class="link-desc">Education and healthcare initiatives</span>
                                                     </a>
                                                 </li>
-                                                <li>
-                                                    <a href="#sustainability">
+                                                <li class="">
+                                                    <a href="#sustainability" class="">
                                                         <span class="link-title">Fair Trade</span>
                                                         <span class="link-desc">Ensuring fair wages and conditions</span>
                                                     </a>
@@ -1332,20 +1150,20 @@
                                                 Governance
                                             </h4>
                                             <ul class="dropdown-links">
-                                                <li>
-                                                    <a href="#sustainability">
+                                                <li class="">
+                                                    <a href="#sustainability" class="">
                                                         <span class="link-title">Ethics &amp; Compliance</span>
                                                         <span class="link-desc">Our commitment to integrity</span>
                                                     </a>
                                                 </li>
-                                                <li>
-                                                    <a href="#sustainability">
+                                                <li class="">
+                                                    <a href="#sustainability" class="">
                                                         <span class="link-title">UN Standards</span>
                                                         <span class="link-desc">Aligned with SDGs</span>
                                                     </a>
                                                 </li>
-                                                <li>
-                                                    <a href="#sustainability">
+                                                <li class="">
+                                                    <a href="#sustainability" class="">
                                                         <span class="link-title">ISO Certifications</span>
                                                         <span class="link-desc">ISO 9001 quality management</span>
                                                     </a>
@@ -1364,9 +1182,9 @@
                                                         <polyline points="10 9 9 9 8 9"></polyline>
                                                     </svg>
                                                 </div>
-                                                <h5>ESG Report 2024</h5>
-                                                <p>Download our comprehensive sustainability report with KPIs and progress tracking.</p>
-                                                <a href="#sustainability" class="highlight-btn">View Report &rarr;</a>
+                                                <h5 class="">ESG Report 2024</h5>
+                                                <p class="">Download our comprehensive sustainability report with KPIs and progress tracking.</p>
+                                                <a href="#sustainability" class="highlight-btn">View Report →</a>
                                             </div>
                                         </div>
                                     </div>
@@ -1379,7 +1197,7 @@
                     <!-- Language Switcher -->
                     <div class="lang-dropdown">
                         <button class="lang-btn" aria-label="Select language" aria-expanded="false">
-                            <span>EN</span>
+                            <span class="">EN</span>
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
@@ -1387,11 +1205,11 @@
                         <div class="lang-menu" role="menu">
                             <a href="#" data-lang="en" role="menuitem" class="active">
                                 <span class="lang-flag">🇬🇧</span>
-                                <span>English</span>
+                                <span class="">English</span>
                             </a>
-                            <a href="#" data-lang="de" role="menuitem">
+                            <a href="#" data-lang="de" role="menuitem" class="">
                                 <span class="lang-flag">🇩🇪</span>
-                                <span>Deutsch</span>
+                                <span class="">Deutsch</span>
                             </a>
                         </div>
                     </div>
@@ -1425,7 +1243,7 @@
                 </svg>
             </button>
             <div class="search-content">
-                <h2>Search</h2>
+                <h2 class="">Search</h2>
                 <div class="search-input-wrapper">
                     <input type="text" class="search-input" placeholder="Search for products, services, locations..." autofocus="">
                     <button class="search-submit">
@@ -1436,11 +1254,11 @@
                     </button>
                 </div>
                 <div class="search-suggestions">
-                    <span>Popular:</span>
-                    <a href="#products">Sugar Products</a>
-                    <a href="#services">Trading Services</a>
-                    <a href="#locations">Global Locations</a>
-                    <a href="#sustainability">Sustainability</a>
+                    <span class="">Popular:</span>
+                    <a href="#products" class="">Sugar Products</a>
+                    <a href="#services" class="">Trading Services</a>
+                    <a href="#locations" class="">Global Locations</a>
+                    <a href="#sustainability" class="">Sustainability</a>
                 </div>
             </div>
         </div>
@@ -1459,52 +1277,52 @@
                 <!-- About Us with submenu -->
                 <li class="mobile-nav-item has-submenu">
                     <button class="mobile-nav-toggle">
-                        <span>About Us</span>
+                        <span class="">About Us</span>
                         <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </button>
                     <ul class="mobile-submenu">
-                        <li><a href="#about">Our Story</a></li>
-                        <li><a href="#team">Leadership Team</a></li>
-                        <li><a href="#about">Corporate Values</a></li>
-                        <li><a href="#locations">Global Presence</a></li>
+                        <li class=""><a href="#about" class="">Our Story</a></li>
+                        <li class=""><a href="#team" class="">Leadership Team</a></li>
+                        <li class=""><a href="#about" class="">Corporate Values</a></li>
+                        <li class=""><a href="#locations" class="">Global Presence</a></li>
                     </ul>
                 </li>
                 <!-- Products with submenu -->
                 <li class="mobile-nav-item has-submenu">
                     <button class="mobile-nav-toggle">
-                        <span>Products</span>
+                        <span class="">Products</span>
                         <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </button>
                     <ul class="mobile-submenu">
-                        <li><a href="#products">Raw Sugar IC45</a></li>
-                        <li><a href="#products">Refined White Sugar</a></li>
-                        <li><a href="#products">Organic Sugar</a></li>
-                        <li><a href="#products">Specialty Sugars</a></li>
+                        <li class=""><a href="#products" class="">Raw Sugar IC45</a></li>
+                        <li class=""><a href="#products" class="">Refined White Sugar</a></li>
+                        <li class=""><a href="#products" class="">Organic Sugar</a></li>
+                        <li class=""><a href="#products" class="">Specialty Sugars</a></li>
                     </ul>
                 </li>
                 <!-- Services with submenu -->
                 <li class="mobile-nav-item has-submenu">
                     <button class="mobile-nav-toggle">
-                        <span>Services</span>
+                        <span class="">Services</span>
                         <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </button>
                     <ul class="mobile-submenu">
-                        <li><a href="#services">Global Trading</a></li>
-                        <li><a href="#services">Logistics</a></li>
-                        <li><a href="#services">Risk Management</a></li>
-                        <li><a href="#services">Market Analysis</a></li>
+                        <li class=""><a href="#services" class="">Global Trading</a></li>
+                        <li class=""><a href="#services" class="">Logistics</a></li>
+                        <li class=""><a href="#services" class="">Risk Management</a></li>
+                        <li class=""><a href="#services" class="">Market Analysis</a></li>
                     </ul>
                 </li>
                 <!-- Direct links -->
-                <li class="mobile-nav-item"><a href="#projects">Projects</a></li>
-                <li class="mobile-nav-item"><a href="#sustainability">Sustainability</a></li>
-                <li class="mobile-nav-item"><a href="#locations">Locations</a></li>
+                <li class="mobile-nav-item"><a href="#projects" class="">Projects</a></li>
+                <li class="mobile-nav-item"><a href="#sustainability" class="">Sustainability</a></li>
+                <li class="mobile-nav-item"><a href="#locations" class="">Locations</a></li>
                 <li class="mobile-nav-item"><a href="#contact" class="mobile-nav-cta">Get in Touch</a></li>
             </ul>
         </nav>
@@ -1521,9 +1339,9 @@
         </div>
         <div class="hero-content">
             <div class="container">
-                <div class="hero-text" style="position: relative; left: 23px; top: 1px;">
+                <div class="hero-text">
                     <span class="hero-label">
-                        <span class="label-icon">&#9670;</span>
+                        <span class="label-icon">◆</span>
                         Global Commodity Trading
                     </span>
                     
@@ -1538,11 +1356,11 @@
                     <div class="hero-buttons" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                         <a href="#about" class="btn btn-primary btn-large">
                             Discover Our Story
-                            <span class="btn-icon">&rarr;</span>
+                            <span class="btn-icon">→</span>
                         </a>
                         <a href="#products" class="btn btn-outline btn-large">
                             View Products
-                            <span class="btn-icon">&rarr;</span>
+                            <span class="btn-icon">→</span>
                         </a>
                     </div><div class="hero-stats animated" style="position: relative;">
                         <div class="stat-item reveal-element revealed" style="--reveal-delay: 0s;">
@@ -1565,12 +1383,12 @@
                             </div>
                             <span class="stat-label">Global Offices</span>
                         </div>
-                    <canvas class="stats-particles-canvas" width="682" height="104" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="stats-particles-canvas" width="935" height="140" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="stats-particles-canvas" width="935" height="140" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas></div>
+                    <canvas class="stats-particles-canvas" width="682" height="104" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas><canvas class="stats-particles-canvas" width="935" height="140" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas></div>
                 </div>
             </div>
         </div>
         <div class="scroll-indicator">
-            <span>Scroll to explore</span>
+            <span class="">Scroll to explore</span>
             <div class="scroll-line"></div>
         </div>
     </section>
@@ -1579,7 +1397,7 @@
     <section class="about-section" id="about">
         <div class="container">
             
-            <div class="section-header" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+            <div class="section-header" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                 <span class="section-label">About Us</span>
                 <h2 class="section-title">The Philosophy of <span class="highlight">Just Trade</span></h2>
             </div><div class="about-content">
@@ -1587,7 +1405,7 @@
                     <p class="lead">
                         At Iustus Mercatura Holding Inc., we prioritize integrity, transparency, and long-term partnerships to create lasting value across global markets.
                     </p>
-                    <p>
+                    <p class="">
                         Our dual-location model in the British Virgin Islands and vibrant economic regions worldwide exemplifies our strategic approach. We are deeply committed to upholding the highest ethical and sustainable business practices, strictly adhering to UN standards and ISO 9001 quality management principles.
                     </p>
                     <div class="about-features">
@@ -1598,8 +1416,8 @@
                                 </svg>
                             </div>
                             <div class="feature-text">
-                                <h4>Ethical Trading</h4>
-                                <p>Fair pricing and transparent transactions</p>
+                                <h4 class="">Ethical Trading</h4>
+                                <p class="">Fair pricing and transparent transactions</p>
                             </div>
                         </div>
                         <div class="feature-item">
@@ -1610,8 +1428,8 @@
                                 </svg>
                             </div>
                             <div class="feature-text">
-                                <h4>Global Reach</h4>
-                                <p>Operations across 5 continents</p>
+                                <h4 class="">Global Reach</h4>
+                                <p class="">Operations across 5 continents</p>
                             </div>
                         </div>
                         <div class="feature-item">
@@ -1621,8 +1439,8 @@
                                 </svg>
                             </div>
                             <div class="feature-text">
-                                <h4>Vertical Integration</h4>
-                                <p>From field to final delivery</p>
+                                <h4 class="">Vertical Integration</h4>
+                                <p class="">From field to final delivery</p>
                             </div>
                         </div>
                     </div>
@@ -1631,13 +1449,13 @@
                     <div class="visual-card main-card">
                         <div class="card-content">
                             <span class="card-year">2025</span>
-                            <h3>Founded</h3>
-                            <p>Established on the principles of fair and ethical global trade</p>
+                            <h3 class="">Founded</h3>
+                            <p class="">Established on the principles of fair and ethical global trade</p>
                         </div>
                     </div>
                     <div class="visual-card accent-card">
                         <div class="sugar-crystal"></div>
-                        <span>Premium Quality</span>
+                        <span class="">Premium Quality</span>
                     </div>
                 </div>
             </div>
@@ -1648,9 +1466,9 @@
     <section class="ceo-section">
         <div class="container">
             
-        <div class="ceo-content" style="translate: none; rotate: none; scale: none; transform: translate(100px, 0px); opacity: 0;">
+        <div class="ceo-content" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                 
-                <div class="ceo-image" style="translate: none; rotate: none; scale: none; transform: translate(-100px, 0px); opacity: 0;">
+                <div class="ceo-image" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                     <div class="image-frame">
                         <div class="image-placeholder">
                             <span class="initials">GK</span>
@@ -1663,10 +1481,10 @@
                         "We have not only positioned the Holding Company as a strategic management holding, but also moved away from purely trading in food commodities towards establishing the complete supply chain - from the field to the end customer."
                     </blockquote>
                     <div class="ceo-info">
-                        <h4>Dr. Gerhard Kral</h4>
-                        <span>Founder &amp; Chief Executive Officer</span>
+                        <h4 class="">Dr. Gerhard Kral</h4>
+                        <span class="">Founder &amp; Chief Executive Officer</span>
                     </div>
-                    <a href="#about" class="btn btn-outline">Read Full Message &rarr;</a>
+                    <a href="#about" class="btn btn-outline">Read Full Message →</a>
                 </div>
             </div></div>
     </section>
@@ -1675,7 +1493,7 @@
     <section class="partners-section" id="partners">
         <div class="container">
             
-            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                 <span class="section-label" data-i18n="partners.label">Trusted By</span>
                 <h2 class="section-title" data-i18n="partners.title">Our Global <span class="highlight">Partners</span></h2>
             </div><div class="partners-slider">
@@ -1886,198 +1704,6 @@
                         <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
                             <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Louis Dreyfus</text>
                         </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cargill</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Bunge</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">ADM</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Louis Dreyfus</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cofco</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Glencore</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Olam</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Wilmar</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cargill</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Bunge</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">ADM</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Louis Dreyfus</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cargill</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Bunge</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">ADM</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Louis Dreyfus</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cofco</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Glencore</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Olam</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Wilmar</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cargill</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Bunge</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">ADM</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Louis Dreyfus</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cargill</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Bunge</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">ADM</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Louis Dreyfus</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cofco</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Glencore</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Olam</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Wilmar</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cargill</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Bunge</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">ADM</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Louis Dreyfus</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cargill</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Bunge</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">ADM</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Louis Dreyfus</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cofco</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Glencore</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Olam</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Wilmar</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Cargill</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Bunge</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">ADM</text>
-                        </svg>
-                    </div><div class="partner-logo">
-                        <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
-                            <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">Louis Dreyfus</text>
-                        </svg>
                     </div></div>
             </div>
         </div>
@@ -2087,13 +1713,13 @@
     <section class="products-section" id="products">
         <div class="container">
             
-            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                 <span class="section-label">Our Products</span>
                 <h2 class="section-title">Premium <span class="highlight">Brazilian Commodities</span></h2>
                 <p class="section-desc">Sourced ethically, processed meticulously, delivered globally</p>
             </div><div class="products-grid">
                 
-                <div class="product-card featured" style="translate: none; rotate: none; scale: none; transform: translate(0px, 80px) scale(0.9, 0.9); opacity: 0; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
+                <div class="product-card featured" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
                     <span class="product-badge">Flagship Product</span>
                     <div class="product-visual sugar-visual">
                         <div class="sugar-particles-container">
@@ -2112,17 +1738,17 @@
                         </div>
                     </div>
                     <div class="product-content">
-                        <h3>Brazilian Sugar IC45</h3>
-                        <p>White Refined Sugar - the pinnacle of sweetness. Meticulously processed for top quality and purity.</p>
+                        <h3 class="">Brazilian Sugar IC45</h3>
+                        <p class="">White Refined Sugar - the pinnacle of sweetness. Meticulously processed for top quality and purity.</p>
                         <ul class="product-specs">
-                            <li><span>Polarization:</span> Min 99.8%</li>
-                            <li><span>Color:</span> Max 45 ICUMSA</li>
-                            <li><span>Origin:</span> Brazil</li>
+                            <li class=""><span class="">Polarization:</span> Min 99.8%</li>
+                            <li class=""><span class="">Color:</span> Max 45 ICUMSA</li>
+                            <li class=""><span class="">Origin:</span> Brazil</li>
                         </ul>
-                        <a href="#contact" class="product-link">Request Quote &rarr;</a>
+                        <a href="#contact" class="product-link">Request Quote →</a>
                     </div>
                 </div>
-                <div class="product-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 80px) scale(0.9, 0.9); opacity: 0; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
+                <div class="product-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
                     <div class="product-visual vhp-visual">
                         <div class="product-icon">
                             <svg viewBox="0 0 100 100">
@@ -2133,17 +1759,17 @@
                         </div>
                     </div>
                     <div class="product-content">
-                        <h3>Sugar IC600/1200 VHP</h3>
-                        <p>Very High Polarization sugar ideal for refining, available in IC600 and IC1200 grades.</p>
+                        <h3 class="">Sugar IC600/1200 VHP</h3>
+                        <p class="">Very High Polarization sugar ideal for refining, available in IC600 and IC1200 grades.</p>
                         <ul class="product-specs">
-                            <li><span>Polarization:</span> Min 99.4%</li>
-                            <li><span>Color:</span> 600-1200 ICUMSA</li>
-                            <li><span>Origin:</span> Brazil</li>
+                            <li class=""><span class="">Polarization:</span> Min 99.4%</li>
+                            <li class=""><span class="">Color:</span> 600-1200 ICUMSA</li>
+                            <li class=""><span class="">Origin:</span> Brazil</li>
                         </ul>
-                        <a href="#contact" class="product-link">Request Quote &rarr;</a>
+                        <a href="#contact" class="product-link">Request Quote →</a>
                     </div>
                 </div>
-                <div class="product-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 80px) scale(0.9, 0.9); opacity: 0; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
+                <div class="product-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
                     <div class="product-visual soy-visual">
                         <div class="product-icon">
                             <svg viewBox="0 0 100 100">
@@ -2154,17 +1780,17 @@
                         </div>
                     </div>
                     <div class="product-content">
-                        <h3>Yellow Soybeans</h3>
-                        <p>Premium grade non-GMO soybeans from Brazil's finest agricultural regions.</p>
+                        <h3 class="">Yellow Soybeans</h3>
+                        <p class="">Premium grade non-GMO soybeans from Brazil's finest agricultural regions.</p>
                         <ul class="product-specs">
-                            <li><span>Protein:</span> Min 36%</li>
-                            <li><span>Moisture:</span> Max 14%</li>
-                            <li><span>Origin:</span> Brazil</li>
+                            <li class=""><span class="">Protein:</span> Min 36%</li>
+                            <li class=""><span class="">Moisture:</span> Max 14%</li>
+                            <li class=""><span class="">Origin:</span> Brazil</li>
                         </ul>
-                        <a href="#contact" class="product-link">Request Quote &rarr;</a>
+                        <a href="#contact" class="product-link">Request Quote →</a>
                     </div>
                 </div>
-            <div class="product-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 80px) scale(0.9, 0.9); opacity: 0; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
+            <div class="product-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
                     <div class="product-visual corn-visual">
                         <div class="product-icon">
                             <svg viewBox="0 0 100 100">
@@ -2175,14 +1801,14 @@
                         </div>
                     </div>
                     <div class="product-content">
-                        <h3>Yellow Corn</h3>
-                        <p>High-quality feed corn meeting international specifications for animal nutrition.</p>
+                        <h3 class="">Yellow Corn</h3>
+                        <p class="">High-quality feed corn meeting international specifications for animal nutrition.</p>
                         <ul class="product-specs">
-                            <li><span>Moisture:</span> Max 14%</li>
-                            <li><span>Foreign Matter:</span> Max 2%</li>
-                            <li><span>Origin:</span> Brazil</li>
+                            <li class=""><span class="">Moisture:</span> Max 14%</li>
+                            <li class=""><span class="">Foreign Matter:</span> Max 2%</li>
+                            <li class=""><span class="">Origin:</span> Brazil</li>
                         </ul>
-                        <a href="#contact" class="product-link">Request Quote &rarr;</a>
+                        <a href="#contact" class="product-link">Request Quote →</a>
                     </div>
                 </div></div>
         </div>
@@ -2192,7 +1818,7 @@
     <section class="locations-section" id="locations">
         <div class="container">
             
-            <div class="section-header" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+            <div class="section-header" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                 <span class="section-label">Global Presence</span>
                 <h2 class="section-title">Worldwide <span class="highlight">Operations</span></h2>
             </div><div class="locations-content">
@@ -2244,48 +1870,48 @@
                             <!-- New Zealand -->
                             <path class="continent" d="M945,445 L958,438 L968,448 L972,465 L965,478 L952,482 L942,472 L942,458 Z"></path>
 
-                            <!-- Logo pattern definition -->
-                            <defs>
-                                <pattern id="logoPattern" patternUnits="objectBoundingBox" width="1" height="1">
-                                    <image href="assets/images/logo.jpg" x="0" y="0" width="24" height="24" preserveAspectRatio="xMidYMid slice"/>
-                                </pattern>
-                            </defs>
-
-                            <!-- Location markers with logo -->
-                            <g class="location-marker" data-location="bvi">
+                            <!-- Location markers with larger hitboxes -->
+                            <g class="location-marker" data-location="bvi" data-hover-trigger="location-bvi" data-hover-target="location-bvi" data-svg-origin="203 223" transform="matrix(1,0,0,1,0,0)" style="translate: none; rotate: none; scale: none; opacity: 1;">
                                 <circle cx="228" cy="248" r="25" class="marker-hitbox"></circle>
-                                <circle cx="228" cy="248" r="14" class="marker-pulse"></circle>
-                                <circle cx="228" cy="248" r="12" class="marker-logo" fill="url(#logoPattern)"></circle>
+                                <circle cx="228" cy="248" r="12" class="marker-pulse" style="opacity: 0.4;"></circle>
+                                <circle cx="228" cy="248" r="5" class="marker-dot" style="fill: rgb(201, 162, 39);"></circle>
+                                <text x="228" y="275" class="marker-label">BVI</text>
                             </g>
-                            <g class="location-marker" data-location="usa">
+                            <g class="location-marker" data-location="usa" data-hover-trigger="location-usa" data-hover-target="location-usa" data-svg-origin="130 113.37947845458984" transform="matrix(1,0,0,1,0,0)" style="translate: none; rotate: none; scale: none; opacity: 1;">
                                 <circle cx="155" cy="142" r="25" class="marker-hitbox"></circle>
-                                <circle cx="155" cy="142" r="14" class="marker-pulse"></circle>
-                                <circle cx="155" cy="142" r="12" class="marker-logo" fill="url(#logoPattern)"></circle>
+                                <circle cx="155" cy="142" r="12" class="marker-pulse" style="opacity: 0.4;"></circle>
+                                <circle cx="155" cy="142" r="5" class="marker-dot" style="fill: rgb(201, 162, 39);"></circle>
+                                <text x="155" y="123" class="marker-label">USA</text>
                             </g>
-                            <g class="location-marker" data-location="brazil">
+                            <g class="location-marker" data-location="brazil" data-hover-trigger="location-brazil" data-hover-target="location-brazil" data-svg-origin="260 333" transform="matrix(1,0,0,1,0,0)" style="translate: none; rotate: none; scale: none; opacity: 1;">
                                 <circle cx="285" cy="358" r="25" class="marker-hitbox"></circle>
-                                <circle cx="285" cy="358" r="14" class="marker-pulse"></circle>
-                                <circle cx="285" cy="358" r="12" class="marker-logo" fill="url(#logoPattern)"></circle>
+                                <circle cx="285" cy="358" r="12" class="marker-pulse" style="opacity: 0.4;"></circle>
+                                <circle cx="285" cy="358" r="5" class="marker-dot" style="fill: rgb(201, 162, 39);"></circle>
+                                <text x="285" y="390" class="marker-label">Brazil</text>
                             </g>
-                            <g class="location-marker" data-location="uae">
+                            <g class="location-marker" data-location="uae" data-hover-trigger="location-uae" data-hover-target="location-uae" data-svg-origin="583 156.3794708251953" transform="matrix(1,0,0,1,0,0)" style="translate: none; rotate: none; scale: none; opacity: 1;">
                                 <circle cx="608" cy="185" r="25" class="marker-hitbox"></circle>
-                                <circle cx="608" cy="185" r="14" class="marker-pulse"></circle>
-                                <circle cx="608" cy="185" r="12" class="marker-logo" fill="url(#logoPattern)"></circle>
+                                <circle cx="608" cy="185" r="12" class="marker-pulse" style="opacity: 0.4;"></circle>
+                                <circle cx="608" cy="185" r="5" class="marker-dot" style="fill: rgb(201, 162, 39);"></circle>
+                                <text x="608" y="166" class="marker-label">UAE</text>
                             </g>
-                            <g class="location-marker" data-location="uganda">
+                            <g class="location-marker" data-location="eastafrica" data-hover-trigger="location-eastafrica" data-hover-target="location-eastafrica" data-svg-origin="523 277" transform="matrix(1,0,0,1,0,0)" style="translate: none; rotate: none; scale: none; opacity: 1;">
                                 <circle cx="548" cy="302" r="25" class="marker-hitbox"></circle>
-                                <circle cx="548" cy="302" r="14" class="marker-pulse"></circle>
-                                <circle cx="548" cy="302" r="12" class="marker-logo" fill="url(#logoPattern)"></circle>
+                                <circle cx="548" cy="302" r="12" class="marker-pulse" style="opacity: 0.4;"></circle>
+                                <circle cx="548" cy="302" r="5" class="marker-dot" style="fill: rgb(201, 162, 39);"></circle>
+                                <text x="548" y="333" class="marker-label">Uganda</text>
                             </g>
-                            <g class="location-marker" data-location="kenya">
+                            <g class="location-marker" data-location="eastafrica" data-hover-trigger="location-eastafrica" data-hover-target="location-eastafrica" data-svg-origin="550 270" transform="matrix(1,0,0,1,0,0)" style="translate: none; rotate: none; scale: none; opacity: 1;">
                                 <circle cx="575" cy="295" r="25" class="marker-hitbox"></circle>
-                                <circle cx="575" cy="295" r="14" class="marker-pulse"></circle>
-                                <circle cx="575" cy="295" r="12" class="marker-logo" fill="url(#logoPattern)"></circle>
+                                <circle cx="575" cy="295" r="12" class="marker-pulse" style="opacity: 0.4;"></circle>
+                                <circle cx="575" cy="295" r="5" class="marker-dot" style="fill: rgb(201, 162, 39);"></circle>
+                                <text x="595" y="295" class="marker-label">Kenya</text>
                             </g>
-                            <g class="location-marker hq-marker" data-location="uk">
+                            <g class="location-marker" data-location="uk" data-hover-trigger="location-uk" data-hover-target="location-uk" data-svg-origin="433 69.37947845458984" transform="matrix(1,0,0,1,0,0)" style="translate: none; rotate: none; scale: none; opacity: 1;">
                                 <circle cx="458" cy="98" r="25" class="marker-hitbox"></circle>
-                                <circle cx="458" cy="98" r="16" class="marker-pulse hq-pulse"></circle>
-                                <circle cx="458" cy="98" r="14" class="marker-logo" fill="url(#logoPattern)"></circle>
+                                <circle cx="458" cy="98" r="18" class="marker-pulse" style="opacity: 0.7;"></circle>
+                                <circle cx="458" cy="98" r="7" class="marker-dot" style="fill: rgb(255, 255, 255);"></circle>
+                                <text x="458" y="79" class="marker-label">UK</text>
                             </g>
 
                             <!-- Connection lines - Trade Routes -->
@@ -2314,97 +1940,61 @@
                         </svg>
                     </div>
                 </div>
-                <!-- Info boxes that appear on marker hover -->
-                <div class="map-info-boxes">
-                    <div class="map-info-box" data-location="bvi">
-                        <div class="info-box-header">
-                            <span class="info-flag">&#127483;&#127468;</span>
-                            <div class="info-title">
-                                <h4>British Virgin Islands</h4>
-                                <span class="info-type">Holding Company HQ</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">Iustus Mercatura Holding Inc.</p>
-                            <p class="info-address">Intershore Chambers 3rd Floor, 333 Waterfront Dr. Geneva Place, Road Town, Tortola, VG 1110</p>
+                <div class="locations-list">
+                    <div class="location-card" data-location="bvi" title="Iustus Mercatura Holding Inc. | Intershore Chambers 3rd Floor, 333 Waterfront Dr. Geneva Place, Road Town, Tortola, VG 1110" data-hover-trigger="location-bvi" data-hover-target="location-bvi" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px);">
+                        <div class="location-flag">🇻🇬</div>
+                        <div class="location-info">
+                            <h4 class="">Head Office</h4>
+                            <p class="">British Virgin Islands</p>
+                            <span class="location-type">Holding Company HQ</span>
                         </div>
                     </div>
-                    <div class="map-info-box" data-location="usa">
-                        <div class="info-box-header">
-                            <span class="info-flag">&#127482;&#127480;</span>
-                            <div class="info-title">
-                                <h4>United States</h4>
-                                <span class="info-type">Regional Office</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">FITC Energy Group Inc. &amp; Iustus Mercatura USA Inc.</p>
-                            <p class="info-address">31 Airpark Road, Princeton, 08540 New Jersey, USA</p>
+                    <div class="location-card" data-location="usa" title="FITC Energy Group Inc. &amp; Iustus Mercatura USA Inc. | 31 Airpark Road, Princeton, 08540 New Jersey, USA" data-hover-trigger="location-usa" data-hover-target="location-usa">
+                        <div class="location-flag">🇺🇸</div>
+                        <div class="location-info">
+                            <h4 class="">USA Operations</h4>
+                            <p class="">Princeton, New Jersey</p>
+                            <span class="location-type">Regional Office</span>
                         </div>
                     </div>
-                    <div class="map-info-box" data-location="brazil">
-                        <div class="info-box-header">
-                            <span class="info-flag">&#127463;&#127479;</span>
-                            <div class="info-title">
-                                <h4>Brazil</h4>
-                                <span class="info-type">Sourcing &amp; Trading</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">Iustus Mercatura Brazil Ltda.</p>
-                            <p class="info-address">Suite 92, 6th Floor, Av. Dr. Cardoso de Melo 1340, Vila Olimpia, 04.548-004 S&atilde;o Paulo</p>
+                    <div class="location-card" data-location="brazil" title="Iustus Mercatura Brazil Ltda. | Suite 92, 6th Floor, Av. Dr. Cardoso de Melo 1340, Vila Olimpia, 04.548-004 São Paulo" data-hover-trigger="location-brazil" data-hover-target="location-brazil" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px);">
+                        <div class="location-flag">🇧🇷</div>
+                        <div class="location-info">
+                            <h4 class="">Brazil Operations</h4>
+                            <p class="">São Paulo</p>
+                            <span class="location-type">Sourcing &amp; Trading</span>
                         </div>
                     </div>
-                    <div class="map-info-box" data-location="uae">
-                        <div class="info-box-header">
-                            <span class="info-flag">&#127462;&#127466;</span>
-                            <div class="info-title">
-                                <h4>United Arab Emirates</h4>
-                                <span class="info-type">Finance &amp; Trading</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">FITC Energy Group DXBS FZ-LLC</p>
-                            <p class="info-address">Meydan Grandstand, 6th floor, Meydan Road, Nad Al Sheba, Dubai, U.A.E.</p>
+                    <div class="location-card" data-location="uae" title="FITC Energy Group DXBS FZ-LLC | Meydan Grandstand, 6th floor, Meydan Road, Nad Al Sheba, Dubai, U.A.E." data-hover-trigger="location-uae" data-hover-target="location-uae">
+                        <div class="location-flag">🇦🇪</div>
+                        <div class="location-info">
+                            <h4 class="">UAE Office</h4>
+                            <p class="">Dubai, Meydan</p>
+                            <span class="location-type">Finance &amp; Trading</span>
                         </div>
                     </div>
-                    <div class="map-info-box" data-location="uk">
-                        <div class="info-box-header">
-                            <span class="info-flag">&#127468;&#127463;</span>
-                            <div class="info-title">
-                                <h4>United Kingdom</h4>
-                                <span class="info-type">Maritime Logistics</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">Iustus Mercatura Maritime Logistics UK Limited</p>
-                            <p class="info-address">7th Floor, Tower 42, 25 Old Broad Street, London EC2N 1HN</p>
+                    <div class="location-card" data-location="uk" title="Iustus Mercatura Maritime Logistics UK Limited | 7th Floor, Tower 42, 25 Old Broad Street, London EC2N 1HN" data-hover-trigger="location-uk" data-hover-target="location-uk" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px);">
+                        <div class="location-flag">🇬🇧</div>
+                        <div class="location-info">
+                            <h4 class="">UK Operations</h4>
+                            <p class="">London, Tower 42</p>
+                            <span class="location-type">Maritime Logistics</span>
                         </div>
                     </div>
-                    <div class="map-info-box" data-location="uganda">
-                        <div class="info-box-header">
-                            <span class="info-flag">&#127482;&#127468;</span>
-                            <div class="info-title">
-                                <h4>Uganda</h4>
-                                <span class="info-type">Refinery &amp; Distribution</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">FITC Energy Group Inc. UG &amp; Iustus Mercatura UG Ltd.</p>
-                            <p class="info-address">2nd Floor Plot 51, 14 Ntinda Avenue, Nakawa 10005, Ntinda - Kampala</p>
+                    <div class="location-card" data-location="uganda" title="FITC Energy Group Inc. UG &amp; Iustus Mercatura UG Ltd. | 2nd Floor Plot 51, 14 Ntinda Avenue, Nakawa 10005, Ntinda - Kampala" data-hover-trigger="location-uganda" data-hover-target="location-uganda">
+                        <div class="location-flag">🇺🇬</div>
+                        <div class="location-info">
+                            <h4 class="">Uganda Operations</h4>
+                            <p class="">Kampala, Ntinda</p>
+                            <span class="location-type">Refinery &amp; Distribution</span>
                         </div>
                     </div>
-                    <div class="map-info-box" data-location="kenya">
-                        <div class="info-box-header">
-                            <span class="info-flag">&#127472;&#127466;</span>
-                            <div class="info-title">
-                                <h4>Kenya</h4>
-                                <span class="info-type">Regional Distribution</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">FITC Energy Group Inc Kenya</p>
-                            <p class="info-address">2nd Floor, Kimathi House, Kenyatta Avenue, Nairobi 00100, Kenya</p>
+                    <div class="location-card" data-location="kenya" title="FITC Energy Group Inc Kenya | 2nd Floor, Kimathi House, Kenyatta Avenue, Nairobi 00100, Kenya" data-hover-trigger="location-kenya" data-hover-target="location-kenya">
+                        <div class="location-flag">🇰🇪</div>
+                        <div class="location-info">
+                            <h4 class="">Kenya Operations</h4>
+                            <p class="">Nairobi</p>
+                            <span class="location-type">Regional Distribution</span>
                         </div>
                     </div>
                 </div>
@@ -2416,7 +2006,7 @@
     <section class="projects-section" id="projects">
         <div class="container">
             
-            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                 <span class="section-label">Strategic Initiatives</span>
                 <h2 class="section-title">Upcoming <span class="highlight">Projects</span></h2>
             </div><div class="projects-timeline">
@@ -2424,14 +2014,14 @@
                 <div class="project-item">
                     <div class="project-year">2026</div>
                     
-                <div class="project-card" style="translate: none; rotate: none; scale: none; transform: translate(-100px, 0px); opacity: 0;">
+                <div class="project-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                         <div class="project-icon uganda-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path>
                             </svg>
                         </div>
-                        <h3>Uganda Refinery Project</h3>
-                        <p>20-30 acre refinery in Bugembe District with 500,000 MT annual capacity and 250 sq miles of sugarcane plantation.</p>
+                        <h3 class="">Uganda Refinery Project</h3>
+                        <p class="">20-30 acre refinery in Bugembe District with 500,000 MT annual capacity and 250 sq miles of sugarcane plantation.</p>
                         <div class="project-stats">
                             <div class="mini-stat">
                                 <span class="value">300.000</span>
@@ -2446,14 +2036,14 @@
                 <div class="project-item">
                     <div class="project-year">2025</div>
                     
-                <div class="project-card" style="translate: none; rotate: none; scale: none; transform: translate(100px, 0px); opacity: 0;">
+                <div class="project-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                         <div class="project-icon brazil-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
                             </svg>
                         </div>
-                        <h3>Iustus Agricultura Brazil SA</h3>
-                        <p>Acquisition of 2-3 major refining assets with self-sufficient sugarcane cultivation for complete vertical integration.</p>
+                        <h3 class="">Iustus Agricultura Brazil SA</h3>
+                        <p class="">Acquisition of 2-3 major refining assets with self-sufficient sugarcane cultivation for complete vertical integration.</p>
                         <div class="project-stats">
                             <div class="mini-stat">
                                 <span class="value">500.000+</span>
@@ -2464,15 +2054,15 @@
                 <div class="project-item">
                     <div class="project-year">2025</div>
                     
-                <div class="project-card" style="translate: none; rotate: none; scale: none; transform: translate(-100px, 0px); opacity: 0;">
+                <div class="project-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                         <div class="project-icon finance-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                                 <path d="M12 8v8M8 12h8"></path>
                             </svg>
                         </div>
-                        <h3>Mercatura Finance DIFC</h3>
-                        <p>Full-service financial provider in Dubai offering specialized Sustainable Farming and Trade Finance solutions.</p>
+                        <h3 class="">Mercatura Finance DIFC</h3>
+                        <p class="">Full-service financial provider in Dubai offering specialized Sustainable Farming and Trade Finance solutions.</p>
                         <div class="project-badge">Pending Approval</div>
                     </div></div>
             </div>
@@ -2484,29 +2074,29 @@
         <div class="container">
             
 
-            <!-- Global Leadership -->
-            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+            <!-- Owner -->
+            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                 <span class="section-label">Our People</span>
                 <h2 class="section-title">Meet Our <span class="highlight">Team</span></h2>
             </div><div class="team-category">
-                <h3 class="team-category-title">Global Leadership</h3>
+                <h3 class="team-category-title">Owner</h3>
             </div>
-            <div class="team-grid team-grid-3">
+            <div class="team-grid team-grid-2">
                 <!-- Dr. Gerhard Kral -->
                 <div class="team-card-flip">
                     <div class="team-card-inner">
                         <div class="team-card-front">
                             <div class="team-image has-photo" style="position: relative;">
-                                <img src="/uploads/img_1765200880495_2sqckj.png" alt="Dr. Gerhard Kral">
+                                <img src="/uploads/img_1765200880495_2sqckj.png" alt="Dr. Gerhard Kral" class="">
                             </div>
-                            <h4>Dr. Gerhard Kral</h4>
+                            <h4 class="">Dr. Gerhard Kral</h4>
                             <span class="role">Group CEO &amp; Founder</span>
                         </div>
                         <div class="team-card-back">
                             <div class="back-content">
-                                <h4>Dr. Gerhard Kral</h4>
+                                <h4 class="">Dr. Gerhard Kral</h4>
                                 <span class="role">Group CEO &amp; Founder</span>
-                                <p>Established the company's global strategy based on the "Just Trade" philosophy. Visionary leader driving sustainable commodity trading worldwide.</p>
+                                <p class="">Established the company's global strategy based on the "Just Trade" philosophy. Visionary leader driving sustainable commodity trading worldwide.</p>
                                 <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
                                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
                                     LinkedIn
@@ -2521,16 +2111,16 @@
                     <div class="team-card-inner">
                         <div class="team-card-front">
                             <div class="team-image has-photo" style="position: relative;">
-                                <img src="/uploads/img_1765200880464_xzfd2f.png" alt="LLM Christian Thomas">
+                                <img src="/uploads/img_1765200880464_xzfd2f.png" alt="LLM Christian Thomas" class="">
                             </div>
-                            <h4>LLM Christian Thomas</h4>
+                            <h4 class="">LLM Christian Thomas</h4>
                             <span class="role">Group Chairman &amp; Co-Owner</span>
                         </div>
                         <div class="team-card-back">
                             <div class="back-content">
-                                <h4>LLM Christian Thomas</h4>
+                                <h4 class="">LLM Christian Thomas</h4>
                                 <span class="role">Group Chairman &amp; Co-Owner</span>
-                                <p>Chief steward of vision and ethical mandate. Provides strategic guidance ensuring governance excellence and stakeholder alignment.</p>
+                                <p class="">Chief steward of vision and ethical mandate. Provides strategic guidance ensuring governance excellence and stakeholder alignment.</p>
                                 <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
                                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
                                     LinkedIn
@@ -2539,6 +2129,13 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Leadership -->
+            <div class="team-category">
+                <h3 class="team-category-title">Leadership</h3>
+            </div>
+            <div class="team-grid team-grid-2">
                 <!-- Lic. jur. Martin Bohler -->
                 <div class="team-card-flip">
                     <div class="team-card-inner">
@@ -2546,14 +2143,38 @@
                             <div class="team-image has-photo" style="position: relative;"><img src="/uploads/img_1765200880554_1zw12k.png" alt="Lic. jur. Martin Bohler" style="width: 100%; height: 100%; object-fit: cover;">
                                 <span class="initials" style="display: none;">MB</span>
                             </div>
-                            <h4>Lic. jur. Martin Bohler</h4>
+                            <h4 class="">Lic. jur. Martin Bohler</h4>
                             <span class="role">Co-Founder &amp; CRO</span>
                         </div>
                         <div class="team-card-back">
                             <div class="back-content">
-                                <h4>Lic. jur. Martin Bohler</h4>
+                                <h4 class="">Lic. jur. Martin Bohler</h4>
                                 <span class="role">Co-Founder &amp; CRO</span>
-                                <p>Legal expertise combined with strategic vision. Co-founded the company and drives risk management and corporate governance.</p>
+                                <p class="">Legal expertise combined with strategic vision. Co-founded the company and drives risk management and corporate governance.</p>
+                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
+                                    LinkedIn
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Andreas Zsifkovits -->
+                <div class="team-card-flip">
+                    <div class="team-card-inner">
+                        <div class="team-card-front">
+                            <div class="team-image has-photo" style="position: relative;"><img src="/uploads/img_1765200866319_fqiugd.webp" alt="Andreas Zsifkovits" style="width: 100%; height: 100%; object-fit: cover;">
+                                <span class="initials" style="display: none;">AZ</span>
+                            </div>
+                            <h4 class="">Andreas Zsifkovits</h4>
+                            <span class="role">CEO UK &amp; Maritime</span>
+                        </div>
+                        <div class="team-card-back">
+                            <div class="back-content">
+                                <h4 class="">Andreas Zsifkovits</h4>
+                                <span class="role">CEO UK &amp; Maritime</span>
+                                <p class="">Leads global shipping and freight operations from London. Specialized in maritime logistics and international trade routes.</p>
                                 <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
                                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
                                     LinkedIn
@@ -2568,31 +2189,7 @@
             <div class="team-category">
                 <h3 class="team-category-title">CEO</h3>
             </div>
-            <div class="team-grid team-grid-3">
-                <!-- Andreas Zsifkovits -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image has-photo" style="position: relative;"><img src="/uploads/img_1765200866319_fqiugd.webp" alt="Andreas Zsifkovits" style="width: 100%; height: 100%; object-fit: cover;">
-                                <span class="initials" style="display: none;">AZ</span>
-                            </div>
-                            <h4>Andreas Zsifkovits</h4>
-                            <span class="role">CEO UK &amp; Maritime</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Andreas Zsifkovits</h4>
-                                <span class="role">CEO UK &amp; Maritime</span>
-                                <p>Leads global shipping and freight operations from London. Specialized in maritime logistics and international trade routes.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="team-grid team-grid-2">
                 <!-- Miss Resty Nankya -->
                 <div class="team-card-flip">
                     <div class="team-card-inner">
@@ -2600,14 +2197,14 @@
                             <div class="team-image has-photo" style="position: relative;"><img src="/uploads/img_1765200880814_4rcgus.png" alt="Miss Resty Nankya" style="width: 100%; height: 100%; object-fit: cover;">
                                 <span class="initials" style="display: none;">RN</span>
                             </div>
-                            <h4>Miss Resty Nankya</h4>
+                            <h4 class="">Miss Resty Nankya</h4>
                             <span class="role">CEO Uganda</span>
                         </div>
                         <div class="team-card-back">
                             <div class="back-content">
-                                <h4>Miss Resty Nankya</h4>
+                                <h4 class="">Miss Resty Nankya</h4>
                                 <span class="role">CEO Uganda</span>
-                                <p>Spearheads the Uganda Refinery Project 2026. Driving sustainable agricultural development across East Africa.</p>
+                                <p class="">Spearheads the Uganda Refinery Project 2026. Driving sustainable agricultural development across East Africa.</p>
                                 <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
                                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
                                     LinkedIn
@@ -2624,14 +2221,14 @@
                             <div class="team-image">
                                 <span class="initials">SS</span>
                             </div>
-                            <h4>Stephanie Shi</h4>
+                            <h4 class="">Stephanie Shi</h4>
                             <span class="role">CEO Asia</span>
                         </div>
                         <div class="team-card-back">
                             <div class="back-content">
-                                <h4>Stephanie Shi</h4>
+                                <h4 class="">Stephanie Shi</h4>
                                 <span class="role">CEO Asia</span>
-                                <p>Leads Asian market strategy and expansion. Deep expertise in cross-cultural business development and regional trade networks.</p>
+                                <p class="">Leads Asian market strategy and expansion. Deep expertise in cross-cultural business development and regional trade networks.</p>
                                 <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
                                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
                                     LinkedIn
@@ -2654,14 +2251,14 @@
                             <div class="team-image">
                                 <span class="initials">YJ</span>
                             </div>
-                            <h4>Eng. Yong Jiang</h4>
+                            <h4 class="">Eng. Yong Jiang</h4>
                             <span class="role">COO USA</span>
                         </div>
                         <div class="team-card-back">
                             <div class="back-content">
-                                <h4>Eng. Yong Jiang</h4>
+                                <h4 class="">Eng. Yong Jiang</h4>
                                 <span class="role">COO USA</span>
-                                <p>30+ years experience in commodities market. Expert in cross-border trade operations and strategic market development.</p>
+                                <p class="">30+ years experience in commodities market. Expert in cross-border trade operations and strategic market development.</p>
                                 <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
                                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
                                     LinkedIn
@@ -2678,14 +2275,14 @@
                             <div class="team-image has-photo" style="position: relative;"><img src="/uploads/img_1765200880824_6nbq1o.png" alt="Eng. Paulo Souza" style="width: 100%; height: 100%; object-fit: cover;">
                                 <span class="initials" style="display: none;">PS</span>
                             </div>
-                            <h4>Eng. Paulo Souza</h4>
+                            <h4 class="">Eng. Paulo Souza</h4>
                             <span class="role">COO Brazil</span>
                         </div>
                         <div class="team-card-back">
                             <div class="back-content">
-                                <h4>Eng. Paulo Souza</h4>
+                                <h4 class="">Eng. Paulo Souza</h4>
                                 <span class="role">COO Brazil</span>
-                                <p>30 years expertise in Brazilian sugar trade. Deep knowledge of South American agricultural markets and refinery operations.</p>
+                                <p class="">30 years expertise in Brazilian sugar trade. Deep knowledge of South American agricultural markets and refinery operations.</p>
                                 <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
                                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
                                     LinkedIn
@@ -2702,14 +2299,14 @@
                             <div class="team-image">
                                 <span class="initials">PD</span>
                             </div>
-                            <h4>Patrick Duggie</h4>
+                            <h4 class="">Patrick Duggie</h4>
                             <span class="role">COO UK</span>
                         </div>
                         <div class="team-card-back">
                             <div class="back-content">
-                                <h4>Patrick Duggie</h4>
+                                <h4 class="">Patrick Duggie</h4>
                                 <span class="role">COO UK</span>
-                                <p>Oversees UK operations and European market expansion. Expertise in commodity trading regulations and strategic partnerships.</p>
+                                <p class="">Oversees UK operations and European market expansion. Expertise in commodity trading regulations and strategic partnerships.</p>
                                 <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
                                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
                                     LinkedIn
@@ -2726,14 +2323,14 @@
                             <div class="team-image">
                                 <span class="initials">EN</span>
                             </div>
-                            <h4>Emmanuel Nkwanga</h4>
+                            <h4 class="">Emmanuel Nkwanga</h4>
                             <span class="role">COO East Africa</span>
                         </div>
                         <div class="team-card-back">
                             <div class="back-content">
-                                <h4>Emmanuel Nkwanga</h4>
+                                <h4 class="">Emmanuel Nkwanga</h4>
                                 <span class="role">COO East Africa</span>
-                                <p>Leads operational excellence across East African markets. Expert in regional supply chain management and local partnerships.</p>
+                                <p class="">Leads operational excellence across East African markets. Expert in regional supply chain management and local partnerships.</p>
                                 <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
                                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
                                     LinkedIn
@@ -2750,14 +2347,14 @@
                             <div class="team-image has-photo" style="position: relative;"><img src="/uploads/img_1765200880484_rr4put.png" alt="Jimmey S. Shah" style="width: 100%; height: 100%; object-fit: cover;">
                                 <span class="initials" style="display: none;">JS</span>
                             </div>
-                            <h4>Jimmey S. Shah</h4>
+                            <h4 class="">Jimmey S. Shah</h4>
                             <span class="role">Head of Trade Middle East</span>
                         </div>
                         <div class="team-card-back">
                             <div class="back-content">
-                                <h4>Jimmey S. Shah</h4>
+                                <h4 class="">Jimmey S. Shah</h4>
                                 <span class="role">Head of Trade Middle East</span>
-                                <p>Drives Middle Eastern trade operations and market development. Expert in regional commodity markets and strategic trade relationships.</p>
+                                <p class="">Drives Middle Eastern trade operations and market development. Expert in regional commodity markets and strategic trade relationships.</p>
                                 <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
                                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
                                     LinkedIn
@@ -2780,20 +2377,20 @@
                 </div>
                 <div class="values-grid">
                     
-                    <div class="value-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+                    <div class="value-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                         <div class="value-number">01</div>
-                        <h3>Integrity &amp; Transparency</h3>
-                        <p>Fair pricing, ethical sourcing, and an open book with all partners. We measure success by trust earned.</p>
+                        <h3 class="">Integrity &amp; Transparency</h3>
+                        <p class="">Fair pricing, ethical sourcing, and an open book with all partners. We measure success by trust earned.</p>
                     </div>
-                    <div class="value-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+                    <div class="value-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                         <div class="value-number">02</div>
-                        <h3>Expertise &amp; Excellence</h3>
-                        <p>Deep-rooted market intelligence and world-class logistical management with surgical precision.</p>
+                        <h3 class="">Expertise &amp; Excellence</h3>
+                        <p class="">Deep-rooted market intelligence and world-class logistical management with surgical precision.</p>
                     </div>
-                <div class="value-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+                <div class="value-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                         <div class="value-number">03</div>
-                        <h3>Partnership &amp; Prosperity</h3>
-                        <p>Every client and producer as a critical part of a shared, sustainable ecosystem for mutual growth.</p>
+                        <h3 class="">Partnership &amp; Prosperity</h3>
+                        <p class="">Every client and producer as a critical part of a shared, sustainable ecosystem for mutual growth.</p>
                     </div></div>
             </div>
         </div>
@@ -2803,7 +2400,7 @@
     <section class="sustainability-section" id="sustainability">
         <div class="container">
             
-            <div class="section-header" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+            <div class="section-header" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                 <span class="section-label">Our Commitment</span>
                 <h2 class="section-title">Sustainability &amp; <span class="highlight">Responsibility</span></h2>
             </div><div class="sustainability-content">
@@ -2819,8 +2416,8 @@
                                 <path d="M2 12l10 5 10-5"></path>
                             </svg>
                         </div>
-                        <h3>UN Global Compact</h3>
-                        <p>We adhere strictly to the United Nations Global Compact principles, ensuring our operations respect human rights, labor standards, and environmental protection.</p>
+                        <h3 class="">UN Global Compact</h3>
+                        <p class="">We adhere strictly to the United Nations Global Compact principles, ensuring our operations respect human rights, labor standards, and environmental protection.</p>
                     </div>
                     <div class="sustainability-card">
                         <div class="sustainability-icon">
@@ -2829,8 +2426,8 @@
                                 <path d="M12 6v6l4 2"></path>
                             </svg>
                         </div>
-                        <h3>ISO 9001 Certified</h3>
-                        <p>Our quality management system meets the highest international standards, ensuring consistent excellence and continuous improvement in all operations.</p>
+                        <h3 class="">ISO 9001 Certified</h3>
+                        <p class="">Our quality management system meets the highest international standards, ensuring consistent excellence and continuous improvement in all operations.</p>
                     </div>
                     <div class="sustainability-card">
                         <div class="sustainability-icon">
@@ -2840,8 +2437,8 @@
                                 <line x1="12" y1="22.08" x2="12" y2="12"></line>
                             </svg>
                         </div>
-                        <h3>Ethical Sourcing</h3>
-                        <p>We partner only with producers who share our commitment to fair labor practices, environmental stewardship, and community development.</p>
+                        <h3 class="">Ethical Sourcing</h3>
+                        <p class="">We partner only with producers who share our commitment to fair labor practices, environmental stewardship, and community development.</p>
                     </div>
                     <div class="sustainability-card">
                         <div class="sustainability-icon">
@@ -2853,8 +2450,8 @@
                                 <line x1="14" y1="1" x2="14" y2="4"></line>
                             </svg>
                         </div>
-                        <h3>Carbon Neutral Goal</h3>
-                        <p>We are actively working towards carbon neutrality by 2030, implementing sustainable logistics and supporting reforestation initiatives worldwide.</p>
+                        <h3 class="">Carbon Neutral Goal</h3>
+                        <p class="">We are actively working towards carbon neutrality by 2030, implementing sustainable logistics and supporting reforestation initiatives worldwide.</p>
                     </div>
                 </div>
                 <div class="sustainability-stats">
@@ -2883,7 +2480,7 @@
     <section class="testimonials-section" id="testimonials">
         <div class="container">
             
-            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                 <span class="section-label" data-i18n="testimonials.label">Client Testimonials</span>
                 <h2 class="section-title" data-i18n="testimonials.title">What Our <span class="highlight">Partners Say</span></h2>
             </div><div class="testimonials-slider">
@@ -2898,11 +2495,11 @@
                             <p class="testimonial-text">"Iustus Mercatura has transformed our supply chain operations. Their commitment to quality and ethical sourcing aligns perfectly with our corporate values. A truly exceptional partner."</p>
                             <div class="testimonial-author">
                                 <div class="author-avatar">
-                                    <span>MK</span>
+                                    <span class="">MK</span>
                                 </div>
                                 <div class="author-info">
-                                    <h4>Michael Kowalski</h4>
-                                    <span>Head of Procurement, European Foods GmbH</span>
+                                    <h4 class="">Michael Kowalski</h4>
+                                    <span class="">Head of Procurement, European Foods GmbH</span>
                                 </div>
                             </div>
                         </div>
@@ -2917,11 +2514,11 @@
                             <p class="testimonial-text">"The quality of IC45 sugar we receive is consistently exceptional. Their team's professionalism and transparent communication make every transaction seamless."</p>
                             <div class="testimonial-author">
                                 <div class="author-avatar">
-                                    <span>SA</span>
+                                    <span class="">SA</span>
                                 </div>
                                 <div class="author-info">
-                                    <h4>Sarah Al-Rashid</h4>
-                                    <span>Supply Chain Director, Gulf Trading Corp</span>
+                                    <h4 class="">Sarah Al-Rashid</h4>
+                                    <span class="">Supply Chain Director, Gulf Trading Corp</span>
                                 </div>
                             </div>
                         </div>
@@ -2936,11 +2533,11 @@
                             <p class="testimonial-text">"Working with Iustus Mercatura has been a game-changer for our commodity sourcing. Their global network and reliability are unmatched in the industry."</p>
                             <div class="testimonial-author">
                                 <div class="author-avatar">
-                                    <span>JC</span>
+                                    <span class="">JC</span>
                                 </div>
                                 <div class="author-info">
-                                    <h4>James Chen</h4>
-                                    <span>CEO, Pacific Agri-Trade</span>
+                                    <h4 class="">James Chen</h4>
+                                    <span class="">CEO, Pacific Agri-Trade</span>
                                 </div>
                             </div>
                         </div>
@@ -2959,7 +2556,7 @@
             <div class="contact-wrapper">
                 <div class="contact-info">
                     
-                    <div class="section-header" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+                    <div class="section-header" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
                         <span class="section-label">Get In Touch</span>
                         <h2 class="section-title">Let's Work <span class="highlight">Together</span></h2>
                     </div><p class="contact-intro">Whether you're looking to expand your horizons or streamline your operations, our expertise and resources are here to support your goals.</p>
@@ -2974,7 +2571,7 @@
                             </div>
                             <div class="contact-text">
                                 <span class="contact-label">Email</span>
-                                <a href="mailto:info@imh-bvi.com">info@imh-bvi.com</a>
+                                <a href="mailto:info@imh-bvi.com" class="">info@imh-bvi.com</a>
                             </div>
                         </div>
                         <div class="contact-item">
@@ -2985,7 +2582,7 @@
                             </div>
                             <div class="contact-text">
                                 <span class="contact-label">Phone</span>
-                                <a href="tel:+12818167296">+1 281 816 7296</a>
+                                <a href="tel:+12818167296" class="">+1 281 816 7296</a>
                             </div>
                         </div>
                         <div class="contact-item">
@@ -2997,29 +2594,29 @@
                             </div>
                             <div class="contact-text">
                                 <span class="contact-label">Headquarters</span>
-                                <span>Intershore Chambers, Road Town, Tortola, BVI</span>
+                                <span class="">Intershore Chambers, Road Town, Tortola, BVI</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="contact-offices">
-                        <h4>Global Offices</h4>
+                        <h4 class="">Global Offices</h4>
                         <div class="offices-grid">
                             <div class="office-badge">
                                 <span class="flag">USA</span>
-                                <span>Princeton, NJ</span>
+                                <span class="">Princeton, NJ</span>
                             </div>
                             <div class="office-badge">
                                 <span class="flag">UAE</span>
-                                <span>Dubai, Meydan</span>
+                                <span class="">Dubai, Meydan</span>
                             </div>
                             <div class="office-badge">
                                 <span class="flag">UK</span>
-                                <span>London</span>
+                                <span class="">London</span>
                             </div>
                             <div class="office-badge">
                                 <span class="flag">BR</span>
-                                <span>Sao Paulo</span>
+                                <span class="">Sao Paulo</span>
                             </div>
                         </div>
 
@@ -3065,24 +2662,24 @@
                 <div class="elegant-wrapper">
                     <div class="elegant-form">
                         <div class="elegant-form-header">
-                            <h3>Send us a Message</h3>
-                            <p>Fill out the form below and we'll get back to you within 24 hours.</p>
+                            <h3 class="">Send us a Message</h3>
+                            <p class="">Fill out the form below and we'll get back to you within 24 hours.</p>
                         </div>
-                        <form id="contactForm" novalidate="">
+                        <form id="contactForm" novalidate="" class="">
                             <div class="elegant-form-row">
                                 <div class="input-container">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="12" cy="7" r="4"></circle>
                                     </svg>
-                                    <input type="text" id="firstName" name="firstName" placeholder="First Name *" required="">
+                                    <input type="text" id="firstName" name="firstName" placeholder="First Name *" required="" class="">
                                 </div>
                                 <div class="input-container">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="12" cy="7" r="4"></circle>
                                     </svg>
-                                    <input type="text" id="lastName" name="lastName" placeholder="Last Name *" required="">
+                                    <input type="text" id="lastName" name="lastName" placeholder="Last Name *" required="" class="">
                                 </div>
                             </div>
                             <div class="elegant-form-row">
@@ -3091,13 +2688,13 @@
                                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                                         <polyline points="22,6 12,13 2,6"></polyline>
                                     </svg>
-                                    <input type="email" id="email" name="email" placeholder="Email Address *" required="">
+                                    <input type="email" id="email" name="email" placeholder="Email Address *" required="" class="">
                                 </div>
                                 <div class="input-container">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                                     </svg>
-                                    <input type="tel" id="phone" name="phone" placeholder="Phone Number">
+                                    <input type="tel" id="phone" name="phone" placeholder="Phone Number" class="">
                                 </div>
                             </div>
                             <div class="elegant-form-row">
@@ -3106,7 +2703,7 @@
                                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
                                     </svg>
-                                    <input type="text" id="company" name="company" placeholder="Company Name">
+                                    <input type="text" id="company" name="company" placeholder="Company Name" class="">
                                 </div>
                                 <div class="input-container">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3114,7 +2711,7 @@
                                         <line x1="12" y1="16" x2="12" y2="12"></line>
                                         <line x1="12" y1="8" x2="12.01" y2="8"></line>
                                     </svg>
-                                    <select id="inquiry" name="inquiry" required="">
+                                    <select id="inquiry" name="inquiry" required="" class="">
                                         <option value="" disabled="" selected="">Select Inquiry Type *</option>
                                         <option value="buying">Buying Commodities</option>
                                         <option value="selling">Selling / Partnership</option>
@@ -3131,23 +2728,23 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                                     </svg>
-                                    <textarea id="message" name="message" rows="4" placeholder="Your Message *" required=""></textarea>
+                                    <textarea id="message" name="message" rows="4" placeholder="Your Message *" required="" class=""></textarea>
                                 </div>
                             </div>
                             <div class="elegant-checkboxes">
                                 <label class="elegant-checkbox-label">
                                     <input type="checkbox" id="privacy" name="privacy" required="">
                                     <span class="elegant-checkmark"></span>
-                                    <span>I agree to the <a href="privacy.html" target="_blank">Privacy Policy</a> *</span>
+                                    <span class="">I agree to the <a href="privacy.html" target="_blank" class="">Privacy Policy</a> *</span>
                                 </label>
                                 <label class="elegant-checkbox-label">
                                     <input type="checkbox" id="newsletter" name="newsletter">
                                     <span class="elegant-checkmark"></span>
-                                    <span>Subscribe to newsletter for market insights</span>
+                                    <span class="">Subscribe to newsletter for market insights</span>
                                 </label>
                             </div>
                             <button type="submit" class="elegant-submit-btn">
-                                <span>Send Message</span>
+                                <span class="">Send Message</span>
                             </button>
                             <div class="form-success" id="formSuccess" role="alert" aria-live="polite" hidden="">
                                 <div class="success-icon">
@@ -3189,18 +2786,18 @@
                             <circle cx="25" cy="25" r="23" fill="none" stroke="currentColor" stroke-width="2"></circle>
                             <text x="25" y="30" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">IM</text>
                         </svg>
-                        <span>IUSTUS MERCATURA</span>
+                        <span class="">IUSTUS MERCATURA</span>
                     </div>
                     <p class="footer-tagline">Connecting farmers to consumers to deliver essential food, feed and fuel to the world.</p>
                     <div class="footer-contact-info">
-                        <a href="mailto:info@imh-bvi.com">
+                        <a href="mailto:info@imh-bvi.com" class="">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                                 <polyline points="22,6 12,13 2,6"></polyline>
                             </svg>
                             info@imh-bvi.com
                         </a>
-                        <a href="tel:+12818167296">
+                        <a href="tel:+12818167296" class="">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path>
                             </svg>
@@ -3212,65 +2809,56 @@
                 <!-- Link Columns -->
                 
 
-                <div class="footer-column" style="translate: none; rotate: none; scale: none; transform: translate(0px, 30px); opacity: 0;">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#team">Leadership</a></li>
-                        <li><a href="#team">Careers</a></li>
-                        <li><a href="#locations">Locations</a></li>
+                <div class="footer-column" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
+                    <h4 class="">Company</h4>
+                    <ul class="">
+                        <li class=""><a href="#about" class="">About Us</a></li>
+                        <li class=""><a href="#team" class="">Leadership</a></li>
+                        <li class=""><a href="#team" class="">Careers</a></li>
+                        <li class=""><a href="#locations" class="">Locations</a></li>
                     </ul>
                 </div>
 
-                <div class="footer-column" style="translate: none; rotate: none; scale: none; transform: translate(0px, 30px); opacity: 0;">
-                    <h4>Products</h4>
-                    <ul>
-                        <li><a href="#products">Brazilian Sugar IC45</a></li>
-                        <li><a href="#products">Sugar VHP</a></li>
-                        <li><a href="#products">Soybeans</a></li>
-                        <li><a href="#products">Yellow Corn</a></li>
+                <div class="footer-column" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
+                    <h4 class="">Products</h4>
+                    <ul class="">
+                        <li class=""><a href="#products" class="">Brazilian Sugar IC45</a></li>
+                        <li class=""><a href="#products" class="">Sugar VHP</a></li>
+                        <li class=""><a href="#products" class="">Soybeans</a></li>
+                        <li class=""><a href="#products" class="">Yellow Corn</a></li>
                     </ul>
                 </div>
 
-                <div class="footer-column" style="translate: none; rotate: none; scale: none; transform: translate(0px, 30px); opacity: 0;">
-                    <h4>Services</h4>
-                    <ul>
-                        <li><a href="#about">For Producers</a></li>
-                        <li><a href="#about">For Buyers</a></li>
-                        <li><a href="#projects">Trade Finance</a></li>
-                        <li><a href="#locations">Logistics</a></li>
+                <div class="footer-column" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
+                    <h4 class="">Services</h4>
+                    <ul class="">
+                        <li class=""><a href="#about" class="">For Producers</a></li>
+                        <li class=""><a href="#about" class="">For Buyers</a></li>
+                        <li class=""><a href="#projects" class="">Trade Finance</a></li>
+                        <li class=""><a href="#locations" class="">Logistics</a></li>
                     </ul>
                 </div>
-            <div class="footer-column" style="translate: none; rotate: none; scale: none; transform: translate(0px, 30px); opacity: 0;">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                        <li><a href="terms.html">Terms of Service</a></li>
-                        <li><a href="imprint.html">Imprint</a></li>
-                        <li><a href="#sustainability">Compliance</a></li>
-                    </ul>
-                </div>
-            <div class="footer-column" style="translate: none; rotate: none; scale: none; transform: translate(0px, 30px); opacity: 0;">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="careers.html">Careers</a></li>
-                        <li><a href="booking.html">Book a Meeting</a></li>
-                        <li><a href="quote.html">Request a Quote</a></li>
-                        <li><a href="#contact">Contact Us</a></li>
+            <div class="footer-column" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
+                    <h4 class="">Legal</h4>
+                    <ul class="">
+                        <li class=""><a href="privacy.html" class="">Privacy Policy</a></li>
+                        <li class=""><a href="terms.html" class="">Terms of Service</a></li>
+                        <li class=""><a href="imprint.html" class="">Imprint</a></li>
+                        <li class=""><a href="#sustainability" class="">Compliance</a></li>
                     </ul>
                 </div></div>
 
             <!-- Newsletter Signup -->
             <div class="footer-newsletter">
                 <div class="newsletter-content">
-                    <h4 data-i18n="newsletter.title">Stay Updated</h4>
-                    <p data-i18n="newsletter.subtitle">Subscribe to our newsletter for market insights and company updates.</p>
+                    <h4 data-i18n="newsletter.title" class="">Stay Updated</h4>
+                    <p data-i18n="newsletter.subtitle" class="">Subscribe to our newsletter for market insights and company updates.</p>
                 </div>
                 <form class="newsletter-form" aria-label="Newsletter signup">
                     <div class="newsletter-input-group">
-                        <input type="email" placeholder="Enter your email" required="" aria-label="Email address">
+                        <input type="email" placeholder="Enter your email" required="" aria-label="Email address" class="">
                         <button type="submit" class="btn btn-primary">
-                            <span data-i18n="newsletter.button">Subscribe</span>
+                            <span data-i18n="newsletter.button" class="">Subscribe</span>
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M5 12h14M12 5l7 7-7 7"></path>
                             </svg>
@@ -3283,55 +2871,15 @@
             </div>
 
             <div class="footer-bottom">
-                <p>© 2025 Iustus Mercatura Holding Inc. All rights reserved.</p>
+                <p class="">© 2025 Iustus Mercatura Holding Inc. All rights reserved.</p>
                 <div class="footer-legal-links">
-                    <a href="privacy.html">Privacy</a>
-                    <a href="terms.html">Terms</a>
-                    <a href="imprint.html">Imprint</a>
+                    <a href="privacy.html" class="">Privacy</a>
+                    <a href="terms.html" class="">Terms</a>
+                    <a href="imprint.html" class="">Imprint</a>
                 </div>
             </div>
         </div>
     </footer>
-
-    <!-- Floating Action Buttons -->
-    <div class="floating-actions">
-        <!-- Book a Meeting -->
-        <a href="booking.html" class="floating-btn booking-float" aria-label="Book a Meeting" title="Book a Meeting">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-                <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
-            </svg>
-            <span class="tooltip">Book a Meeting</span>
-        </a>
-
-        <!-- Request Quote -->
-        <a href="quote.html" class="floating-btn quote-float" aria-label="Request Quote" title="Request a Quote">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/>
-                <line x1="16" y1="17" x2="8" y2="17"/>
-                <line x1="10" y1="9" x2="8" y2="9"/>
-            </svg>
-            <span class="tooltip">Request a Quote</span>
-        </a>
-
-        <!-- WhatsApp - opens directly in app -->
-        <a href="https://wa.me/256791359556?text=Hello%2C%20I%20would%20like%20to%20inquire%20about%20your%20products"
-           class="floating-btn whatsapp-float"
-           aria-label="Chat on WhatsApp"
-           title="Chat with us on WhatsApp"
-           target="_blank"
-           rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            <span class="whatsapp-tooltip">WhatsApp</span>
-        </a>
-    </div>
 
     <!-- Sticky Mobile CTA -->
     <div class="sticky-mobile-cta" aria-hidden="true">
@@ -3464,27 +3012,4 @@
                 <stop offset="0%" style="stop-color:#d4af37;stop-opacity:0.8"></stop>
                 <stop offset="100%" style="stop-color:#e8c547;stop-opacity:0.4"></stop>
             </linearGradient>
-        </defs><path stroke="url(#goldGradient)" stroke-width="2" fill="none" stroke-dasharray="8 4"></path></svg><div class="scroll-progress-bar" style="width: 0%;"></div><div class="page-transition-overlay">
-        <div class="transition-panels">
-            <div class="transition-panel panel-1"></div>
-            <div class="transition-panel panel-2"></div>
-            <div class="transition-panel panel-3"></div>
-            <div class="transition-panel panel-4"></div>
-            <div class="transition-panel panel-5"></div>
-        </div>
-        <div class="transition-logo">
-            <svg viewBox="0 0 100 100" class="transition-icon">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="251" stroke-dashoffset="251"></circle>
-            </svg>
-        </div>
-    </div><svg class="hover-connector-line" width="100%" height="100%" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 9998;"><defs>
-            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#d4af37;stop-opacity:0.8"></stop>
-                <stop offset="100%" style="stop-color:#e8c547;stop-opacity:0.4"></stop>
-            </linearGradient>
-        </defs><path stroke="url(#goldGradient)" stroke-width="2" fill="none" stroke-dasharray="8 4"></path></svg><svg class="hover-connector-line" width="100%" height="100%" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; pointer-events: none; z-index: 9998;"><defs>
-            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#d4af37;stop-opacity:0.8"></stop>
-                <stop offset="100%" style="stop-color:#e8c547;stop-opacity:0.4"></stop>
-            </linearGradient>
-        </defs><path stroke="url(#goldGradient)" stroke-width="2" fill="none" stroke-dasharray="8 4"></path></svg><div class="scroll-progress-bar"></div></body></html>
+        </defs><path stroke="url(#goldGradient)" stroke-width="2" fill="none" stroke-dasharray="8 4"></path></svg><div class="scroll-progress-bar" style="width: 0%;"></div></body></html>

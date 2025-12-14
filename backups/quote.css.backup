@@ -1,0 +1,725 @@
+/* ============================================
+   REQUEST A QUOTE - Glassmorphism Multi-Step Form
+   ============================================ */
+
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --primary-navy: #0a1628;
+    --accent-gold: #c9a227;
+    --accent-gold-light: #e8c547;
+    --text-white: #ffffff;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base */
+.quote-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 50%, #0a1628 100%);
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Three.js Canvas Background */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Quote Container */
+.quote-container {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.quote-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    margin-bottom: 20px;
+}
+
+.quote-logo {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.quote-logo .logo-main {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-white);
+    letter-spacing: 3px;
+}
+
+.quote-logo .logo-sub {
+    font-size: 10px;
+    color: var(--accent-gold);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.close-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.close-btn:hover {
+    background: rgba(201, 162, 39, 0.2);
+    border-color: var(--accent-gold);
+    transform: rotate(90deg);
+}
+
+.close-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Progress Bar */
+.progress-container {
+    max-width: 900px;
+    margin: 0 auto 40px;
+    width: 100%;
+    padding: 0 20px;
+}
+
+.progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-gold), var(--accent-gold-light));
+    border-radius: 2px;
+    width: 20%;
+    transition: width 0.5s ease;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.5;
+    transition: var(--transition);
+}
+
+.step.active {
+    opacity: 1;
+}
+
+.step.completed {
+    opacity: 1;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--text-white);
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.step.active .step-number {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--primary-navy);
+}
+
+.step.completed .step-number {
+    background: rgba(16, 185, 129, 0.8);
+    border-color: #10b981;
+}
+
+.step.completed .step-number::after {
+    content: '✓';
+    font-size: 16px;
+}
+
+.step-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.step.active .step-label {
+    color: var(--accent-gold);
+}
+
+/* Form Wrapper */
+.form-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.quote-form {
+    max-width: 900px;
+    width: 100%;
+}
+
+/* Form Steps */
+.form-step {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.form-step.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Glass Card */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: var(--glass-shadow);
+}
+
+.glass-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--text-white);
+    margin-bottom: 10px;
+}
+
+.step-description {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 30px;
+}
+
+/* Product Grid */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.product-card {
+    cursor: pointer;
+}
+
+.product-card input {
+    display: none;
+}
+
+.product-card .card-content {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 24px;
+    transition: var(--transition);
+    height: 100%;
+}
+
+.product-card:hover .card-content {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(201, 162, 39, 0.3);
+}
+
+.product-card input:checked + .card-content {
+    background: rgba(201, 162, 39, 0.15);
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 30px rgba(201, 162, 39, 0.2);
+}
+
+.product-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.product-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--text-white);
+    margin-bottom: 8px;
+}
+
+.product-card p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.product-card .specs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.product-card .specs li {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 4px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.product-card .specs li:first-child {
+    border-top: none;
+}
+
+/* Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text-white);
+    font-size: 15px;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+    background: rgba(201, 162, 39, 0.1);
+    box-shadow: 0 0 20px rgba(201, 162, 39, 0.15);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a227' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+    padding-right: 48px;
+}
+
+.form-group select option {
+    background: var(--primary-navy);
+    color: var(--text-white);
+}
+
+.helper-text {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Checkbox Group */
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    appearance: none;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+}
+
+.checkbox-label input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--primary-navy);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.checkbox-label.consent {
+    align-items: flex-start;
+}
+
+.checkbox-label.consent a {
+    color: var(--accent-gold);
+    text-decoration: none;
+}
+
+.checkbox-label.consent a:hover {
+    text-decoration: underline;
+}
+
+/* Review Grid */
+.review-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.review-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.review-section h4 {
+    font-size: 14px;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.3);
+}
+
+.review-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-item .label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+}
+
+.review-item .value {
+    color: var(--text-white);
+    font-weight: 500;
+    font-size: 14px;
+    text-align: right;
+}
+
+/* Submit Options */
+.submit-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Success Card */
+.success-card {
+    text-align: center;
+    padding: 60px 40px;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+    border: 2px solid #10b981;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+}
+
+.success-icon svg {
+    width: 40px;
+    height: 40px;
+    color: #10b981;
+}
+
+.success-card h2 {
+    color: #10b981;
+}
+
+.success-card p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 16px;
+}
+
+.reference-number {
+    font-size: 18px;
+    color: var(--accent-gold);
+    font-weight: 600;
+    background: rgba(201, 162, 39, 0.1);
+    padding: 12px 24px;
+    border-radius: 8px;
+    display: inline-block;
+    margin: 20px 0;
+}
+
+.success-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+/* Navigation Buttons */
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding: 0 20px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    text-decoration: none;
+}
+
+.btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-light));
+    color: var(--primary-navy);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(201, 162, 39, 0.4);
+}
+
+.btn-secondary {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    color: var(--text-white);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--accent-gold);
+}
+
+.prev-btn {
+    visibility: hidden;
+}
+
+.prev-btn.visible {
+    visibility: visible;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .quote-header {
+        padding: 20px;
+    }
+
+    .glass-card {
+        padding: 24px;
+    }
+
+    .glass-card h2 {
+        font-size: 24px;
+    }
+
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: span 1;
+    }
+
+    .review-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .progress-steps {
+        gap: 10px;
+    }
+
+    .step-label {
+        display: none;
+    }
+
+    .step-number {
+        width: 36px;
+        height: 36px;
+        font-size: 12px;
+    }
+
+    .btn {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+
+    .success-actions {
+        flex-direction: column;
+    }
+}
+
+/* Error States */
+.form-group.error input,
+.form-group.error select,
+.form-group.error textarea {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* Loading State */
+.btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn.loading::after {
+    content: '';
+    width: 18px;
+    height: 18px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Print Styles */
+@media print {
+    #bg-canvas,
+    .quote-header,
+    .progress-container,
+    .form-navigation {
+        display: none !important;
+    }
+
+    .quote-page {
+        background: white !important;
+    }
+
+    .glass-card {
+        background: white !important;
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+    }
+
+    .glass-card h2,
+    .review-item .value {
+        color: #1a1a1a !important;
+    }
+
+    .review-item .label {
+        color: #666 !important;
+    }
+}

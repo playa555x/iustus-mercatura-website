@@ -1,0 +1,16 @@
+services:
+  # Main Website & Backend Server
+  - type: web
+    name: iustus-mercatura
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+    buildCommand: echo "Using Bun runtime"
+    startCommand: bun run server.ts
+    healthCheckPath: /
+    autoDeploy: true

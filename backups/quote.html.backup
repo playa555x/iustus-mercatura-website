@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Request a Quote | Iustus Mercatura</title>
+    <meta name="description" content="Request a quote for Brazilian commodities - Sugar IC45, VHP, Soybeans, and Corn from Iustus Mercatura.">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="quote.css">
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body class="quote-page">
+    <!-- Three.js Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Quote Container -->
+    <div class="quote-container">
+        <!-- Header -->
+        <header class="quote-header">
+            <a href="index.html" class="quote-logo">
+                <span class="logo-main">IUSTUS MERCATURA</span>
+                <span class="logo-sub">JUST TRADE</span>
+            </a>
+            <a href="index.html" class="close-btn" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </a>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Product</span>
+                </div>
+                <div class="step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Details</span>
+                </div>
+                <div class="step" data-step="3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Logistics</span>
+                </div>
+                <div class="step" data-step="4">
+                    <span class="step-number">4</span>
+                    <span class="step-label">Contact</span>
+                </div>
+                <div class="step" data-step="5">
+                    <span class="step-number">5</span>
+                    <span class="step-label">Review</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-wrapper">
+            <form id="quoteForm" class="quote-form" novalidate>
+                <!-- Step 1: Product Selection -->
+                <div class="form-step active" data-step="1">
+                    <div class="step-content glass-card">
+                        <h2>Select Your Product</h2>
+                        <p class="step-description">Choose the commodity you're interested in purchasing</p>
+
+                        <div class="product-grid">
+                            <label class="product-card">
+                                <input type="radio" name="product" value="sugar_ic45" required>
+                                <div class="card-content">
+                                    <div class="product-icon">🍬</div>
+                                    <h3>Sugar IC45</h3>
+                                    <p>Premium refined cane sugar</p>
+                                    <ul class="specs">
+                                        <li>ICUMSA: 45 max</li>
+                                        <li>Polarization: 99.8%</li>
+                                        <li>Food grade quality</li>
+                                    </ul>
+                                </div>
+                            </label>
+
+                            <label class="product-card">
+                                <input type="radio" name="product" value="sugar_vhp">
+                                <div class="card-content">
+                                    <div class="product-icon">🏭</div>
+                                    <h3>Sugar VHP</h3>
+                                    <p>Very High Polarization sugar</p>
+                                    <ul class="specs">
+                                        <li>ICUMSA: 600-1200</li>
+                                        <li>Ideal for refining</li>
+                                        <li>Industrial use</li>
+                                    </ul>
+                                </div>
+                            </label>
+
+                            <label class="product-card">
+                                <input type="radio" name="product" value="soybeans">
+                                <div class="card-content">
+                                    <div class="product-icon">🫘</div>
+                                    <h3>Soybeans</h3>
+                                    <p>Premium yellow soybeans</p>
+                                    <ul class="specs">
+                                        <li>Protein: 36% min</li>
+                                        <li>Non-GMO available</li>
+                                        <li>Export quality</li>
+                                    </ul>
+                                </div>
+                            </label>
+
+                            <label class="product-card">
+                                <input type="radio" name="product" value="corn">
+                                <div class="card-content">
+                                    <div class="product-icon">🌽</div>
+                                    <h3>Yellow Corn</h3>
+                                    <p>High-quality feed corn</p>
+                                    <ul class="specs">
+                                        <li>Moisture: 14% max</li>
+                                        <li>Animal feed grade</li>
+                                        <li>Industrial use</li>
+                                    </ul>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Product Details -->
+                <div class="form-step" data-step="2">
+                    <div class="step-content glass-card">
+                        <h2>Product Details</h2>
+                        <p class="step-description">Specify your requirements</p>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="quantity">Quantity (MT)</label>
+                                <input type="number" id="quantity" name="quantity" min="100" step="100" placeholder="e.g., 12500" required>
+                                <span class="helper-text">Minimum order: 100 MT</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="frequency">Order Frequency</label>
+                                <select id="frequency" name="frequency" required>
+                                    <option value="">Select frequency</option>
+                                    <option value="one-time">One-time order</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                    <option value="annual">Annual contract</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="quality">Quality Grade</label>
+                                <select id="quality" name="quality" required>
+                                    <option value="">Select grade</option>
+                                    <option value="premium">Premium Grade</option>
+                                    <option value="standard">Standard Grade</option>
+                                    <option value="industrial">Industrial Grade</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="packaging">Packaging</label>
+                                <select id="packaging" name="packaging" required>
+                                    <option value="">Select packaging</option>
+                                    <option value="bulk">Bulk (Ship's Hold)</option>
+                                    <option value="bigbag">Big Bags (1-2 MT)</option>
+                                    <option value="bags_50kg">Bags 50kg</option>
+                                    <option value="bags_25kg">Bags 25kg</option>
+                                    <option value="container">Container (FCL)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="certifications">Required Certifications</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="certifications" value="organic">
+                                        <span>Organic</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="certifications" value="fairtrade">
+                                        <span>Fairtrade</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="certifications" value="non-gmo">
+                                        <span>Non-GMO</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="certifications" value="kosher">
+                                        <span>Kosher</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="certifications" value="halal">
+                                        <span>Halal</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Logistics -->
+                <div class="form-step" data-step="3">
+                    <div class="step-content glass-card">
+                        <h2>Logistics & Delivery</h2>
+                        <p class="step-description">Shipping and delivery preferences</p>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="incoterm">Incoterm</label>
+                                <select id="incoterm" name="incoterm" required>
+                                    <option value="">Select Incoterm</option>
+                                    <option value="FOB">FOB - Free on Board</option>
+                                    <option value="CIF">CIF - Cost, Insurance & Freight</option>
+                                    <option value="CFR">CFR - Cost & Freight</option>
+                                    <option value="DAP">DAP - Delivered at Place</option>
+                                    <option value="DDP">DDP - Delivered Duty Paid</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="destination_port">Destination Port/Location</label>
+                                <input type="text" id="destination_port" name="destination_port" placeholder="e.g., Rotterdam, Hamburg" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="destination_country">Destination Country</label>
+                                <input type="text" id="destination_country" name="destination_country" placeholder="e.g., Netherlands, Germany" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="delivery_date">Preferred Delivery Date</label>
+                                <input type="month" id="delivery_date" name="delivery_date" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="payment_terms">Payment Terms</label>
+                                <select id="payment_terms" name="payment_terms" required>
+                                    <option value="">Select payment terms</option>
+                                    <option value="lc_sight">L/C at Sight</option>
+                                    <option value="lc_30">L/C 30 days</option>
+                                    <option value="lc_60">L/C 60 days</option>
+                                    <option value="lc_90">L/C 90 days</option>
+                                    <option value="tt_advance">T/T in Advance</option>
+                                    <option value="tt_against_docs">T/T Against Documents</option>
+                                    <option value="open_to_discuss">Open to Discussion</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inspection">Inspection</label>
+                                <select id="inspection" name="inspection">
+                                    <option value="">Select inspection</option>
+                                    <option value="sgs">SGS</option>
+                                    <option value="intertek">Intertek</option>
+                                    <option value="bureau_veritas">Bureau Veritas</option>
+                                    <option value="cotecna">Cotecna</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Contact Information -->
+                <div class="form-step" data-step="4">
+                    <div class="step-content glass-card">
+                        <h2>Contact Information</h2>
+                        <p class="step-description">Your details for the quote</p>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="company_name">Company Name</label>
+                                <input type="text" id="company_name" name="company_name" placeholder="Your company name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact_name">Contact Person</label>
+                                <input type="text" id="contact_name" name="contact_name" placeholder="Full name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" placeholder="email@company.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <input type="text" id="country" name="country" placeholder="Your country" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="position">Your Position</label>
+                                <input type="text" id="position" name="position" placeholder="e.g., Procurement Manager">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="additional_notes">Additional Notes</label>
+                                <textarea id="additional_notes" name="additional_notes" rows="4" placeholder="Any specific requirements, questions, or additional information..."></textarea>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="checkbox-label consent">
+                                    <input type="checkbox" name="privacy" id="privacy" required>
+                                    <span>I agree to the <a href="privacy.html" target="_blank">Privacy Policy</a> and consent to data processing</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Review -->
+                <div class="form-step" data-step="5">
+                    <div class="step-content glass-card">
+                        <h2>Review Your Request</h2>
+                        <p class="step-description">Please verify your information before submitting</p>
+
+                        <div class="review-grid" id="reviewContent">
+                            <!-- Dynamically populated -->
+                        </div>
+
+                        <div class="submit-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="copy_email" id="copy_email">
+                                <span>Send me a copy of this request</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="whatsapp_updates" id="whatsapp_updates">
+                                <span>Receive updates via WhatsApp</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Message -->
+                <div class="form-step success-step" data-step="success">
+                    <div class="step-content glass-card success-card">
+                        <div class="success-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <h2>Request Submitted!</h2>
+                        <p>Thank you for your inquiry. Our team will review your request and get back to you within 24 hours.</p>
+                        <p class="reference-number">Reference: <span id="referenceNumber"></span></p>
+                        <div class="success-actions">
+                            <a href="index.html" class="btn btn-primary">Back to Home</a>
+                            <button type="button" class="btn btn-secondary" onclick="window.print()">Print Request</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary prev-btn" id="prevBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        Previous
+                    </button>
+                    <button type="button" class="btn btn-primary next-btn" id="nextBtn">
+                        Next
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                    <button type="submit" class="btn btn-primary submit-btn" id="submitBtn" style="display: none;">
+                        Submit Request
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13"></path>
+                            <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="quote.js"></script>
+</body>
+</html>

@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Developer Admin - Universal CMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="dev-admin.css">
+    <link rel="stylesheet" href="deploy-orchestrator.css">
+</head>
+<body>
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h1>Developer Admin</h1>
+                <p>Universal CMS - Full Access</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="devPassword">Passwort</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="devPassword" placeholder="Developer Passwort" required>
+                    </div>
+                </div>
+                <div class="login-error" id="loginError">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Falsches Passwort</span>
+                </div>
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Anmelden
+                </button>
+            </form>
+            <div class="login-footer">
+                <span>v3.0.0 - Universal CMS</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="appContainer" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-code"></i>
+                    <span>Dev Admin</span>
+                </div>
+                <div class="website-selector">
+                    <select id="websiteSelector">
+                        <!-- Websites via JS -->
+                    </select>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </button>
+
+                <div class="nav-divider"><span>Verbindungen</span></div>
+                <button class="nav-item" data-section="connections">
+                    <i class="fas fa-network-wired"></i>
+                    <span>Connection Monitor</span>
+                    <span class="nav-badge" id="connectionBadge">4</span>
+                </button>
+                <button class="nav-item" data-section="database">
+                    <i class="fas fa-database"></i>
+                    <span>Datenbank</span>
+                </button>
+                <button class="nav-item" data-section="sync">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Synchronisation</span>
+                </button>
+
+                <div class="nav-divider"><span>Website Bausteine</span></div>
+                <button class="nav-item" data-section="elements">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <span>Bausteine Website</span>
+                </button>
+
+                <div class="nav-divider"><span>Seiten</span></div>
+                <button class="nav-item" data-section="pages">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Alle Seiten</span>
+                </button>
+                <div id="navPages" class="nav-pages">
+                    <!-- Dynamische Seiten -->
+                </div>
+
+                <div class="nav-divider"><span>Sammlungen</span></div>
+                <button class="nav-item" data-section="collections">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Alle Sammlungen</span>
+                </button>
+                <div id="navCollections" class="nav-pages">
+                    <!-- Dynamische Collections -->
+                </div>
+
+                <div class="nav-divider"><span>Tools</span></div>
+                <button class="nav-item" data-section="templates">
+                    <i class="fas fa-copy"></i>
+                    <span>Templates</span>
+                </button>
+                <button class="nav-item" data-section="media">
+                    <i class="fas fa-images"></i>
+                    <span>Mediathek</span>
+                </button>
+                <button class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Einstellungen</span>
+                </button>
+                <button class="nav-item" data-section="logs">
+                    <i class="fas fa-terminal"></i>
+                    <span>Server Logs</span>
+                </button>
+
+                <div class="nav-divider"><span>Deployment</span></div>
+                <button class="nav-item" data-section="deploy">
+                    <i class="fas fa-rocket"></i>
+                    <span>Deploy Center</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sync-status-mini" id="syncStatusMini">
+                    <span class="status-dot green"></span>
+                    <span>Verbunden</span>
+                </div>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Abmelden</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="top-bar-left">
+                    <h2 id="currentSectionTitle">Dashboard</h2>
+                </div>
+                <div class="top-bar-right">
+                    <button class="btn-icon" onclick="devAdmin.openPreview()" title="Website Vorschau">
+                        <i class="fas fa-external-link-alt"></i>
+                    </button>
+                    <button class="btn-icon" onclick="devAdmin.openAdminPanel()" title="Kunden-Admin">
+                        <i class="fas fa-user-shield"></i>
+                    </button>
+                    <div class="changes-indicator" id="changesIndicator">
+                        <span id="changeCount">0</span> Aenderungen
+                    </div>
+                    <button class="btn-save" onclick="devAdmin.saveAll()">
+                        <i class="fas fa-save"></i>
+                        Speichern
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Section -->
+                <section class="content-section active" id="section-dashboard">
+                    <div class="stats-grid">
+                        <div class="stat-card blue">
+                            <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="statPages">0</span>
+                                <span class="stat-label">Seiten</span>
+                            </div>
+                        </div>
+                        <div class="stat-card green">
+                            <div class="stat-icon"><i class="fas fa-database"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="statCollections">0</span>
+                                <span class="stat-label">Sammlungen</span>
+                            </div>
+                        </div>
+                        <div class="stat-card purple">
+                            <div class="stat-icon"><i class="fas fa-th-large"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="statItems">0</span>
+                                <span class="stat-label">Eintraege</span>
+                            </div>
+                        </div>
+                        <div class="stat-card gold">
+                            <div class="stat-icon"><i class="fas fa-images"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="statMedia">0</span>
+                                <span class="stat-label">Medien</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <!-- Connection Status -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-network-wired"></i> Verbindungsstatus</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="connection-list" id="dashboardConnections">
+                                    <!-- Connections via JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-bolt"></i> Schnellaktionen</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="quick-actions">
+                                    <button class="btn-secondary" onclick="devAdmin.addPage()">
+                                        <i class="fas fa-plus"></i> Neue Seite
+                                    </button>
+                                    <button class="btn-secondary" onclick="devAdmin.addCollection()">
+                                        <i class="fas fa-plus"></i> Neue Sammlung
+                                    </button>
+                                    <button class="btn-secondary" onclick="devAdmin.navigateTo('templates')">
+                                        <i class="fas fa-copy"></i> Templates
+                                    </button>
+                                    <button class="btn-secondary" onclick="devAdmin.navigateTo('elements')">
+                                        <i class="fas fa-puzzle-piece"></i> Bausteine
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sync Status -->
+                        <div class="dashboard-card full-width">
+                            <div class="card-header">
+                                <h3><i class="fas fa-cloud"></i> Synchronisierung</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="sync-actions">
+                                    <button class="btn-primary" onclick="devAdmin.pullFromServer()">
+                                        <i class="fas fa-cloud-download-alt"></i> Vom Server laden
+                                    </button>
+                                    <button class="btn-warning" onclick="devAdmin.pushToServerWithConfirm()">
+                                        <i class="fas fa-cloud-upload-alt"></i> Auf Server speichern (mit Bestaetigung)
+                                    </button>
+                                    <button class="btn-secondary" onclick="devAdmin.syncToAdmin()">
+                                        <i class="fas fa-arrow-right"></i> An Admin Panel senden
+                                    </button>
+                                    <button class="btn-secondary" onclick="devAdmin.syncToWebsite()">
+                                        <i class="fas fa-globe"></i> Website aktualisieren
+                                    </button>
+                                </div>
+                                <div class="sync-info" id="lastSyncInfo">
+                                    Letzte Synchronisation: Nie
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Connection Monitor Section -->
+                <section class="content-section" id="section-connections">
+                    <div class="connection-monitor">
+                        <div class="monitor-header">
+                            <h3>System Verbindungen</h3>
+                            <button class="btn-secondary" onclick="devAdmin.refreshConnections()">
+                                <i class="fas fa-sync"></i> Aktualisieren
+                            </button>
+                        </div>
+
+                        <!-- WEBSITES OVERVIEW - Multi-Site -->
+                        <div class="sites-overview">
+                            <div class="sites-header">
+                                <h4><i class="fas fa-globe"></i> Verwaltete Websites</h4>
+                                <button class="btn-primary btn-sm" onclick="devAdmin.addWebsiteSite()">
+                                    <i class="fas fa-plus"></i> Neue Site
+                                </button>
+                            </div>
+                            <div class="sites-grid" id="sitesGrid">
+                                <!-- Sites werden via JS geladen -->
+                            </div>
+                        </div>
+
+                        <div class="connection-diagram">
+                            <div class="connection-node dev-admin">
+                                <div class="node-icon"><i class="fas fa-code"></i></div>
+                                <div class="node-label">Dev Admin</div>
+                                <div class="node-status" id="nodeDevAdmin">
+                                    <span class="status-dot green"></span>
+                                </div>
+                            </div>
+                            <div class="connection-line" id="lineDevToServer"></div>
+                            <div class="connection-node server">
+                                <div class="node-icon"><i class="fas fa-server"></i></div>
+                                <div class="node-label">Server</div>
+                                <div class="node-status" id="nodeServer">
+                                    <span class="status-dot green"></span>
+                                </div>
+                            </div>
+                            <div class="connection-branches">
+                                <div class="connection-branch">
+                                    <div class="connection-line" id="lineServerToAdmin"></div>
+                                    <div class="connection-node admin" id="adminPanelNode">
+                                        <div class="node-icon"><i class="fas fa-user-shield"></i></div>
+                                        <div class="node-label">Admin Panel</div>
+                                        <div class="node-status" id="nodeAdminPanel">
+                                            <span class="status-dot yellow"></span>
+                                        </div>
+                                        <button class="node-action-btn" onclick="devAdmin.startAdminPanel()" title="Admin Panel starten">
+                                            <i class="fas fa-play"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="connection-branch">
+                                    <div class="connection-line" id="lineServerToWebsite"></div>
+                                    <div class="connection-node website" id="websiteNode">
+                                        <div class="node-icon"><i class="fas fa-globe"></i></div>
+                                        <div class="node-label">Website</div>
+                                        <div class="node-status" id="nodeWebsite">
+                                            <span class="status-dot green"></span>
+                                        </div>
+                                        <button class="node-action-btn" onclick="devAdmin.openWebsite()" title="Website oeffnen">
+                                            <i class="fas fa-external-link-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="connection-branch">
+                                    <div class="connection-line" id="lineServerToDb"></div>
+                                    <div class="connection-node database">
+                                        <div class="node-icon"><i class="fas fa-database"></i></div>
+                                        <div class="node-label">Database</div>
+                                        <div class="node-status" id="nodeDatabase">
+                                            <span class="status-dot green"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="connection-details">
+                            <h4>Verbindungsdetails</h4>
+                            <div class="connection-table" id="connectionTable">
+                                <!-- Connection details via JS -->
+                            </div>
+                        </div>
+
+                        <div class="error-analysis">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Fehleranalyse</h4>
+                            <div class="error-log" id="errorLog">
+                                <div class="no-errors">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Keine Fehler gefunden</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Database Section -->
+                <section class="content-section" id="section-database">
+                    <div class="database-viewer">
+                        <div class="db-sidebar">
+                            <h4>Tabellen</h4>
+                            <div class="db-tables" id="dbTables">
+                                <!-- Tables via JS -->
+                            </div>
+                        </div>
+                        <div class="db-content">
+                            <div class="db-toolbar">
+                                <h4 id="dbTableName">Tabelle waehlen</h4>
+                                <div class="db-actions">
+                                    <button class="btn-secondary btn-sm" onclick="devAdmin.refreshTable()">
+                                        <i class="fas fa-sync"></i>
+                                    </button>
+                                    <button class="btn-primary btn-sm" onclick="devAdmin.addTableRow()">
+                                        <i class="fas fa-plus"></i> Neu
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="db-table-wrapper" id="dbTableContent">
+                                <div class="no-table-selected">
+                                    <i class="fas fa-database"></i>
+                                    <p>Waehle eine Tabelle aus der Liste</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sync Section -->
+                <section class="content-section" id="section-sync">
+                    <div class="sync-panel">
+                        <div class="sync-header">
+                            <h3>Synchronisierungs-Center</h3>
+                            <div class="sync-mode">
+                                <span class="sync-mode-label">Automatisch:</span>
+                                <label class="toggle">
+                                    <input type="checkbox" id="autoSyncToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="sync-mode-info">(Nur Pull - Push erfordert Bestaetigung)</span>
+                            </div>
+                        </div>
+
+                        <div class="sync-grid">
+                            <div class="sync-card pull">
+                                <div class="sync-card-header">
+                                    <i class="fas fa-cloud-download-alt"></i>
+                                    <h4>Pull (Vom Server)</h4>
+                                </div>
+                                <div class="sync-card-body">
+                                    <p>Aktuelle Daten vom Server laden und lokale Daten aktualisieren.</p>
+                                    <button class="btn-primary" onclick="devAdmin.pullFromServer()">
+                                        <i class="fas fa-download"></i> Jetzt laden
+                                    </button>
+                                </div>
+                                <div class="sync-card-status">
+                                    Letzter Pull: <span id="lastPull">Nie</span>
+                                </div>
+                            </div>
+
+                            <div class="sync-card push">
+                                <div class="sync-card-header">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <h4>Push (Zum Server)</h4>
+                                </div>
+                                <div class="sync-card-body">
+                                    <p>Lokale Aenderungen auf den Server uebertragen. Erfordert Bestaetigung!</p>
+                                    <button class="btn-warning" onclick="devAdmin.pushToServerWithConfirm()">
+                                        <i class="fas fa-upload"></i> Push mit Bestaetigung
+                                    </button>
+                                </div>
+                                <div class="sync-card-status warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Aenderungen werden NIE automatisch gesendet
+                                </div>
+                            </div>
+
+                            <div class="sync-card admin">
+                                <div class="sync-card-header">
+                                    <i class="fas fa-user-shield"></i>
+                                    <h4>Admin Panel</h4>
+                                </div>
+                                <div class="sync-card-body">
+                                    <p>Daten an das Kunden-Admin-Panel senden.</p>
+                                    <button class="btn-secondary" onclick="devAdmin.syncToAdmin()">
+                                        <i class="fas fa-arrow-right"></i> Zu Admin senden
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="sync-card website">
+                                <div class="sync-card-header">
+                                    <i class="fas fa-globe"></i>
+                                    <h4>Website</h4>
+                                </div>
+                                <div class="sync-card-body">
+                                    <p>Live-Website mit aktuellen Daten aktualisieren.</p>
+                                    <button class="btn-secondary" onclick="devAdmin.syncToWebsite()">
+                                        <i class="fas fa-sync"></i> Website aktualisieren
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sync-log">
+                            <h4><i class="fas fa-history"></i> Sync-Protokoll</h4>
+                            <div class="sync-log-entries" id="syncLogEntries">
+                                <!-- Sync log via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Website Elements Section (Bausteine) -->
+                <section class="content-section" id="section-elements">
+                    <div class="elements-panel">
+                        <div class="elements-header">
+                            <h3>Website Bausteine</h3>
+                            <div class="elements-actions">
+                                <select id="elementPageSelect" onchange="devAdmin.extractElements()">
+                                    <option value="index.html">index.html (Iustus Mercatura)</option>
+                                    <option value="quote.html">quote.html (Anfrage)</option>
+                                    <option value="admin.html">admin.html (Admin)</option>
+                                </select>
+                                <button class="btn-primary" onclick="devAdmin.extractElements()">
+                                    <i class="fas fa-sync"></i> Extrahieren
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="elements-grid">
+                            <!-- Texte -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('texts')">
+                                    <i class="fas fa-font"></i>
+                                    <span>Texte</span>
+                                    <span class="element-count" id="textCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementTexts">
+                                    <!-- Texts via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Bilder -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('images')">
+                                    <i class="fas fa-image"></i>
+                                    <span>Bilder</span>
+                                    <span class="element-count" id="imageElementCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementImages">
+                                    <!-- Images via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Headings -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('headings')">
+                                    <i class="fas fa-heading"></i>
+                                    <span>Ueberschriften</span>
+                                    <span class="element-count" id="headingCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementHeadings">
+                                    <!-- Headings via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Links -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('links')">
+                                    <i class="fas fa-link"></i>
+                                    <span>Links</span>
+                                    <span class="element-count" id="linkCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementLinks">
+                                    <!-- Links via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Sections -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('sections')">
+                                    <i class="fas fa-th-large"></i>
+                                    <span>Sektionen</span>
+                                    <span class="element-count" id="sectionCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementSections">
+                                    <!-- Sections via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Classes -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('classes')">
+                                    <i class="fas fa-code"></i>
+                                    <span>CSS Klassen</span>
+                                    <span class="element-count" id="classCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementClasses">
+                                    <!-- Classes via JS -->
+                                </div>
+                            </div>
+
+                            <!-- IDs -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('ids')">
+                                    <i class="fas fa-hashtag"></i>
+                                    <span>IDs</span>
+                                    <span class="element-count" id="idCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementIds">
+                                    <!-- IDs via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('buttons')">
+                                    <i class="fas fa-square"></i>
+                                    <span>Buttons</span>
+                                    <span class="element-count" id="buttonCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementButtons">
+                                    <!-- Buttons via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Farben -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('colors')">
+                                    <i class="fas fa-palette"></i>
+                                    <span>Farben</span>
+                                    <span class="element-count" id="colorCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementColors">
+                                    <!-- Colors via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Schriftarten -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('fonts')">
+                                    <i class="fas fa-text-height"></i>
+                                    <span>Schriftarten</span>
+                                    <span class="element-count" id="fontCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementFonts">
+                                    <!-- Fonts via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Formulare -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('forms')">
+                                    <i class="fas fa-wpforms"></i>
+                                    <span>Formulare</span>
+                                    <span class="element-count" id="formCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementForms">
+                                    <!-- Forms via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Scripts -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('scripts')">
+                                    <i class="fab fa-js"></i>
+                                    <span>Scripts</span>
+                                    <span class="element-count" id="scriptCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementScripts">
+                                    <!-- Scripts via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Stylesheets -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('styles')">
+                                    <i class="fab fa-css3-alt"></i>
+                                    <span>Stylesheets</span>
+                                    <span class="element-count" id="styleCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementStyles">
+                                    <!-- Styles via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Meta-Daten -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('meta')">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Meta-Daten</span>
+                                    <span class="element-count" id="metaCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementMeta">
+                                    <!-- Meta via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Icons -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('icons')">
+                                    <i class="fas fa-icons"></i>
+                                    <span>Icons</span>
+                                    <span class="element-count" id="iconCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementIcons">
+                                    <!-- Icons via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Videos/Embeds -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('embeds')">
+                                    <i class="fas fa-video"></i>
+                                    <span>Videos/Embeds</span>
+                                    <span class="element-count" id="embedCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementEmbeds">
+                                    <!-- Embeds via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Datenattribute -->
+                            <div class="element-category">
+                                <div class="element-category-header" onclick="devAdmin.toggleCategory('dataAttrs')">
+                                    <i class="fas fa-database"></i>
+                                    <span>Data-Attribute</span>
+                                    <span class="element-count" id="dataAttrCount">0</span>
+                                    <i class="fas fa-chevron-down toggle-icon"></i>
+                                </div>
+                                <div class="element-list" id="elementDataAttrs">
+                                    <!-- Data attributes via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pages Section -->
+                <section class="content-section" id="section-pages">
+                    <div class="section-toolbar">
+                        <div class="toolbar-left">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="form-input" placeholder="Seiten suchen..." oninput="devAdmin.filterPages(this.value)">
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <button class="btn-primary" onclick="devAdmin.addPage()">
+                                <i class="fas fa-plus"></i> Neue Seite
+                            </button>
+                        </div>
+                    </div>
+                    <div class="data-table-wrapper" id="pagesTable">
+                        <!-- Pages via JS -->
+                    </div>
+                </section>
+
+                <!-- Collections Section -->
+                <section class="content-section" id="section-collections">
+                    <div class="section-toolbar">
+                        <div class="toolbar-left">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="form-input" placeholder="Sammlungen suchen...">
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <button class="btn-primary" onclick="devAdmin.addCollection()">
+                                <i class="fas fa-plus"></i> Neue Sammlung
+                            </button>
+                        </div>
+                    </div>
+                    <div class="items-grid" id="collectionsGrid">
+                        <!-- Collections via JS -->
+                    </div>
+                </section>
+
+                <!-- Templates Section -->
+                <section class="content-section" id="section-templates">
+                    <div class="templates-panel">
+                        <div class="templates-header">
+                            <h3>Website Templates</h3>
+                            <button class="btn-primary" onclick="devAdmin.createTemplate()">
+                                <i class="fas fa-plus"></i> Neues Template erstellen
+                            </button>
+                        </div>
+
+                        <div class="templates-grid" id="templatesGrid">
+                            <!-- Saved Templates -->
+                            <div class="template-card new-website" onclick="devAdmin.createNewWebsite()">
+                                <div class="template-icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <h4>Neue Website erstellen</h4>
+                                <p>Starte mit einer leeren Website</p>
+                            </div>
+
+                            <div class="template-card" onclick="devAdmin.useTemplate('blank')">
+                                <div class="template-preview blank">
+                                    <i class="fas fa-file"></i>
+                                </div>
+                                <h4>Blank Template</h4>
+                                <p>Minimales Grundgeruest</p>
+                            </div>
+
+                            <div class="template-card" onclick="devAdmin.useTemplate('business')">
+                                <div class="template-preview business">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                                <h4>Business Template</h4>
+                                <p>Professionelle Unternehmensseite</p>
+                            </div>
+
+                            <div class="template-card" onclick="devAdmin.useTemplate('portfolio')">
+                                <div class="template-preview portfolio">
+                                    <i class="fas fa-palette"></i>
+                                </div>
+                                <h4>Portfolio Template</h4>
+                                <p>Kreatives Portfolio-Layout</p>
+                            </div>
+                        </div>
+
+                        <div class="saved-templates">
+                            <h4><i class="fas fa-save"></i> Gespeicherte Templates</h4>
+                            <div class="saved-templates-list" id="savedTemplates">
+                                <!-- Saved templates via JS -->
+                                <div class="no-templates">
+                                    <i class="fas fa-folder-open"></i>
+                                    <p>Keine gespeicherten Templates</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="websites-list">
+                            <h4><i class="fas fa-globe"></i> Alle Websites</h4>
+                            <div class="websites-grid" id="websitesGrid">
+                                <!-- Websites via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Page Builder Section -->
+                <section class="content-section" id="section-builder">
+                    <div class="visual-builder-container">
+                        <!-- Left: Element Tree / Sections List -->
+                        <div class="builder-sidebar">
+                            <div class="builder-sidebar-header">
+                                <h4><i class="fas fa-sitemap"></i> Seitenstruktur</h4>
+                                <div class="builder-sidebar-actions">
+                                    <button class="btn-icon-sm" onclick="devAdmin.refreshPageSections()" title="Neu laden">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Section Count -->
+                            <div class="builder-section-count">
+                                <span id="builderSectionCount">0 Sections</span>
+                                <span id="builderPageName" class="page-name">Keine Seite</span>
+                            </div>
+
+                            <!-- Section Tree -->
+                            <div class="element-tree" id="elementTree">
+                                <div class="element-tree-loading">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span>Lade Seitenstruktur...</span>
+                                </div>
+                            </div>
+
+                            <!-- Add Section Button -->
+                            <div class="builder-add-section">
+                                <button class="btn-add-section" onclick="devAdmin.openAddSectionModal()">
+                                    <i class="fas fa-plus"></i>
+                                    Neue Section hinzufuegen
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Center: Live Preview with Edit Mode -->
+                        <div class="builder-preview">
+                            <div class="builder-preview-toolbar">
+                                <div class="preview-toolbar-left">
+                                    <button class="device-btn active" data-device="desktop" onclick="devAdmin.setPreviewDevice('desktop')">
+                                        <i class="fas fa-desktop"></i>
+                                    </button>
+                                    <button class="device-btn" data-device="tablet" onclick="devAdmin.setPreviewDevice('tablet')">
+                                        <i class="fas fa-tablet-alt"></i>
+                                    </button>
+                                    <button class="device-btn" data-device="mobile" onclick="devAdmin.setPreviewDevice('mobile')">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </button>
+                                    <div class="divider-v"></div>
+                                    <div class="zoom-ctrl">
+                                        <button onclick="devAdmin.zoomPreview(-10)"><i class="fas fa-minus"></i></button>
+                                        <span id="zoomLevel">100%</span>
+                                        <button onclick="devAdmin.zoomPreview(10)"><i class="fas fa-plus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="preview-toolbar-right">
+                                    <button class="btn-ghost" onclick="devAdmin.undoEdit()" title="Rueckgaengig">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                    <button class="btn-ghost" onclick="devAdmin.redoEdit()" title="Wiederholen">
+                                        <i class="fas fa-redo"></i>
+                                    </button>
+                                    <div class="divider-v"></div>
+                                    <button class="btn-ghost" onclick="devAdmin.savePageChanges()" title="Speichern">
+                                        <i class="fas fa-save"></i> Speichern
+                                    </button>
+                                    <button class="btn-ghost" onclick="window.open(devAdmin.currentPage?.slug || 'index.html', '_blank')" title="In neuem Tab oeffnen">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- iframe Preview -->
+                            <div class="preview-frame-container" id="previewContainer">
+                                <iframe id="livePreviewFrame" src="about:blank"></iframe>
+                            </div>
+
+                            <!-- Breadcrumb for Element Path -->
+                            <div class="element-breadcrumb" id="elementBreadcrumb">
+                                <span class="breadcrumb-item">body</span>
+                            </div>
+                        </div>
+
+                        <!-- Right: Properties Panel -->
+                        <div class="builder-properties">
+                            <div class="properties-tabs">
+                                <button class="prop-tab active" data-tab="element" onclick="devAdmin.switchPropTab('element')">
+                                    <i class="fas fa-cube"></i> Element
+                                </button>
+                                <button class="prop-tab" data-tab="style" onclick="devAdmin.switchPropTab('style')">
+                                    <i class="fas fa-palette"></i> Style
+                                </button>
+                                <button class="prop-tab" data-tab="advanced" onclick="devAdmin.switchPropTab('advanced')">
+                                    <i class="fas fa-code"></i> Code
+                                </button>
+                            </div>
+                            <div class="properties-content" id="propertiesPanel">
+                                <div class="no-selection">
+                                    <i class="fas fa-mouse-pointer"></i>
+                                    <p>Klicke auf ein Element in der Vorschau</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- OLD Page Builder Section (hidden) -->
+                <section class="content-section" id="section-builder-old" style="display:none;">
+                    <div class="builder-container">
+                        <!-- Left: Block Palette -->
+                        <div class="builder-palette">
+                            <div class="palette-header">
+                                <h4><i class="fas fa-puzzle-piece"></i> Bloecke</h4>
+                            </div>
+                            <div class="palette-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Block suchen..." oninput="devAdmin.filterBlocks(this.value)">
+                            </div>
+                            <div class="palette-categories">
+                                <!-- Layout Blocks -->
+                                <div class="palette-category expanded">
+                                    <div class="palette-category-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                        <span><i class="fas fa-th-large"></i> Layout</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="palette-items">
+                                        <div class="palette-item" draggable="true" data-block-type="hero">
+                                            <i class="fas fa-image"></i>
+                                            <span>Hero Section</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="section">
+                                            <i class="fas fa-square"></i>
+                                            <span>Section</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="container">
+                                            <i class="fas fa-box"></i>
+                                            <span>Container</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="grid">
+                                            <i class="fas fa-th"></i>
+                                            <span>Grid</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="columns">
+                                            <i class="fas fa-columns"></i>
+                                            <span>Spalten</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="divider">
+                                            <i class="fas fa-minus"></i>
+                                            <span>Trennlinie</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="spacer">
+                                            <i class="fas fa-arrows-alt-v"></i>
+                                            <span>Abstand</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Text Blocks -->
+                                <div class="palette-category">
+                                    <div class="palette-category-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                        <span><i class="fas fa-font"></i> Text</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="palette-items">
+                                        <div class="palette-item" draggable="true" data-block-type="heading">
+                                            <i class="fas fa-heading"></i>
+                                            <span>Ueberschrift</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="paragraph">
+                                            <i class="fas fa-paragraph"></i>
+                                            <span>Absatz</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="text">
+                                            <i class="fas fa-align-left"></i>
+                                            <span>Text Block</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="list">
+                                            <i class="fas fa-list"></i>
+                                            <span>Liste</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="quote">
+                                            <i class="fas fa-quote-left"></i>
+                                            <span>Zitat</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="richtext">
+                                            <i class="fas fa-file-alt"></i>
+                                            <span>Rich Text</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Media Blocks -->
+                                <div class="palette-category">
+                                    <div class="palette-category-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                        <span><i class="fas fa-photo-video"></i> Medien</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="palette-items">
+                                        <div class="palette-item" draggable="true" data-block-type="image">
+                                            <i class="fas fa-image"></i>
+                                            <span>Bild</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="gallery">
+                                            <i class="fas fa-images"></i>
+                                            <span>Galerie</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="video">
+                                            <i class="fas fa-video"></i>
+                                            <span>Video</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="slider">
+                                            <i class="fas fa-sliders-h"></i>
+                                            <span>Slider/Carousel</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="icon">
+                                            <i class="fas fa-icons"></i>
+                                            <span>Icon</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="logo">
+                                            <i class="fas fa-fingerprint"></i>
+                                            <span>Logo</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Interactive Blocks -->
+                                <div class="palette-category">
+                                    <div class="palette-category-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                        <span><i class="fas fa-hand-pointer"></i> Interaktiv</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="palette-items">
+                                        <div class="palette-item" draggable="true" data-block-type="button">
+                                            <i class="fas fa-square"></i>
+                                            <span>Button</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="link">
+                                            <i class="fas fa-link"></i>
+                                            <span>Link</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="cta">
+                                            <i class="fas fa-bullhorn"></i>
+                                            <span>Call to Action</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="tabs">
+                                            <i class="fas fa-folder"></i>
+                                            <span>Tabs</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="accordion">
+                                            <i class="fas fa-bars"></i>
+                                            <span>Akkordeon</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="modal">
+                                            <i class="fas fa-window-maximize"></i>
+                                            <span>Modal/Popup</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Content Blocks -->
+                                <div class="palette-category">
+                                    <div class="palette-category-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                        <span><i class="fas fa-cubes"></i> Inhalte</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="palette-items">
+                                        <div class="palette-item" draggable="true" data-block-type="cards">
+                                            <i class="fas fa-th-large"></i>
+                                            <span>Karten</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="features">
+                                            <i class="fas fa-star"></i>
+                                            <span>Features</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="testimonials">
+                                            <i class="fas fa-comments"></i>
+                                            <span>Testimonials</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="pricing">
+                                            <i class="fas fa-tags"></i>
+                                            <span>Preistabelle</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="timeline">
+                                            <i class="fas fa-stream"></i>
+                                            <span>Timeline</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="stats">
+                                            <i class="fas fa-chart-bar"></i>
+                                            <span>Statistiken</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Data/Collection Blocks -->
+                                <div class="palette-category">
+                                    <div class="palette-category-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                        <span><i class="fas fa-database"></i> Daten</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="palette-items">
+                                        <div class="palette-item" draggable="true" data-block-type="team">
+                                            <i class="fas fa-users"></i>
+                                            <span>Team</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="products">
+                                            <i class="fas fa-box"></i>
+                                            <span>Produkte</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="locations">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>Standorte</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="collection">
+                                            <i class="fas fa-layer-group"></i>
+                                            <span>Sammlung</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="blog">
+                                            <i class="fas fa-newspaper"></i>
+                                            <span>Blog Posts</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="events">
+                                            <i class="fas fa-calendar"></i>
+                                            <span>Events</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Forms & Contact -->
+                                <div class="palette-category">
+                                    <div class="palette-category-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                        <span><i class="fas fa-envelope"></i> Formulare</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="palette-items">
+                                        <div class="palette-item" draggable="true" data-block-type="contact">
+                                            <i class="fas fa-envelope"></i>
+                                            <span>Kontaktformular</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="form">
+                                            <i class="fas fa-wpforms"></i>
+                                            <span>Formular</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="newsletter">
+                                            <i class="fas fa-paper-plane"></i>
+                                            <span>Newsletter</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="input">
+                                            <i class="fas fa-keyboard"></i>
+                                            <span>Input Feld</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="search">
+                                            <i class="fas fa-search"></i>
+                                            <span>Suchfeld</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Navigation -->
+                                <div class="palette-category">
+                                    <div class="palette-category-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                        <span><i class="fas fa-compass"></i> Navigation</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="palette-items">
+                                        <div class="palette-item" draggable="true" data-block-type="navbar">
+                                            <i class="fas fa-bars"></i>
+                                            <span>Navbar</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="menu">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                            <span>Menu</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="footer">
+                                            <i class="fas fa-shoe-prints"></i>
+                                            <span>Footer</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="sidebar">
+                                            <i class="fas fa-columns"></i>
+                                            <span>Sidebar</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="breadcrumb">
+                                            <i class="fas fa-angle-right"></i>
+                                            <span>Breadcrumb</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Special/Embed -->
+                                <div class="palette-category">
+                                    <div class="palette-category-header" onclick="this.parentElement.classList.toggle('expanded')">
+                                        <span><i class="fas fa-code"></i> Spezial</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="palette-items">
+                                        <div class="palette-item" draggable="true" data-block-type="html">
+                                            <i class="fas fa-code"></i>
+                                            <span>HTML Code</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="embed">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            <span>Embed/iFrame</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="map">
+                                            <i class="fas fa-map"></i>
+                                            <span>Karte (Maps)</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="social">
+                                            <i class="fas fa-share-alt"></i>
+                                            <span>Social Icons</span>
+                                        </div>
+                                        <div class="palette-item" draggable="true" data-block-type="script">
+                                            <i class="fab fa-js"></i>
+                                            <span>JavaScript</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Center: Page Structure -->
+                        <div class="builder-canvas">
+                            <div class="canvas-toolbar">
+                                <div class="canvas-page-info">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span id="builderPageName">Keine Seite ausgewaehlt</span>
+                                </div>
+                                <div class="canvas-actions">
+                                    <button class="btn-ghost" onclick="devAdmin.undoBuilder()" title="Rueckgaengig">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                    <button class="btn-ghost" onclick="devAdmin.redoBuilder()" title="Wiederholen">
+                                        <i class="fas fa-redo"></i>
+                                    </button>
+                                    <div class="divider-vertical"></div>
+                                    <button class="device-btn active" data-device="desktop" onclick="devAdmin.setPreviewDevice('desktop')">
+                                        <i class="fas fa-desktop"></i>
+                                    </button>
+                                    <button class="device-btn" data-device="tablet" onclick="devAdmin.setPreviewDevice('tablet')">
+                                        <i class="fas fa-tablet-alt"></i>
+                                    </button>
+                                    <button class="device-btn" data-device="mobile" onclick="devAdmin.setPreviewDevice('mobile')">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </button>
+                                    <div class="divider-vertical"></div>
+                                    <div class="zoom-controls">
+                                        <button class="btn-ghost" onclick="devAdmin.zoomPreview(-10)"><i class="fas fa-minus"></i></button>
+                                        <span id="zoomLevel">100%</span>
+                                        <button class="btn-ghost" onclick="devAdmin.zoomPreview(10)"><i class="fas fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Block Structure Tree -->
+                            <div class="block-tree">
+                                <div class="block-tree-header">
+                                    <span><i class="fas fa-sitemap"></i> Seitenstruktur</span>
+                                    <span id="activeBlockCount">0 Bloecke</span>
+                                </div>
+                                <div class="block-tree-content" id="blockList">
+                                    <div class="no-blocks-message">
+                                        <i class="fas fa-mouse-pointer"></i>
+                                        <p>Ziehe Bloecke hierher</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Live Preview -->
+                            <div class="preview-area">
+                                <div class="preview-frame-wrapper" id="previewWrapper">
+                                    <iframe id="previewFrame" src="about:blank"></iframe>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Properties Panel -->
+                        <div class="builder-properties">
+                            <div class="properties-header">
+                                <h4><i class="fas fa-sliders-h"></i> Eigenschaften</h4>
+                            </div>
+                            <div class="properties-content" id="propertiesPanel">
+                                <div class="no-selection">
+                                    <i class="fas fa-mouse-pointer"></i>
+                                    <p>Waehle einen Block aus</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Collection Editor Section -->
+                <section class="content-section" id="section-collection-editor">
+                    <div class="collection-editor">
+                        <div class="collection-header">
+                            <div class="collection-info">
+                                <i class="fas fa-layer-group" id="collectionIcon"></i>
+                                <h3 id="collectionTitle">Collection</h3>
+                            </div>
+                            <div class="collection-actions">
+                                <button class="btn-secondary" onclick="devAdmin.navigateTo('collections')">
+                                    <i class="fas fa-arrow-left"></i> Zurueck
+                                </button>
+                                <button class="btn-primary" onclick="devAdmin.addCollectionItem()">
+                                    <i class="fas fa-plus"></i> Neuer Eintrag
+                                </button>
+                            </div>
+                        </div>
+                        <div class="collection-items" id="collectionItems">
+                            <!-- Items via JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Media Section -->
+                <section class="content-section" id="section-media">
+                    <div class="upload-zone" id="uploadZone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Bilder hochladen</h3>
+                        <p>Drag & Drop oder klicken zum Auswaehlen</p>
+                        <input type="file" id="imageUpload" accept="image/*" multiple hidden>
+                        <button class="btn-primary" onclick="document.getElementById('imageUpload').click()">
+                            <i class="fas fa-folder-open"></i> Dateien auswaehlen
+                        </button>
+                    </div>
+
+                    <div class="media-stats">
+                        <div class="media-stat">
+                            <i class="fas fa-images"></i>
+                            <span id="imageCount">0</span> Bilder
+                        </div>
+                    </div>
+
+                    <div class="media-grid" id="mediaGrid">
+                        <!-- Media via JS -->
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section class="content-section" id="section-settings">
+                    <div class="settings-tabs">
+                        <button class="settings-tab active" data-settings-tab="general">
+                            <i class="fas fa-globe"></i> Allgemein
+                        </button>
+                        <button class="settings-tab" data-settings-tab="email">
+                            <i class="fas fa-envelope"></i> E-Mail / SMTP
+                        </button>
+                        <button class="settings-tab" data-settings-tab="contact">
+                            <i class="fas fa-address-book"></i> Kontaktdaten
+                        </button>
+                        <button class="settings-tab" data-settings-tab="users">
+                            <i class="fas fa-users-cog"></i> Benutzer
+                        </button>
+                        <button class="settings-tab" data-settings-tab="data">
+                            <i class="fas fa-database"></i> Daten
+                        </button>
+                    </div>
+
+                    <!-- General Settings Tab -->
+                    <div class="settings-tab-content active" id="settingsTab-general">
+                        <div class="settings-grid">
+                            <div class="settings-card">
+                                <h4><i class="fas fa-globe"></i> Website</h4>
+                                <div class="form-group">
+                                    <label>Site Name</label>
+                                    <input type="text" class="form-input" id="settingsSiteName" placeholder="Iustus Mercatura">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tagline</label>
+                                    <input type="text" class="form-input" id="settingsTagline" placeholder="Global Commodity Trading Excellence">
+                                </div>
+                                <div class="form-group">
+                                    <label>Logo URL</label>
+                                    <input type="text" class="form-input" id="settingsLogo" placeholder="/assets/images/logo.jpg">
+                                </div>
+                            </div>
+
+                            <div class="settings-card">
+                                <h4><i class="fas fa-palette"></i> Design</h4>
+                                <div class="form-group">
+                                    <label>Primaerfarbe</label>
+                                    <div class="color-input">
+                                        <input type="color" id="settingsPrimaryColor" value="#0a1628">
+                                        <input type="text" class="form-input" id="settingsPrimaryColorText" value="#0a1628">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Akzentfarbe</label>
+                                    <div class="color-input">
+                                        <input type="color" id="settingsAccentColor" value="#c9a227">
+                                        <input type="text" class="form-input" id="settingsAccentColorText" value="#c9a227">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-card">
+                                <h4><i class="fas fa-server"></i> Server</h4>
+                                <div class="form-group">
+                                    <label>API URL</label>
+                                    <input type="text" class="form-input" value="http://localhost:3005/api" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Sync Intervall (Minuten)</label>
+                                    <input type="number" class="form-input" id="settingsSyncInterval" value="60" min="1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email/SMTP Settings Tab -->
+                    <div class="settings-tab-content" id="settingsTab-email">
+                        <div class="settings-grid">
+                            <div class="settings-card full-width">
+                                <h4><i class="fas fa-server"></i> SMTP Konfiguration</h4>
+                                <p class="settings-description">Konfiguriere deinen SMTP-Server fuer den E-Mail-Versand. Die Daten findest du bei deinem E-Mail-Provider.</p>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>SMTP Host</label>
+                                        <input type="text" class="form-input" id="smtpHost" placeholder="smtp.example.com">
+                                    </div>
+                                    <div class="form-group" style="max-width: 120px;">
+                                        <label>Port</label>
+                                        <input type="number" class="form-input" id="smtpPort" value="587" placeholder="587">
+                                    </div>
+                                    <div class="form-group" style="max-width: 120px;">
+                                        <label>SSL/TLS</label>
+                                        <select class="form-input" id="smtpSecure">
+                                            <option value="false">STARTTLS</option>
+                                            <option value="true">SSL/TLS</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Benutzername / E-Mail</label>
+                                        <input type="text" class="form-input" id="smtpUser" placeholder="user@example.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Passwort</label>
+                                        <input type="password" class="form-input" id="smtpPassword" placeholder="••••••••">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Absender E-Mail</label>
+                                        <input type="email" class="form-input" id="smtpFrom" placeholder="info@imh-bvi.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Absender Name</label>
+                                        <input type="text" class="form-input" id="smtpFromName" placeholder="Iustus Mercatura">
+                                    </div>
+                                </div>
+                                <div class="settings-actions">
+                                    <button class="btn-secondary" onclick="settingsManager.testSMTP()">
+                                        <i class="fas fa-plug"></i> Verbindung testen
+                                    </button>
+                                    <button class="btn-secondary" onclick="settingsManager.sendTestEmail()">
+                                        <i class="fas fa-paper-plane"></i> Test-E-Mail senden
+                                    </button>
+                                </div>
+                                <div class="smtp-test-result" id="smtpTestResult" style="display: none;"></div>
+                            </div>
+
+                            <div class="settings-card">
+                                <h4><i class="fas fa-bell"></i> E-Mail Benachrichtigungen</h4>
+                                <div class="form-group">
+                                    <label>Kontaktformular an</label>
+                                    <input type="email" class="form-input" id="notifyContact" placeholder="info@imh-bvi.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Quote-Anfragen an</label>
+                                    <input type="email" class="form-input" id="notifyQuote" placeholder="sales@imh-bvi.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Buchungen an</label>
+                                    <input type="email" class="form-input" id="notifyBooking" placeholder="booking@imh-bvi.com">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Settings Tab -->
+                    <div class="settings-tab-content" id="settingsTab-contact">
+                        <div class="settings-grid">
+                            <div class="settings-card">
+                                <h4><i class="fab fa-whatsapp"></i> WhatsApp</h4>
+                                <p class="settings-description">WhatsApp-Nummer mit Laendervorwahl (ohne + oder Leerzeichen)</p>
+                                <div class="form-group">
+                                    <label>WhatsApp Nummer</label>
+                                    <input type="text" class="form-input" id="whatsappNumber" placeholder="491234567890">
+                                </div>
+                                <div class="form-group">
+                                    <label>Standard-Nachricht</label>
+                                    <textarea class="form-input" id="whatsappMessage" rows="3" placeholder="Hello, I would like to inquire about your products"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="settings-card">
+                                <h4><i class="fas fa-phone-alt"></i> Telefon & E-Mail</h4>
+                                <div class="form-group">
+                                    <label>Telefonnummer</label>
+                                    <input type="text" class="form-input" id="contactPhone" placeholder="+1 (609) 123-4567">
+                                </div>
+                                <div class="form-group">
+                                    <label>E-Mail Adresse</label>
+                                    <input type="email" class="form-input" id="contactEmail" placeholder="info@imh-bvi.com">
+                                </div>
+                            </div>
+
+                            <div class="settings-card">
+                                <h4><i class="fas fa-map-marker-alt"></i> Hauptsitz Adresse</h4>
+                                <div class="form-group">
+                                    <label>Adresse</label>
+                                    <textarea class="form-input" id="contactAddress" rows="4" placeholder="Intershore Chambers 3rd Floor, 333 Waterfront Dr..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="settings-card">
+                                <h4><i class="fas fa-share-alt"></i> Social Media</h4>
+                                <div class="form-group">
+                                    <label>LinkedIn</label>
+                                    <input type="url" class="form-input" id="socialLinkedin" placeholder="https://linkedin.com/company/...">
+                                </div>
+                                <div class="form-group">
+                                    <label>Twitter/X</label>
+                                    <input type="url" class="form-input" id="socialTwitter" placeholder="https://twitter.com/...">
+                                </div>
+                                <div class="form-group">
+                                    <label>Facebook</label>
+                                    <input type="url" class="form-input" id="socialFacebook" placeholder="https://facebook.com/...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Users Settings Tab -->
+                    <div class="settings-tab-content" id="settingsTab-users">
+                        <div class="settings-grid">
+                            <div class="settings-card full-width">
+                                <h4><i class="fas fa-user-shield"></i> Dein Benutzerkonto</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Benutzername</label>
+                                        <input type="text" class="form-input" id="adminUsername" placeholder="admin">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>E-Mail</label>
+                                        <input type="email" class="form-input" id="adminEmail" placeholder="admin@imh-bvi.com">
+                                    </div>
+                                </div>
+                                <button class="btn-secondary" onclick="settingsManager.updateUserDetails()">
+                                    <i class="fas fa-save"></i> Benutzerdaten speichern
+                                </button>
+                            </div>
+
+                            <div class="settings-card full-width">
+                                <h4><i class="fas fa-key"></i> Passwort aendern</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Aktuelles Passwort</label>
+                                        <input type="password" class="form-input" id="currentPassword" placeholder="••••••••">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Neues Passwort</label>
+                                        <input type="password" class="form-input" id="newPassword" placeholder="••••••••">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Passwort bestaetigen</label>
+                                        <input type="password" class="form-input" id="confirmPassword" placeholder="••••••••">
+                                    </div>
+                                </div>
+                                <button class="btn-secondary" onclick="settingsManager.changePassword()">
+                                    <i class="fas fa-key"></i> Passwort aendern
+                                </button>
+                                <div class="password-result" id="passwordResult" style="display: none;"></div>
+                            </div>
+
+                            <div class="settings-card">
+                                <h4><i class="fas fa-clock"></i> Sicherheit</h4>
+                                <div class="form-group">
+                                    <label>Session Timeout (Minuten)</label>
+                                    <input type="number" class="form-input" id="sessionTimeout" value="60" min="5" max="480">
+                                </div>
+                                <div class="form-group">
+                                    <label>Max. Login-Versuche</label>
+                                    <input type="number" class="form-input" id="maxLoginAttempts" value="5" min="3" max="10">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Settings Tab -->
+                    <div class="settings-tab-content" id="settingsTab-data">
+                        <div class="settings-grid">
+                            <div class="settings-card">
+                                <h4><i class="fas fa-download"></i> Export</h4>
+                                <p class="settings-description">Exportiere alle Daten als JSON-Backup</p>
+                                <div class="settings-actions">
+                                    <button class="btn-secondary" onclick="devAdmin.exportData()">
+                                        <i class="fas fa-download"></i> Alle Daten exportieren
+                                    </button>
+                                    <button class="btn-secondary" onclick="settingsManager.exportSettings()">
+                                        <i class="fas fa-cog"></i> Nur Einstellungen
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="settings-card">
+                                <h4><i class="fas fa-upload"></i> Import</h4>
+                                <p class="settings-description">Importiere Daten aus einem JSON-Backup</p>
+                                <div class="settings-actions">
+                                    <label class="btn-secondary">
+                                        <i class="fas fa-upload"></i> Daten importieren
+                                        <input type="file" accept=".json" onchange="devAdmin.importData(event)" hidden>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="settings-card danger-zone">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Gefahrenzone</h4>
+                                <p class="settings-description">Diese Aktionen koennen nicht rueckgaengig gemacht werden!</p>
+                                <div class="settings-actions">
+                                    <button class="btn-danger" onclick="devAdmin.resetData()">
+                                        <i class="fas fa-trash"></i> Alle Daten zuruecksetzen
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="settings-footer">
+                        <button class="btn-save-settings" onclick="settingsManager.saveAllSettings()">
+                            <i class="fas fa-save"></i> Alle Einstellungen speichern
+                        </button>
+                        <span class="settings-sync-status" id="settingsSyncStatus"></span>
+                    </div>
+                </section>
+
+                <!-- Logs Section -->
+                <section class="content-section" id="section-logs">
+                    <div class="logs-panel">
+                        <div class="logs-header">
+                            <h3>Server Logs</h3>
+                            <div class="logs-actions">
+                                <input type="date" id="logDate" onchange="devAdmin.loadLogs()">
+                                <button class="btn-secondary" onclick="devAdmin.loadLogs()">
+                                    <i class="fas fa-sync"></i> Aktualisieren
+                                </button>
+                                <button class="btn-secondary" onclick="devAdmin.clearLogs()">
+                                    <i class="fas fa-trash"></i> Loeschen
+                                </button>
+                            </div>
+                        </div>
+                        <div class="logs-content" id="logsContent">
+                            <pre id="logOutput">Lade Logs...</pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Deploy Section -->
+                <section class="content-section" id="section-deploy">
+                    <div class="deploy-section" id="deploySection">
+                        <!-- Deploy Orchestrator wird hier geladen -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-modal">
+            <div class="confirm-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Bestaetigung erforderlich</h3>
+            </div>
+            <div class="confirm-body" id="confirmBody">
+                <!-- Content via JS -->
+            </div>
+            <div class="confirm-changes" id="confirmChanges">
+                <!-- Changes preview via JS -->
+            </div>
+            <div class="confirm-footer">
+                <button class="btn-secondary" onclick="devAdmin.cancelConfirm()">Abbrechen</button>
+                <button class="btn-warning" onclick="devAdmin.executeConfirm()">
+                    <i class="fas fa-check"></i> Bestaetigen & Senden
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Modal</h3>
+                <button class="modal-close" onclick="devAdmin.closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content via JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="devAdmin.closeModal()">Abbrechen</button>
+                <button class="btn-primary" onclick="devAdmin.saveModal()">
+                    <i class="fas fa-save"></i> Speichern
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="dev-admin.js"></script>
+    <script src="deploy-orchestrator.js"></script>
+</body>
+</html>

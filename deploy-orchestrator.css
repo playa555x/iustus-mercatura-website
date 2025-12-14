@@ -1,0 +1,722 @@
+/**
+ * Deploy Orchestrator Styles
+ * Modern, professional deployment UI
+ */
+
+/* ==========================================
+   MAIN PANEL
+   ========================================== */
+.deploy-orchestrator-panel {
+    background: var(--white, #ffffff);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+}
+
+.deploy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.deploy-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.deploy-title i {
+    font-size: 24px;
+    color: #0f2847;
+}
+
+.deploy-title h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0a1628;
+    margin: 0;
+}
+
+/* Status Badge */
+.deploy-status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    background: #f8f9fa;
+    color: #6c757d;
+}
+
+.deploy-status-badge .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6c757d;
+}
+
+.deploy-status-badge.deploying {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.deploy-status-badge.deploying .status-dot {
+    background: #ffc107;
+    animation: pulse 1s infinite;
+}
+
+.deploy-status-badge.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.deploy-status-badge.success .status-dot {
+    background: #28a745;
+}
+
+.deploy-status-badge.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.deploy-status-badge.error .status-dot {
+    background: #dc3545;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ==========================================
+   CREDENTIALS SECTION
+   ========================================== */
+.deploy-credentials-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.deploy-credentials-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #0a1628;
+    margin: 0 0 16px 0;
+}
+
+.deploy-credentials-section h3 i {
+    color: #c9a227;
+}
+
+.credentials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.credential-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.credential-item label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.credential-input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.credential-input-group input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+    transition: all 0.2s;
+}
+
+.credential-input-group input:focus {
+    outline: none;
+    border-color: #0f2847;
+    box-shadow: 0 0 0 3px rgba(15, 40, 71, 0.1);
+}
+
+.btn-verify {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #dee2e6;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #6c757d;
+    transition: all 0.2s;
+}
+
+.btn-verify:hover {
+    background: #0f2847;
+    border-color: #0f2847;
+    color: white;
+}
+
+.credential-status {
+    font-size: 12px;
+    min-height: 18px;
+}
+
+.credential-status.success {
+    color: #28a745;
+}
+
+.credential-status.error {
+    color: #dc3545;
+}
+
+.credential-status.checking {
+    color: #ffc107;
+}
+
+.btn-save-credentials {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #0f2847;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-save-credentials:hover {
+    background: #0a1628;
+    transform: translateY(-1px);
+}
+
+/* ==========================================
+   PRE-DEPLOY CHECKS
+   ========================================== */
+.deploy-checks-section {
+    margin-bottom: 20px;
+}
+
+.deploy-checks-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #0a1628;
+    margin: 0 0 16px 0;
+}
+
+.deploy-checks-section h3 i {
+    color: #17a2b8;
+}
+
+.checks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.check-item i:first-child {
+    font-size: 16px;
+    color: #6c757d;
+}
+
+.check-item span:not(.check-status) {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    color: #495057;
+}
+
+.check-status {
+    width: 24px;
+    text-align: center;
+}
+
+.check-item.running {
+    border-color: #ffc107;
+    background: #fff9e6;
+}
+
+.check-item.running .check-status i {
+    color: #ffc107;
+}
+
+.check-item.passed {
+    border-color: #28a745;
+    background: #e8f5e9;
+}
+
+.check-item.passed .check-status i {
+    color: #28a745;
+}
+
+.check-item.failed {
+    border-color: #dc3545;
+    background: #ffebee;
+}
+
+.check-item.failed .check-status i {
+    color: #dc3545;
+}
+
+/* ==========================================
+   PIPELINE
+   ========================================== */
+.deploy-pipeline-section {
+    margin-bottom: 20px;
+}
+
+.deploy-pipeline-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #0a1628;
+    margin: 0 0 16px 0;
+}
+
+.deploy-pipeline-section h3 i {
+    color: #6f42c1;
+}
+
+.pipeline-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    padding: 8px 0;
+}
+
+.pipeline-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    min-width: 180px;
+    transition: all 0.3s;
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #6c757d;
+    transition: all 0.3s;
+}
+
+.step-info {
+    flex: 1;
+}
+
+.step-name {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0a1628;
+}
+
+.step-desc {
+    display: block;
+    font-size: 11px;
+    color: #6c757d;
+}
+
+.step-status {
+    width: 24px;
+    height: 24px;
+}
+
+.pipeline-connector {
+    width: 30px;
+    height: 2px;
+    background: #dee2e6;
+    flex-shrink: 0;
+}
+
+/* Pipeline Step States */
+.pipeline-step.running {
+    border-color: #ffc107;
+    background: #fff9e6;
+}
+
+.pipeline-step.running .step-icon {
+    background: #ffc107;
+    color: #0a1628;
+    animation: pulse 1s infinite;
+}
+
+.pipeline-step.running .step-status::after {
+    content: '\f110';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: #ffc107;
+    animation: spin 1s linear infinite;
+}
+
+.pipeline-step.completed {
+    border-color: #28a745;
+    background: #e8f5e9;
+}
+
+.pipeline-step.completed .step-icon {
+    background: #28a745;
+    color: white;
+}
+
+.pipeline-step.completed .step-status::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: #28a745;
+}
+
+.pipeline-step.failed {
+    border-color: #dc3545;
+    background: #ffebee;
+}
+
+.pipeline-step.failed .step-icon {
+    background: #dc3545;
+    color: white;
+}
+
+.pipeline-step.failed .step-status::after {
+    content: '\f00d';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: #dc3545;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Progress Bar */
+.deploy-progress-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.deploy-progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0f2847 0%, #1a3a5c 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0a1628;
+    min-width: 40px;
+}
+
+/* ==========================================
+   ACTION BUTTONS
+   ========================================== */
+.deploy-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.btn-deploy-check,
+.btn-deploy-main,
+.btn-deploy-cancel {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-deploy-check {
+    background: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+.btn-deploy-check:hover {
+    background: #e9ecef;
+    border-color: #ced4da;
+}
+
+.btn-deploy-main {
+    background: linear-gradient(135deg, #0f2847 0%, #1a3a5c 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(15, 40, 71, 0.3);
+}
+
+.btn-deploy-main:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(15, 40, 71, 0.4);
+}
+
+.btn-deploy-main:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-deploy-cancel {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.btn-deploy-cancel:hover:not(:disabled) {
+    background: #f5c6cb;
+}
+
+.btn-deploy-cancel:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==========================================
+   COMMIT MESSAGE
+   ========================================== */
+.deploy-commit-section {
+    margin-bottom: 20px;
+}
+
+.deploy-commit-section label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.deploy-commit-section input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.deploy-commit-section input:focus {
+    outline: none;
+    border-color: #0f2847;
+    box-shadow: 0 0 0 3px rgba(15, 40, 71, 0.1);
+}
+
+/* ==========================================
+   LOG PANEL
+   ========================================== */
+.deploy-log-section {
+    background: #0a1628;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.log-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #adb5bd;
+    margin: 0;
+}
+
+.log-header h3 i {
+    color: #28a745;
+}
+
+.btn-clear-log {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #adb5bd;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-clear-log:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.deploy-log-container {
+    padding: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+    font-family: 'Courier New', Monaco, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.log-entry {
+    display: flex;
+    gap: 12px;
+    padding: 4px 0;
+    color: #adb5bd;
+}
+
+.log-time {
+    color: #6c757d;
+    min-width: 70px;
+}
+
+.log-icon {
+    min-width: 20px;
+    text-align: center;
+}
+
+.log-message {
+    flex: 1;
+    word-break: break-word;
+}
+
+.log-details {
+    color: #6c757d;
+    font-size: 11px;
+}
+
+/* Log Entry Types */
+.log-entry.info .log-icon i { color: #17a2b8; }
+.log-entry.success .log-icon i { color: #28a745; }
+.log-entry.success .log-message { color: #28a745; }
+.log-entry.warn .log-icon i { color: #ffc107; }
+.log-entry.warn .log-message { color: #ffc107; }
+.log-entry.error .log-icon i { color: #dc3545; }
+.log-entry.error .log-message { color: #dc3545; }
+.log-entry.step .log-icon i { color: #6f42c1; }
+.log-entry.step .log-message { color: #e9ecef; font-weight: 600; }
+
+/* Scrollbar */
+.deploy-log-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.deploy-log-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.deploy-log-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.deploy-log-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 768px) {
+    .deploy-orchestrator-panel {
+        padding: 16px;
+    }
+
+    .deploy-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .pipeline-steps {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pipeline-connector {
+        width: 2px;
+        height: 20px;
+        margin: 0 auto;
+    }
+
+    .pipeline-step {
+        min-width: auto;
+    }
+
+    .deploy-actions {
+        flex-direction: column;
+    }
+
+    .credentials-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .checks-grid {
+        grid-template-columns: 1fr;
+    }
+}

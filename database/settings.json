@@ -1,0 +1,59 @@
+{
+  "email": {
+    "smtp": {
+      "host": "smtp.office365.com",
+      "port": 587,
+      "secure": false,
+      "starttls": true,
+      "user": "",
+      "password": "",
+      "from": "",
+      "fromName": "Iustus Mercatura"
+    },
+    "notifications": {
+      "contactFormTo": "",
+      "quoteRequestTo": "",
+      "bookingTo": ""
+    }
+  },
+  "contact": {
+    "whatsapp": {
+      "number": "+256791359556",
+      "message": "Hello, I would like to inquire about your products"
+    },
+    "phone": "",
+    "email": "",
+    "addresses": {
+      "headquarters": "Intershore Chambers 3rd Floor, 333 Waterfront Dr. Geneva Place, Road Town, Tortola, VG 1110"
+    }
+  },
+  "social": {
+    "linkedin": "https://linkedin.com/company/iustus-mercatura",
+    "twitter": "",
+    "facebook": "",
+    "instagram": ""
+  },
+  "admin": {
+    "users": [
+      {
+        "id": "admin_1",
+        "username": "admin",
+        "email": "admin@imh-bvi.com",
+        "passwordHash": "",
+        "role": "super_admin",
+        "createdAt": "2024-01-01T00:00:00.000Z",
+        "lastLogin": null
+      }
+    ],
+    "sessionTimeout": 3600000,
+    "maxLoginAttempts": 5
+  },
+  "website": {
+    "name": "Iustus Mercatura",
+    "tagline": "Global Commodity Trading Excellence",
+    "logo": "/assets/images/logo.jpg",
+    "favicon": "/favicon.ico"
+  },
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "updatedBy": "system"
+}
