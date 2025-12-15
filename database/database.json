@@ -94,7 +94,80 @@
     }
   ],
   "items": [],
-  "media": [],
+  "media": [
+    {
+      "id": "media_1",
+      "website_id": "ws_iustus",
+      "url": "/uploads/img_1765200866319_fqiugd.webp",
+      "original_name": "Andreas Zsifkovits",
+      "type": "image/webp",
+      "size": 45000,
+      "uploaded": "2025-12-08T10:00:00.000Z"
+    },
+    {
+      "id": "media_2",
+      "website_id": "ws_iustus",
+      "url": "/uploads/img_1765200880464_xzfd2f.png",
+      "original_name": "LLM Christian Thomas",
+      "type": "image/png",
+      "size": 52000,
+      "uploaded": "2025-12-08T10:01:00.000Z"
+    },
+    {
+      "id": "media_3",
+      "website_id": "ws_iustus",
+      "url": "/uploads/img_1765200880484_rr4put.png",
+      "original_name": "Team Member",
+      "type": "image/png",
+      "size": 48000,
+      "uploaded": "2025-12-08T10:02:00.000Z"
+    },
+    {
+      "id": "media_4",
+      "website_id": "ws_iustus",
+      "url": "/uploads/img_1765200880495_2sqckj.png",
+      "original_name": "Dr. Gerhard Kral",
+      "type": "image/png",
+      "size": 51000,
+      "uploaded": "2025-12-08T10:03:00.000Z"
+    },
+    {
+      "id": "media_5",
+      "website_id": "ws_iustus",
+      "url": "/uploads/img_1765200880554_1zw12k.png",
+      "original_name": "Lic. jur. Martin Bohler",
+      "type": "image/png",
+      "size": 49000,
+      "uploaded": "2025-12-08T10:04:00.000Z"
+    },
+    {
+      "id": "media_6",
+      "website_id": "ws_iustus",
+      "url": "/uploads/img_1765200880656_m7a3pu.png",
+      "original_name": "Team Member",
+      "type": "image/png",
+      "size": 47000,
+      "uploaded": "2025-12-08T10:05:00.000Z"
+    },
+    {
+      "id": "media_7",
+      "website_id": "ws_iustus",
+      "url": "/uploads/img_1765200880814_4rcgus.png",
+      "original_name": "Miss Resty Nankya",
+      "type": "image/png",
+      "size": 53000,
+      "uploaded": "2025-12-08T10:06:00.000Z"
+    },
+    {
+      "id": "media_8",
+      "website_id": "ws_iustus",
+      "url": "/uploads/img_1765200880824_6nbq1o.png",
+      "original_name": "Eng. Paulo Souza",
+      "type": "image/png",
+      "size": 50000,
+      "uploaded": "2025-12-08T10:07:00.000Z"
+    }
+  ],
   "settings": [
     {
       "id": "set_1",
