@@ -6,7 +6,7 @@
       "slug": "iustus-mercatura",
       "domain": "iustus-mercatura-eu.onrender.com",
       "created": "2025-12-09T01:14:12.062Z",
-      "updated": "2025-12-09T01:14:12.062Z",
+      "updated": "2025-12-15T10:00:00.000Z",
       "status": "active"
     }
   ],
@@ -16,45 +16,118 @@
       "website_id": "ws_iustus",
       "name": "Homepage",
       "slug": "index.html",
-      "blocks": [],
+      "blocks": ["hero", "partners", "products", "locations", "projects", "team", "values", "sustainability", "contact"],
       "status": "active",
       "order": 0
     }
   ],
-  "blocks": [],
+  "blocks": [
+    {
+      "id": "block_hero",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "hero",
+      "order": 0,
+      "data": {
+        "title": "Connecting Farmers to Consumers Worldwide",
+        "subtitle": "Just Trade - Ethical Commodity Trading",
+        "stats": [
+          {"value": "500K+", "label": "MT Annually"},
+          {"value": "8", "label": "Global Offices"},
+          {"value": "15+", "label": "Years Experience"},
+          {"value": "50+", "label": "Partner Countries"}
+        ]
+      }
+    },
+    {
+      "id": "block_partners",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "partners",
+      "order": 1,
+      "data": {
+        "partners": ["Cargill", "Bunge", "ADM", "Louis Dreyfus", "Cofco", "Glencore", "Olam", "Wilmar"]
+      }
+    },
+    {
+      "id": "block_products",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "products",
+      "order": 2
+    },
+    {
+      "id": "block_locations",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "locations",
+      "order": 3
+    },
+    {
+      "id": "block_team",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "team",
+      "order": 4
+    },
+    {
+      "id": "block_values",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "values",
+      "order": 5,
+      "data": {
+        "values": [
+          {"number": "01", "title": "Integrity & Transparency", "description": "Fair pricing, ethical sourcing, and an open book with all partners."},
+          {"number": "02", "title": "Expertise & Excellence", "description": "Deep-rooted market intelligence and world-class logistical management."},
+          {"number": "03", "title": "Partnership & Prosperity", "description": "Every client and producer as a critical part of a shared, sustainable ecosystem."}
+        ]
+      }
+    },
+    {
+      "id": "block_sustainability",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "sustainability",
+      "order": 6,
+      "data": {
+        "stats": [
+          {"value": "100%", "label": "Traceable Supply Chain"},
+          {"value": "50+", "label": "Certified Partners"},
+          {"value": "2030", "label": "Carbon Neutral Target"},
+          {"value": "5000+", "label": "Farmers Supported"}
+        ]
+      }
+    }
+  ],
   "collections": [
+    {
+      "id": "col_team",
+      "website_id": "ws_iustus",
+      "name": "Team",
+      "icon": "fa-users",
+      "fields": [
+        {"key": "name", "label": "Name", "type": "text", "required": true},
+        {"key": "role", "label": "Position", "type": "text", "required": true},
+        {"key": "category", "label": "Kategorie", "type": "select", "options": ["Global Leadership", "CEO", "COO & Regional Heads"]},
+        {"key": "image", "label": "Bild", "type": "image"},
+        {"key": "initials", "label": "Initialen", "type": "text"},
+        {"key": "description", "label": "Beschreibung", "type": "textarea"},
+        {"key": "linkedin", "label": "LinkedIn", "type": "url"}
+      ]
+    },
     {
       "id": "col_products",
       "website_id": "ws_iustus",
       "name": "Produkte",
       "icon": "fa-box",
       "fields": [
-        {
-          "key": "name",
-          "label": "Name",
-          "type": "text",
-          "required": true
-        },
-        {
-          "key": "category",
-          "label": "Kategorie",
-          "type": "select",
-          "options": [
-            "Sugar",
-            "Grains",
-            "Other"
-          ]
-        },
-        {
-          "key": "image",
-          "label": "Bild",
-          "type": "image"
-        },
-        {
-          "key": "description",
-          "label": "Beschreibung",
-          "type": "textarea"
-        }
+        {"key": "name", "label": "Name", "type": "text", "required": true},
+        {"key": "category", "label": "Kategorie", "type": "select", "options": ["Sugar", "Grains", "Other"]},
+        {"key": "image", "label": "Bild", "type": "image"},
+        {"key": "description", "label": "Beschreibung", "type": "textarea"},
+        {"key": "specs", "label": "Spezifikationen", "type": "json"},
+        {"key": "featured", "label": "Flagship", "type": "boolean"}
       ]
     },
     {
@@ -63,37 +136,413 @@
       "name": "Standorte",
       "icon": "fa-map-marker-alt",
       "fields": [
-        {
-          "key": "country",
-          "label": "Land",
-          "type": "text",
-          "required": true
-        },
-        {
-          "key": "city",
-          "label": "Stadt",
-          "type": "text",
-          "required": true
-        },
-        {
-          "key": "type",
-          "label": "Typ",
-          "type": "text"
-        },
-        {
-          "key": "flag",
-          "label": "Flagge",
-          "type": "text"
-        },
-        {
-          "key": "address",
-          "label": "Adresse",
-          "type": "textarea"
-        }
+        {"key": "country", "label": "Land", "type": "text", "required": true},
+        {"key": "city", "label": "Stadt", "type": "text", "required": true},
+        {"key": "type", "label": "Typ", "type": "text"},
+        {"key": "company", "label": "Firma", "type": "text"},
+        {"key": "address", "label": "Adresse", "type": "textarea"},
+        {"key": "countryCode", "label": "Ländercode", "type": "text"},
+        {"key": "coordinates", "label": "Koordinaten", "type": "json"}
+      ]
+    },
+    {
+      "id": "col_projects",
+      "website_id": "ws_iustus",
+      "name": "Projekte",
+      "icon": "fa-project-diagram",
+      "fields": [
+        {"key": "name", "label": "Name", "type": "text", "required": true},
+        {"key": "year", "label": "Jahr", "type": "text"},
+        {"key": "description", "label": "Beschreibung", "type": "textarea"},
+        {"key": "status", "label": "Status", "type": "select", "options": ["Geplant", "In Umsetzung", "Abgeschlossen"]},
+        {"key": "stats", "label": "Statistiken", "type": "json"}
       ]
     }
   ],
-  "items": [],
+  "items": [
+    {
+      "id": "team_1",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Dr. Gerhard Kral",
+        "role": "Group CEO & Founder",
+        "category": "Global Leadership",
+        "image": "/uploads/img_1765200880495_2sqckj.png",
+        "initials": "GK",
+        "description": "Established the company's global strategy based on the 'Just Trade' philosophy. Visionary leader driving sustainable commodity trading worldwide.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 0
+    },
+    {
+      "id": "team_2",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "LLM Christian Thomas",
+        "role": "Group Chairman & Co-Owner",
+        "category": "Global Leadership",
+        "image": "/uploads/img_1765200880464_xzfd2f.png",
+        "initials": "CT",
+        "description": "Chief steward of vision and ethical mandate. Provides strategic guidance ensuring governance excellence and stakeholder alignment.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 1
+    },
+    {
+      "id": "team_3",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Lic. jur. Martin Bohler",
+        "role": "Co-Founder & CRO",
+        "category": "Global Leadership",
+        "image": "/uploads/img_1765200880554_1zw12k.png",
+        "initials": "MB",
+        "description": "Legal expertise combined with strategic vision. Co-founded the company and drives risk management and corporate governance.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 2
+    },
+    {
+      "id": "team_4",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Andreas Zsifkovits",
+        "role": "CEO UK & Maritime",
+        "category": "CEO",
+        "image": "/uploads/img_1765200866319_fqiugd.webp",
+        "initials": "AZ",
+        "description": "Leads global shipping and freight operations from London. Specialized in maritime logistics and international trade routes.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 3
+    },
+    {
+      "id": "team_5",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Miss Resty Nankya",
+        "role": "CEO Uganda",
+        "category": "CEO",
+        "image": "/uploads/img_1765200880814_4rcgus.png",
+        "initials": "RN",
+        "description": "Spearheads the Uganda Refinery Project 2026. Driving sustainable agricultural development across East Africa.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 4
+    },
+    {
+      "id": "team_6",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Stephanie Shi",
+        "role": "CEO Asia",
+        "category": "CEO",
+        "image": null,
+        "initials": "SS",
+        "description": "Leads Asian market strategy and expansion. Deep expertise in cross-cultural business development and regional trade networks.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 5
+    },
+    {
+      "id": "team_7",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Eng. Yong Jiang",
+        "role": "COO USA",
+        "category": "COO & Regional Heads",
+        "image": null,
+        "initials": "YJ",
+        "description": "30+ years experience in commodities market. Expert in cross-border trade operations and strategic market development.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 6
+    },
+    {
+      "id": "team_8",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Eng. Paulo Souza",
+        "role": "COO Brazil",
+        "category": "COO & Regional Heads",
+        "image": "/uploads/img_1765200880824_6nbq1o.png",
+        "initials": "PS",
+        "description": "30 years expertise in Brazilian sugar trade. Deep knowledge of South American agricultural markets and refinery operations.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 7
+    },
+    {
+      "id": "team_9",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Patrick Duggie",
+        "role": "COO UK",
+        "category": "COO & Regional Heads",
+        "image": null,
+        "initials": "PD",
+        "description": "Oversees UK operations and European market expansion. Expertise in commodity trading regulations and strategic partnerships.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 8
+    },
+    {
+      "id": "team_10",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Emmanuel Nkwanga",
+        "role": "COO East Africa",
+        "category": "COO & Regional Heads",
+        "image": null,
+        "initials": "EN",
+        "description": "Leads operational excellence across East African markets. Expert in regional supply chain management and local partnerships.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 9
+    },
+    {
+      "id": "team_11",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Jimmey S. Shah",
+        "role": "Head of Trade Middle East",
+        "category": "COO & Regional Heads",
+        "image": "/uploads/img_1765200880484_rr4put.png",
+        "initials": "JS",
+        "description": "Drives Middle Eastern trade operations and market development. Expert in regional commodity markets and strategic trade relationships.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 10
+    },
+    {
+      "id": "product_1",
+      "collection_id": "col_products",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Brazilian Sugar IC45",
+        "category": "Sugar",
+        "description": "White Refined Sugar - the pinnacle of sweetness. Meticulously processed for top quality and purity.",
+        "specs": {
+          "Polarization": "Min 99.8%",
+          "Color": "Max 45 ICUMSA",
+          "Origin": "Brazil"
+        },
+        "featured": true
+      },
+      "order": 0
+    },
+    {
+      "id": "product_2",
+      "collection_id": "col_products",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Sugar IC600/1200 VHP",
+        "category": "Sugar",
+        "description": "Very High Polarization sugar ideal for refining, available in IC600 and IC1200 grades.",
+        "specs": {
+          "Polarization": "Min 99.4%",
+          "Color": "600-1200 ICUMSA",
+          "Origin": "Brazil"
+        },
+        "featured": false
+      },
+      "order": 1
+    },
+    {
+      "id": "product_3",
+      "collection_id": "col_products",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Yellow Soybeans",
+        "category": "Grains",
+        "description": "Premium grade non-GMO soybeans from Brazil's finest agricultural regions.",
+        "specs": {
+          "Protein": "Min 36%",
+          "Moisture": "Max 14%",
+          "Origin": "Brazil"
+        },
+        "featured": false
+      },
+      "order": 2
+    },
+    {
+      "id": "product_4",
+      "collection_id": "col_products",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Yellow Corn",
+        "category": "Grains",
+        "description": "High-quality feed corn meeting international specifications for animal nutrition.",
+        "specs": {
+          "Moisture": "Max 14%",
+          "Foreign Matter": "Max 2%",
+          "Origin": "Brazil"
+        },
+        "featured": false
+      },
+      "order": 3
+    },
+    {
+      "id": "location_1",
+      "collection_id": "col_locations",
+      "website_id": "ws_iustus",
+      "data": {
+        "country": "British Virgin Islands",
+        "city": "Road Town, Tortola",
+        "type": "Holding Company HQ",
+        "company": "Iustus Mercatura Holding Inc.",
+        "address": "Intershore Chambers 3rd Floor, 333 Waterfront Dr. Geneva Place, Road Town, Tortola, VG 1110",
+        "countryCode": "VG",
+        "coordinates": {"x": 228, "y": 248}
+      },
+      "order": 0
+    },
+    {
+      "id": "location_2",
+      "collection_id": "col_locations",
+      "website_id": "ws_iustus",
+      "data": {
+        "country": "United States",
+        "city": "Princeton, New Jersey",
+        "type": "Regional Office",
+        "company": "FITC Energy Group Inc. & Iustus Mercatura USA Inc.",
+        "address": "31 Airpark Road, Princeton, 08540 New Jersey, USA",
+        "countryCode": "US",
+        "coordinates": {"x": 155, "y": 142}
+      },
+      "order": 1
+    },
+    {
+      "id": "location_3",
+      "collection_id": "col_locations",
+      "website_id": "ws_iustus",
+      "data": {
+        "country": "Brazil",
+        "city": "São Paulo",
+        "type": "Sourcing & Trading",
+        "company": "Iustus Mercatura Brazil Ltda.",
+        "address": "Suite 92, 6th Floor, Av. Dr. Cardoso de Melo 1340, Vila Olimpia, 04.548-004 São Paulo",
+        "countryCode": "BR",
+        "coordinates": {"x": 285, "y": 358}
+      },
+      "order": 2
+    },
+    {
+      "id": "location_4",
+      "collection_id": "col_locations",
+      "website_id": "ws_iustus",
+      "data": {
+        "country": "United Arab Emirates",
+        "city": "Dubai",
+        "type": "Finance & Trading",
+        "company": "FITC Energy Group DXBS FZ-LLC",
+        "address": "Meydan Grandstand, 6th floor, Meydan Road, Nad Al Sheba, Dubai, U.A.E.",
+        "countryCode": "AE",
+        "coordinates": {"x": 608, "y": 185}
+      },
+      "order": 3
+    },
+    {
+      "id": "location_5",
+      "collection_id": "col_locations",
+      "website_id": "ws_iustus",
+      "data": {
+        "country": "United Kingdom",
+        "city": "London",
+        "type": "Maritime Logistics",
+        "company": "Iustus Mercatura Maritime Logistics UK Limited",
+        "address": "7th Floor, Tower 42, 25 Old Broad Street, London EC2N 1HN",
+        "countryCode": "GB",
+        "coordinates": {"x": 458, "y": 98}
+      },
+      "order": 4
+    },
+    {
+      "id": "location_6",
+      "collection_id": "col_locations",
+      "website_id": "ws_iustus",
+      "data": {
+        "country": "Uganda",
+        "city": "Kampala",
+        "type": "Refinery & Distribution",
+        "company": "FITC Energy Group Inc. UG & Iustus Mercatura UG Ltd.",
+        "address": "2nd Floor Plot 51, 14 Ntinda Avenue, Nakawa 10005, Ntinda - Kampala",
+        "countryCode": "UG",
+        "coordinates": {"x": 548, "y": 302}
+      },
+      "order": 5
+    },
+    {
+      "id": "location_7",
+      "collection_id": "col_locations",
+      "website_id": "ws_iustus",
+      "data": {
+        "country": "Kenya",
+        "city": "Nairobi",
+        "type": "Regional Distribution",
+        "company": "FITC Energy Group Inc Kenya",
+        "address": "2nd Floor, Kimathi House, Kenyatta Avenue, Nairobi 00100, Kenya",
+        "countryCode": "KE",
+        "coordinates": {"x": 575, "y": 295}
+      },
+      "order": 6
+    },
+    {
+      "id": "project_1",
+      "collection_id": "col_projects",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Uganda Refinery Project",
+        "year": "2026",
+        "description": "20-30 acre refinery in Bugembe District with 500,000 MT annual capacity and 250 sq miles of sugarcane plantation.",
+        "status": "Geplant",
+        "stats": [
+          {"value": "300.000", "label": "MT Year 1"},
+          {"value": "500.000", "label": "MT Target"}
+        ]
+      },
+      "order": 0
+    },
+    {
+      "id": "project_2",
+      "collection_id": "col_projects",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Iustus Agricultura Brazil SA",
+        "year": "2025",
+        "description": "Acquisition of 2-3 major refining assets with self-sufficient sugarcane cultivation for complete vertical integration.",
+        "status": "In Umsetzung",
+        "stats": [
+          {"value": "500.000+", "label": "MT Annual"}
+        ]
+      },
+      "order": 1
+    },
+    {
+      "id": "project_3",
+      "collection_id": "col_projects",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Mercatura Finance DIFC",
+        "year": "2025",
+        "description": "Full-service financial provider in Dubai offering specialized Sustainable Farming and Trade Finance solutions.",
+        "status": "Geplant",
+        "stats": []
+      },
+      "order": 2
+    }
+  ],
   "media": [
     {
       "id": "media_1",
@@ -117,7 +566,7 @@
       "id": "media_3",
       "website_id": "ws_iustus",
       "url": "/uploads/img_1765200880484_rr4put.png",
-      "original_name": "Team Member",
+      "original_name": "Jimmey S. Shah",
       "type": "image/png",
       "size": 48000,
       "uploaded": "2025-12-08T10:02:00.000Z"
@@ -186,16 +635,44 @@
       "website_id": "ws_iustus",
       "key": "accentColor",
       "value": "#c9a227"
+    },
+    {
+      "id": "set_4",
+      "website_id": "ws_iustus",
+      "key": "tagline",
+      "value": "Just Trade - Ethical Commodity Trading"
+    },
+    {
+      "id": "set_5",
+      "website_id": "ws_iustus",
+      "key": "email",
+      "value": "info@iustus-mercatura.com"
+    },
+    {
+      "id": "set_6",
+      "website_id": "ws_iustus",
+      "key": "phone",
+      "value": "+44 20 7621 0000"
     }
   ],
-  "sync_log": [],
+  "sync_log": [
+    {
+      "id": "sync_1",
+      "timestamp": "2025-12-15T10:00:00.000Z",
+      "type": "full_sync",
+      "source": "index.html",
+      "target": "database.json",
+      "items_synced": 27,
+      "status": "success"
+    }
+  ],
   "connections": [
     {
       "id": "conn_1",
       "name": "Dev Admin",
       "type": "dev_admin",
       "status": "connected",
-      "last_ping": "2025-12-14T19:49:18.644Z"
+      "last_ping": "2025-12-15T10:00:00.000Z"
     },
     {
       "id": "conn_2",

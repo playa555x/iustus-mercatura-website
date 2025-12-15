@@ -1059,56 +1059,121 @@
                                 <div class="palette-section">
                                     <h4><i class="fas fa-tint"></i> Brand Farben</h4>
                                     <div class="colors-grid" id="brandColors">
-                                        <div class="color-item" style="--color: #c9a227" onclick="devAdmin.copyColor('#c9a227')">
+                                        <div class="color-item" style="--color: #c9a227" onclick="devAdmin.copyColor('#c9a227', this)">
                                             <div class="color-swatch"></div>
-                                            <span>Gold</span>
-                                            <code>#c9a227</code>
+                                            <div class="color-item-info">
+                                                <span>Gold</span>
+                                                <code>#c9a227</code>
+                                            </div>
                                         </div>
-                                        <div class="color-item" style="--color: #0a1628" onclick="devAdmin.copyColor('#0a1628')">
+                                        <div class="color-item" style="--color: #0a1628" onclick="devAdmin.copyColor('#0a1628', this)">
                                             <div class="color-swatch"></div>
-                                            <span>Navy Dark</span>
-                                            <code>#0a1628</code>
+                                            <div class="color-item-info">
+                                                <span>Navy Dark</span>
+                                                <code>#0a1628</code>
+                                            </div>
                                         </div>
-                                        <div class="color-item" style="--color: #1a2d4a" onclick="devAdmin.copyColor('#1a2d4a')">
+                                        <div class="color-item" style="--color: #1a2d4a" onclick="devAdmin.copyColor('#1a2d4a', this)">
                                             <div class="color-swatch"></div>
-                                            <span>Navy</span>
-                                            <code>#1a2d4a</code>
+                                            <div class="color-item-info">
+                                                <span>Navy</span>
+                                                <code>#1a2d4a</code>
+                                            </div>
                                         </div>
-                                        <div class="color-item" style="--color: #ffffff" onclick="devAdmin.copyColor('#ffffff')">
+                                        <div class="color-item" style="--color: #ffffff" onclick="devAdmin.copyColor('#ffffff', this)">
                                             <div class="color-swatch"></div>
-                                            <span>White</span>
-                                            <code>#ffffff</code>
+                                            <div class="color-item-info">
+                                                <span>White</span>
+                                                <code>#ffffff</code>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="palette-section">
                                     <h4><i class="fas fa-palette"></i> Akzent Farben</h4>
                                     <div class="colors-grid" id="accentColors">
-                                        <div class="color-item" style="--color: #3498db" onclick="devAdmin.copyColor('#3498db')">
+                                        <div class="color-item" style="--color: #3498db" onclick="devAdmin.copyColor('#3498db', this)">
                                             <div class="color-swatch"></div>
-                                            <span>Blue</span>
-                                            <code>#3498db</code>
+                                            <div class="color-item-info">
+                                                <span>Blue</span>
+                                                <code>#3498db</code>
+                                            </div>
                                         </div>
-                                        <div class="color-item" style="--color: #2ecc71" onclick="devAdmin.copyColor('#2ecc71')">
+                                        <div class="color-item" style="--color: #2ecc71" onclick="devAdmin.copyColor('#2ecc71', this)">
                                             <div class="color-swatch"></div>
-                                            <span>Green</span>
-                                            <code>#2ecc71</code>
+                                            <div class="color-item-info">
+                                                <span>Green</span>
+                                                <code>#2ecc71</code>
+                                            </div>
                                         </div>
-                                        <div class="color-item" style="--color: #e74c3c" onclick="devAdmin.copyColor('#e74c3c')">
+                                        <div class="color-item" style="--color: #e74c3c" onclick="devAdmin.copyColor('#e74c3c', this)">
                                             <div class="color-swatch"></div>
-                                            <span>Red</span>
-                                            <code>#e74c3c</code>
+                                            <div class="color-item-info">
+                                                <span>Red</span>
+                                                <code>#e74c3c</code>
+                                            </div>
                                         </div>
-                                        <div class="color-item" style="--color: #9b59b6" onclick="devAdmin.copyColor('#9b59b6')">
+                                        <div class="color-item" style="--color: #9b59b6" onclick="devAdmin.copyColor('#9b59b6', this)">
                                             <div class="color-swatch"></div>
-                                            <span>Purple</span>
-                                            <code>#9b59b6</code>
+                                            <div class="color-item-info">
+                                                <span>Purple</span>
+                                                <code>#9b59b6</code>
+                                            </div>
+                                        </div>
+                                        <div class="color-item" style="--color: #f39c12" onclick="devAdmin.copyColor('#f39c12', this)">
+                                            <div class="color-swatch"></div>
+                                            <div class="color-item-info">
+                                                <span>Orange</span>
+                                                <code>#f39c12</code>
+                                            </div>
+                                        </div>
+                                        <div class="color-item" style="--color: #1abc9c" onclick="devAdmin.copyColor('#1abc9c', this)">
+                                            <div class="color-swatch"></div>
+                                            <div class="color-item-info">
+                                                <span>Teal</span>
+                                                <code>#1abc9c</code>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn-secondary" onclick="devAdmin.addCustomColor()">
-                                    <i class="fas fa-plus"></i> Eigene Farbe hinzufuegen
-                                </button>
+                                <div class="palette-section">
+                                    <h4><i class="fas fa-adjust"></i> Graustufen</h4>
+                                    <div class="colors-grid" id="grayColors">
+                                        <div class="color-item" style="--color: #333333" onclick="devAdmin.copyColor('#333333', this)">
+                                            <div class="color-swatch"></div>
+                                            <div class="color-item-info">
+                                                <span>Dark Gray</span>
+                                                <code>#333333</code>
+                                            </div>
+                                        </div>
+                                        <div class="color-item" style="--color: #666666" onclick="devAdmin.copyColor('#666666', this)">
+                                            <div class="color-swatch"></div>
+                                            <div class="color-item-info">
+                                                <span>Gray</span>
+                                                <code>#666666</code>
+                                            </div>
+                                        </div>
+                                        <div class="color-item" style="--color: #999999" onclick="devAdmin.copyColor('#999999', this)">
+                                            <div class="color-swatch"></div>
+                                            <div class="color-item-info">
+                                                <span>Light Gray</span>
+                                                <code>#999999</code>
+                                            </div>
+                                        </div>
+                                        <div class="color-item" style="--color: #f5f5f5" onclick="devAdmin.copyColor('#f5f5f5', this)">
+                                            <div class="color-swatch"></div>
+                                            <div class="color-item-info">
+                                                <span>Off White</span>
+                                                <code>#f5f5f5</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="add-custom-icon">
+                                    <button class="btn-secondary" onclick="devAdmin.addCustomColor()">
+                                        <i class="fas fa-plus"></i> Eigene Farbe hinzufuegen
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
