@@ -2025,8 +2025,13 @@ body {
    RESPONSIVE
    ============================================ */
 @media (max-width: 1200px) {
-    .admin-nav {
+    /* Hide nav text, show only icons */
+    .admin-nav .nav-btn span {
         display: none;
+    }
+
+    .admin-nav .nav-btn {
+        padding: 10px 12px;
     }
 
     .admin-sidebar {
@@ -2039,6 +2044,16 @@ body {
 }
 
 @media (max-width: 992px) {
+    /* Hide desktop nav completely */
+    .admin-nav {
+        display: none !important;
+    }
+
+    /* Show mobile dropdown */
+    .mobile-nav-dropdown {
+        display: block !important;
+    }
+
     .admin-sidebar {
         display: none;
     }
@@ -7130,29 +7145,9 @@ body {
     font-size: 16px;
 }
 
-/* Responsive Header Navigation */
-@media (max-width: 1200px) {
-    .admin-nav .nav-btn span {
-        display: none;
-    }
-
-    .admin-nav .nav-btn {
-        padding: 10px 12px;
-    }
-}
-
+/* Additional Mobile Responsive Styles */
 @media (max-width: 992px) {
-    /* Hide desktop navigation */
-    .admin-nav {
-        display: none !important;
-    }
-
-    /* Show mobile dropdown */
-    .mobile-nav-dropdown {
-        display: block;
-    }
-
-    /* Adjust header layout */
+    /* Header adjustments */
     .admin-header-content {
         padding: 0 12px;
     }
@@ -7166,20 +7161,10 @@ body {
         padding: 3px 8px;
     }
 
-    /* Adjust admin actions */
-    .admin-actions {
-        gap: 8px;
-    }
-
     .btn-preview,
     .btn-save {
         padding: 8px 12px;
         font-size: 12px;
-    }
-
-    .btn-preview span,
-    .btn-save span {
-        display: none;
     }
 
     /* Hide sync status text */
@@ -7224,9 +7209,54 @@ body {
         order: 2;
     }
 
-    /* Adjust main content margin */
+    /* Adjust main content margin for taller header */
     .admin-main {
         margin-top: 100px;
+    }
+
+    /* Content area mobile */
+    .admin-content {
+        padding: 16px;
+    }
+
+    /* Dashboard stats mobile */
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* Dashboard welcome mobile */
+    .dashboard-welcome {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+    }
+
+    .welcome-content {
+        order: 2;
+    }
+
+    .welcome-illustration {
+        order: 1;
+        margin-bottom: 20px;
+    }
+
+    .welcome-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .welcome-btn {
+        width: 100%;
+    }
+
+    /* Quick actions mobile */
+    .dashboard-main {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -7242,5 +7272,27 @@ body {
 
     .btn-preview {
         display: none;
+    }
+
+    /* Even smaller padding on mobile */
+    .admin-content {
+        padding: 12px;
+    }
+
+    /* Section headers mobile */
+    .section-header h1 {
+        font-size: 20px;
+    }
+
+    /* Form fields mobile */
+    .form-group label {
+        font-size: 13px;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 12px;
     }
 }
