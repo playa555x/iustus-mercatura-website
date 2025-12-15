@@ -6195,21 +6195,29 @@ section {
         display: flex;
         flex-direction: column;
         text-align: center;
+        align-items: center;
         width: 100%;
         max-width: 100%;
-        padding: 25px 25px 0 25px;
+        padding: 25px 15px 0 15px;
         flex: 1;
+        margin: 0;
     }
 
     .hero-text {
         display: flex;
         flex-direction: column;
         text-align: center;
+        align-items: center;
         width: 100%;
         max-width: 100%;
         flex: 1;
         justify-content: center;
         gap: 5px;
+        padding: 0;
+        margin: 0;
+        position: static !important;
+        left: auto !important;
+        right: auto !important;
     }
 
     .hero-label,
@@ -6278,18 +6286,15 @@ section {
     .hero-stats {
         display: flex !important;
         flex-direction: column;
+        align-items: center;
         gap: 0;
         padding: 0;
-        margin-top: 35px;
+        margin: 35px 0 0 0;
         background: transparent;
         border: none;
-    }
-
-    .hero-stats {
-        flex-direction: column;
-        background: transparent;
-        border: none;
-        border-radius: 0;
+        width: 100%;
+        position: static !important;
+        left: auto !important;
     }
 
     .hero-stats .stat-item {
@@ -6303,6 +6308,7 @@ section {
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         position: relative;
         text-align: center;
+        width: 100%;
     }
 
     .hero-stats .stat-item::after {
