@@ -96,6 +96,42 @@
                 <img src="/assets/images/logo.jpg" alt="Iustus Mercatura" class="logo-img">
                 <span class="admin-badge">Admin Panel</span>
             </div>
+
+            <!-- Mobile Navigation Dropdown -->
+            <div class="mobile-nav-dropdown" id="mobileNavDropdown">
+                <button class="mobile-nav-toggle" id="mobileNavToggle" onclick="adminPanel.toggleMobileNav()">
+                    <i class="fas fa-tachometer-alt" id="mobileNavIcon"></i>
+                    <span id="mobileNavText">Dashboard</span>
+                    <i class="fas fa-chevron-down mobile-nav-arrow"></i>
+                </button>
+                <div class="mobile-nav-menu" id="mobileNavMenu">
+                    <button class="mobile-nav-item active" data-section="dashboard" onclick="adminPanel.navigateToMobile('dashboard')">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </button>
+                    <button class="mobile-nav-item" data-section="content" onclick="adminPanel.navigateToMobile('content')">
+                        <i class="fas fa-edit"></i> Content
+                    </button>
+                    <button class="mobile-nav-item" data-section="images" onclick="adminPanel.navigateToMobile('images')">
+                        <i class="fas fa-images"></i> Images
+                    </button>
+                    <button class="mobile-nav-item" data-section="cards" onclick="adminPanel.navigateToMobile('cards')">
+                        <i class="fas fa-th-large"></i> Cards
+                    </button>
+                    <button class="mobile-nav-item" data-section="team" onclick="adminPanel.navigateToMobile('team')">
+                        <i class="fas fa-users"></i> Team
+                    </button>
+                    <button class="mobile-nav-item" data-section="locations" onclick="adminPanel.navigateToMobile('locations')">
+                        <i class="fas fa-map-marker-alt"></i> Locations
+                    </button>
+                    <button class="mobile-nav-item" data-section="settings" onclick="adminPanel.navigateToMobile('settings')">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
+                    <button class="mobile-nav-item" data-section="structure" onclick="adminPanel.navigateToMobile('structure')">
+                        <i class="fas fa-layer-group"></i> Struktur
+                    </button>
+                </div>
+            </div>
+
             <nav class="admin-nav">
                 <button class="nav-btn active" data-section="dashboard">
                     <i class="fas fa-tachometer-alt"></i>

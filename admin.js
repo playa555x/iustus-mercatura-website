@@ -817,6 +817,9 @@ class AdminPanel {
             sec.classList.toggle('active', sec.id === `section-${section}`);
         });
 
+        // Update mobile navigation state
+        this.updateMobileNavState(section);
+
         // Disable/Enable hover trigger system based on section
         const iframe = document.getElementById('websitePreview');
         if (iframe && iframe.contentDocument) {
@@ -834,6 +837,49 @@ class AdminPanel {
                     iframe.contentWindow.hoverTriggerSystem.setEnabled(true);
                 }
                 console.log('Hover-Trigger aktiviert');
+            }
+        }
+    }
+
+    // Mobile Navigation Functions
+    toggleMobileNav() {
+        const dropdown = document.getElementById('mobileNavDropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('open');
+        }
+    }
+
+    navigateToMobile(section) {
+        // Navigate to the section
+        this.navigateTo(section);
+
+        // Close the dropdown
+        const dropdown = document.getElementById('mobileNavDropdown');
+        if (dropdown) {
+            dropdown.classList.remove('open');
+        }
+    }
+
+    updateMobileNavState(section) {
+        // Update active state in mobile nav items
+        document.querySelectorAll('.mobile-nav-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.section === section);
+        });
+
+        // Update dropdown toggle text and icon
+        const activeItem = document.querySelector(`.mobile-nav-item[data-section="${section}"]`);
+        if (activeItem) {
+            const icon = activeItem.querySelector('i');
+            const text = activeItem.textContent.trim();
+
+            const mobileNavIcon = document.getElementById('mobileNavIcon');
+            const mobileNavText = document.getElementById('mobileNavText');
+
+            if (mobileNavIcon && icon) {
+                mobileNavIcon.className = icon.className;
+            }
+            if (mobileNavText) {
+                mobileNavText.textContent = text;
             }
         }
     }
@@ -9203,4 +9249,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
     }
+
+    // Close mobile nav dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('mobileNavDropdown');
+        if (dropdown && dropdown.classList.contains('open')) {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('open');
+            }
+        }
+    });
 });
