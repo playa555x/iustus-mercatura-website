@@ -192,6 +192,17 @@
     color: #ffc107;
 }
 
+.credential-hint {
+    display: block;
+    font-size: 11px;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+.credential-hint::before {
+    content: '💡 ';
+}
+
 .btn-save-credentials {
     display: inline-flex;
     align-items: center;

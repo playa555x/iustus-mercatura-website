@@ -72,10 +72,37 @@ const DeployOrchestrator = {
 
     getDefaultConfig() {
         return {
-            deployment: { projectName: 'iustus-mercatura' },
-            github: { enabled: true, branch: 'main' },
+            deployment: {
+                projectName: 'iustus-mercatura',
+                productionUrl: 'https://iustus-mercatura.onrender.com'
+            },
+            github: {
+                enabled: true,
+                branch: 'master',
+                repo: 'https://github.com/playa555x/iustus-mercatura-website'
+            },
             netlify: { enabled: true },
-            render: { enabled: false },
+            render: {
+                enabled: true,
+                region: 'frankfurt',  // EU Frankfurt - DSGVO compliant
+                serviceType: 'static_site',
+                autoDeploy: true,
+                // Optimal settings for static website
+                buildCommand: '',     // No build needed
+                publishPath: './',    // Serve from root
+                pullRequestPreviewsEnabled: true,
+                // Performance settings
+                headers: [
+                    { path: '/*', name: 'X-Frame-Options', value: 'SAMEORIGIN' },
+                    { path: '/*', name: 'X-Content-Type-Options', value: 'nosniff' },
+                    { path: '/assets/*', name: 'Cache-Control', value: 'public, max-age=31536000' },
+                    { path: '/*.html', name: 'Cache-Control', value: 'public, max-age=0, must-revalidate' }
+                ],
+                // Redirect rules
+                routes: [
+                    { type: 'rewrite', source: '/api/*', destination: '/api-placeholder.json' }
+                ]
+            },
             vercel: { enabled: false },
             preDeployChecks: { backupFirst: true, validateHtml: true }
         };
@@ -142,6 +169,17 @@ const DeployOrchestrator = {
                             </button>
                         </div>
                         <span class="credential-status" id="netlify-status"></span>
+                    </div>
+                    <div class="credential-item">
+                        <label>Render API Key</label>
+                        <div class="credential-input-group">
+                            <input type="password" id="render-token" placeholder="rnd_xxxxxxxxxxxx">
+                            <button class="btn-verify" onclick="DeployOrchestrator.verifyRender()">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        </div>
+                        <span class="credential-status" id="render-status"></span>
+                        <small class="credential-hint">Region: Frankfurt (EU) - Empfohlen für DSGVO</small>
                     </div>
                 </div>
                 <button class="btn-save-credentials" onclick="DeployOrchestrator.saveAllCredentials()">
@@ -216,6 +254,15 @@ const DeployOrchestrator = {
                         <div class="step-status"></div>
                     </div>
                     <div class="pipeline-connector"></div>
+                    <div class="pipeline-step" data-step="render-deploy">
+                        <div class="step-icon"><i class="fas fa-cube"></i></div>
+                        <div class="step-info">
+                            <span class="step-name">Render Deploy</span>
+                            <span class="step-desc">Auf Render deployen (Frankfurt)</span>
+                        </div>
+                        <div class="step-status"></div>
+                    </div>
+                    <div class="pipeline-connector"></div>
                     <div class="pipeline-step" data-step="verify">
                         <div class="step-icon"><i class="fas fa-check-double"></i></div>
                         <div class="step-info">
@@ -282,6 +329,9 @@ const DeployOrchestrator = {
         document.getElementById('netlify-token')?.addEventListener('change', (e) => {
             this.credentials.netlify.token = e.target.value;
         });
+        document.getElementById('render-token')?.addEventListener('change', (e) => {
+            this.credentials.render.apiKey = e.target.value;
+        });
 
         // Load saved tokens into inputs
         if (this.credentials.github.token) {
@@ -291,6 +341,10 @@ const DeployOrchestrator = {
         if (this.credentials.netlify.token) {
             const nlInput = document.getElementById('netlify-token');
             if (nlInput) nlInput.value = this.credentials.netlify.token;
+        }
+        if (this.credentials.render.apiKey) {
+            const renderInput = document.getElementById('render-token');
+            if (renderInput) renderInput.value = this.credentials.render.apiKey;
         }
     },
 
@@ -355,6 +409,7 @@ const DeployOrchestrator = {
     saveAllCredentials() {
         this.credentials.github.token = document.getElementById('github-token')?.value || '';
         this.credentials.netlify.token = document.getElementById('netlify-token')?.value || '';
+        this.credentials.render.apiKey = document.getElementById('render-token')?.value || '';
         this.saveCredentials();
         this.log('success', 'Credentials gespeichert');
         this.showToast('success', 'Credentials wurden gespeichert');
@@ -426,6 +481,74 @@ const DeployOrchestrator = {
             this.updateCredentialStatus('netlify', 'error', 'Token ungültig');
             this.log('error', 'Netlify Verifizierung fehlgeschlagen', error.message);
             return false;
+        }
+    },
+
+    async verifyRender() {
+        const apiKey = document.getElementById('render-token')?.value;
+        if (!apiKey) {
+            this.updateCredentialStatus('render', 'error', 'API Key fehlt');
+            return false;
+        }
+
+        this.updateCredentialStatus('render', 'checking', 'Prüfe...');
+
+        try {
+            // Render API v1 - Get owner info
+            const response = await fetch('https://api.render.com/v1/owners', {
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const owners = await response.json();
+                const owner = owners[0]?.owner;
+                this.credentials.render.apiKey = apiKey;
+                this.credentials.render.ownerId = owner?.id;
+                this.credentials.render.ownerName = owner?.name || owner?.email;
+                this.saveCredentials();
+                this.updateCredentialStatus('render', 'success', `Verbunden: ${owner?.name || owner?.email || 'OK'}`);
+                this.log('success', `Render verbunden: ${owner?.name || owner?.email}`);
+
+                // Check available services
+                await this.loadRenderServices();
+                return true;
+            } else if (response.status === 401) {
+                throw new Error('Ungültiger API Key');
+            } else {
+                throw new Error(`HTTP ${response.status}`);
+            }
+        } catch (error) {
+            this.updateCredentialStatus('render', 'error', error.message || 'Verifizierung fehlgeschlagen');
+            this.log('error', 'Render Verifizierung fehlgeschlagen', error.message);
+            return false;
+        }
+    },
+
+    async loadRenderServices() {
+        try {
+            const response = await fetch('https://api.render.com/v1/services?limit=50', {
+                headers: {
+                    'Authorization': `Bearer ${this.credentials.render.apiKey}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const services = await response.json();
+                this.credentials.render.services = services;
+                this.log('info', `${services.length} Render Services gefunden`);
+
+                // Check for Frankfurt region services
+                const frankfurtServices = services.filter(s => s.service?.region === 'frankfurt');
+                if (frankfurtServices.length > 0) {
+                    this.log('success', `${frankfurtServices.length} Services in Frankfurt Region`);
+                }
+            }
+        } catch (e) {
+            this.log('warn', 'Konnte Render Services nicht laden');
         }
     },
 
@@ -590,6 +713,7 @@ const DeployOrchestrator = {
             { id: 'git-commit', fn: this.stepGitCommit.bind(this) },
             { id: 'git-push', fn: this.stepGitPush.bind(this) },
             { id: 'netlify-deploy', fn: this.stepNetlifyDeploy.bind(this) },
+            { id: 'render-deploy', fn: this.stepRenderDeploy.bind(this) },
             { id: 'verify', fn: this.stepVerify.bind(this) }
         ];
 
@@ -747,6 +871,155 @@ const DeployOrchestrator = {
         } catch (e) {
             this.log('warn', 'Netlify Deploy simuliert');
             await this.sleep(2000);
+        }
+    },
+
+    async stepRenderDeploy() {
+        this.log('info', 'Deploye auf Render (Frankfurt Region)...');
+
+        if (!this.credentials.render.apiKey) {
+            this.log('warn', 'Render API Key nicht konfiguriert - überspringe');
+            return;
+        }
+
+        try {
+            // Get the service to deploy (first static site or web service)
+            const services = this.credentials.render.services || [];
+            let targetService = services.find(s =>
+                s.service?.type === 'static_site' || s.service?.type === 'web_service'
+            );
+
+            if (!targetService && this.config?.render?.serviceId) {
+                // Use configured service ID
+                this.log('info', `Verwende konfigurierte Service ID: ${this.config.render.serviceId}`);
+                targetService = { service: { id: this.config.render.serviceId } };
+            }
+
+            if (!targetService) {
+                this.log('warn', 'Kein Render Service gefunden - erstelle neuen...');
+                await this.createRenderService();
+                return;
+            }
+
+            const serviceId = targetService.service?.id;
+            this.log('info', `Triggere Deploy für Service: ${targetService.service?.name || serviceId}`);
+
+            // Trigger deploy via Render API
+            const response = await fetch(`https://api.render.com/v1/services/${serviceId}/deploys`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.credentials.render.apiKey}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    clearCache: 'do_not_clear'  // Faster deploys
+                })
+            });
+
+            if (response.ok) {
+                const deploy = await response.json();
+                this.log('success', `Render Deploy gestartet: ${deploy.id}`);
+                this.log('info', `Deploy Status: ${deploy.status}`);
+
+                // Poll for deploy completion
+                await this.waitForRenderDeploy(serviceId, deploy.id);
+            } else if (response.status === 401) {
+                throw new Error('Render API Key ungültig');
+            } else if (response.status === 404) {
+                this.log('warn', 'Service nicht gefunden - überspringe Render Deploy');
+            } else {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.message || `HTTP ${response.status}`);
+            }
+        } catch (e) {
+            this.log('error', `Render Deploy Fehler: ${e.message}`);
+            // Don't fail the whole pipeline for Render issues
+            this.log('warn', 'Render Deploy übersprungen');
+        }
+    },
+
+    async waitForRenderDeploy(serviceId, deployId, maxWaitMs = 120000) {
+        const startTime = Date.now();
+        const pollInterval = 5000;
+
+        while (Date.now() - startTime < maxWaitMs) {
+            try {
+                const response = await fetch(`https://api.render.com/v1/services/${serviceId}/deploys/${deployId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${this.credentials.render.apiKey}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const deploy = await response.json();
+                    const status = deploy.status;
+
+                    if (status === 'live') {
+                        this.log('success', '✅ Render Deploy erfolgreich abgeschlossen');
+                        return true;
+                    } else if (status === 'build_failed' || status === 'canceled' || status === 'deactivated') {
+                        throw new Error(`Deploy fehlgeschlagen: ${status}`);
+                    } else {
+                        this.log('info', `Render Deploy Status: ${status}...`);
+                    }
+                }
+            } catch (e) {
+                if (e.message.includes('fehlgeschlagen')) throw e;
+            }
+
+            await this.sleep(pollInterval);
+        }
+
+        this.log('warn', 'Render Deploy Timeout - Deployment läuft möglicherweise noch');
+    },
+
+    async createRenderService() {
+        this.log('info', 'Erstelle neuen Render Static Site Service...');
+
+        const serviceConfig = {
+            type: 'static_site',
+            name: this.config?.deployment?.projectName || 'iustus-mercatura-website',
+            ownerId: this.credentials.render.ownerId,
+            repo: this.config?.github?.repo || 'https://github.com/playa555x/iustus-mercatura-website',
+            branch: this.config?.github?.branch || 'master',
+            autoDeploy: 'yes',
+            buildCommand: '',  // No build for static
+            publishPath: './', // Root directory
+            region: 'frankfurt',  // EU Frankfurt region for GDPR compliance
+            envVars: []
+        };
+
+        try {
+            const response = await fetch('https://api.render.com/v1/services', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.credentials.render.apiKey}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(serviceConfig)
+            });
+
+            if (response.ok || response.status === 201) {
+                const service = await response.json();
+                this.log('success', `Render Service erstellt: ${service.service?.name}`);
+                this.log('info', `Service URL: ${service.service?.serviceDetails?.url || 'wird generiert...'}`);
+                this.log('info', `Region: Frankfurt (EU) - DSGVO-konform`);
+
+                // Save service ID for future deploys
+                if (!this.config.render) this.config.render = {};
+                this.config.render.serviceId = service.service?.id;
+
+                // Reload services
+                await this.loadRenderServices();
+            } else {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.message || 'Service-Erstellung fehlgeschlagen');
+            }
+        } catch (e) {
+            this.log('error', `Konnte Render Service nicht erstellen: ${e.message}`);
         }
     },
 
