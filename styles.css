@@ -5503,7 +5503,7 @@ section {
     }
 
     .locations-list {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .contact-content {
@@ -5541,6 +5541,14 @@ section {
 
     .dropdown-content {
         grid-template-columns: 300px 1fr;
+    }
+
+    /* Dropdown grid responsive - tablet */
+    .dropdown-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        padding: 40px 30px;
+        min-height: auto;
     }
 }
 
