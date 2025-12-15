@@ -49,11 +49,6 @@
     "backups",
     "*.log",
     "deploy-config.json",
-    "server.ts",
-    "dev-admin.html",
-    "dev-admin.js",
-    "dev-admin.css",
-    "dev-admin/",
-    "developer.html"
+    "dev-admin.html"
   ]
 }

@@ -30,7 +30,8 @@
       "Bash(find:*)",
       "Bash(\"'''' | Select-Object -First 30\")",
       "Bash(bun run:*)",
-      "Bash(git -C \"D:\\iustus-mercatura-website\" remote -v)"
+      "Bash(git -C \"D:\\iustus-mercatura-website\" remote -v)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

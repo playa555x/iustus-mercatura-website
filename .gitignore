@@ -1,6 +1,5 @@
-# Dev Admin - nicht deployen
-dev-admin.css
-dev-admin.js
+# Dev Admin HTML - nicht deployen (nur diese Datei)
+dev-admin.html
 
 # Node modules
 node_modules/

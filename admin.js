@@ -7,12 +7,26 @@
 // ============================================
 // CONFIGURATION
 // ============================================
+// Auto-detect API URL based on current hostname
+const getApiUrl = () => {
+    // If explicitly set, use that
+    if (window.CMS_API_URL) return window.CMS_API_URL;
+
+    // On localhost, use localhost
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return `http://${window.location.host}`;
+    }
+
+    // On production, use same origin (relative URLs work)
+    return window.location.origin;
+};
+
 const ADMIN_CONFIG = {
-    API_URL: window.CMS_API_URL || 'http://localhost:3005',
+    API_URL: getApiUrl(),
     SITE_ID: window.CMS_SITE_ID || 'iustus-mercatura',
     FALLBACK_TO_LOCALSTORAGE: true,
     STORAGE_KEY: 'iustus_admin_data',
-    DEBUG: true
+    DEBUG: window.location.hostname === 'localhost'
 };
 
 // ============================================
