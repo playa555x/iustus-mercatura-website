@@ -2,81 +2,397 @@
    MOBILE STYLES - Developer Page
    ============================================ */
 
-@media (max-width: 1024px) {
-    .dev-sidebar {
-        width: 100% !important;
-        position: relative !important;
-        height: auto !important;
+/* Mobile Menu Button - Hidden by default */
+.mobile-menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: var(--transition);
+    margin-right: 12px;
+}
+
+.mobile-menu-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-blue);
+}
+
+.mobile-menu-btn.active {
+    background: var(--accent-blue);
+    color: white;
+}
+
+.mobile-menu-btn i {
+    font-size: 18px;
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 99;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* ============================================
+   TABLET BREAKPOINT (992px)
+   ============================================ */
+@media (max-width: 992px) {
+    /* Show mobile menu button */
+    .mobile-menu-btn {
+        display: flex;
     }
-    
-    .dev-main {
+
+    /* Sidebar - Off-canvas on mobile */
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 100;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* Main content takes full width */
+    .main-content {
         margin-left: 0 !important;
         width: 100% !important;
     }
-    
-    .dev-container {
-        flex-direction: column !important;
-    }
-}
 
-@media (max-width: 768px) {
-    .dev-header {
-        padding: 15px !important;
+    /* Top bar adjustments */
+    .top-bar {
+        padding: 12px 16px !important;
     }
-    
-    .dev-header h1 {
-        font-size: 1.5rem !important;
+
+    .top-bar-left h2 {
+        font-size: 16px !important;
     }
-    
-    .dev-tools {
-        grid-template-columns: 1fr !important;
-        gap: 15px !important;
+
+    .top-bar-right {
+        gap: 8px !important;
     }
-    
-    .dev-card {
-        padding: 20px !important;
+
+    /* Hide text on buttons */
+    .btn-save span,
+    .changes-indicator span:last-child {
+        display: none;
     }
-    
+
+    .btn-save {
+        padding: 10px 14px !important;
+    }
+
+    .changes-indicator {
+        padding: 6px 10px !important;
+    }
+
+    /* Stats grid */
     .stats-grid {
-        grid-template-columns: 1fr 1fr !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
     }
-    
-    .table-container {
-        overflow-x: auto !important;
+
+    /* Dashboard grid */
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
     }
-    
-    table {
-        font-size: 0.875rem !important;
+
+    .dashboard-card.full-width {
+        grid-column: span 1 !important;
     }
-    
-    .btn-group {
+
+    /* Content area padding */
+    .content-area {
+        padding: 16px !important;
+    }
+
+    /* Sync grid */
+    .sync-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Elements grid */
+    .elements-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Database viewer */
+    .database-viewer {
         flex-direction: column !important;
     }
-    
-    .btn-group .btn {
+
+    .db-sidebar {
         width: 100% !important;
-        margin-bottom: 10px !important;
+        max-height: 200px;
+        overflow-y: auto;
     }
-    
-    .code-editor {
-        font-size: 12px !important;
+
+    /* Connection diagram */
+    .connection-diagram {
+        transform: scale(0.85);
+        transform-origin: center top;
+    }
+
+    .connection-branches {
+        flex-direction: column !important;
+    }
+
+    /* Settings tabs */
+    .settings-tabs {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+
+    .settings-tab {
+        flex: 1 1 calc(50% - 4px) !important;
+        min-width: 120px !important;
+    }
+
+    .settings-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .settings-card.full-width {
+        grid-column: span 1 !important;
+    }
+
+    /* Form rows */
+    .form-row {
+        flex-direction: column !important;
+        gap: 16px !important;
+    }
+
+    .form-row .form-group {
+        max-width: 100% !important;
     }
 }
 
-@media (max-width: 480px) {
-    .dev-header h1 {
-        font-size: 1.25rem !important;
+/* ============================================
+   MOBILE BREAKPOINT (768px)
+   ============================================ */
+@media (max-width: 768px) {
+    /* Top bar */
+    .top-bar-left h2 {
+        font-size: 14px !important;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
-    
+
+    /* Hide some icons on small screens */
+    .btn-icon:not(:first-child) {
+        display: none;
+    }
+
+    /* Stats grid single column */
     .stats-grid {
         grid-template-columns: 1fr !important;
     }
-    
-    .dev-card {
-        padding: 15px !important;
+
+    /* Stat card horizontal layout */
+    .stat-card {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 16px !important;
     }
-    
+
+    .stat-icon {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 20px !important;
+    }
+
+    .stat-info {
+        text-align: right !important;
+    }
+
+    /* Quick actions */
+    .quick-actions {
+        flex-direction: column !important;
+    }
+
+    .quick-actions button {
+        width: 100% !important;
+    }
+
+    /* Sync actions */
+    .sync-actions {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .sync-actions button {
+        width: 100% !important;
+    }
+
+    /* Modal */
+    .modal {
+        width: calc(100vw - 32px) !important;
+        max-height: calc(100vh - 32px) !important;
+        margin: 16px !important;
+    }
+
+    .confirm-modal {
+        width: calc(100vw - 32px) !important;
+        margin: 16px !important;
+    }
+
+    /* Template cards */
+    .templates-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Element categories */
+    .element-category-header {
+        padding: 14px 16px !important;
+    }
+
+    /* Logs */
+    .logs-header {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .logs-actions {
+        width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+
+    .logs-actions input,
+    .logs-actions button {
+        flex: 1 !important;
+        min-width: 100px !important;
+    }
+
+    /* Section toolbar */
+    .section-toolbar {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .toolbar-left,
+    .toolbar-right {
+        width: 100% !important;
+    }
+
+    .search-box {
+        width: 100% !important;
+    }
+
+    .toolbar-right button {
+        width: 100% !important;
+    }
+}
+
+/* ============================================
+   SMALL MOBILE BREAKPOINT (480px)
+   ============================================ */
+@media (max-width: 480px) {
+    /* Sidebar narrower */
+    .sidebar {
+        width: 100% !important;
+    }
+
+    /* Top bar minimal */
+    .top-bar {
+        padding: 10px 12px !important;
+    }
+
+    .top-bar-left h2 {
+        font-size: 13px !important;
+        max-width: 100px;
+    }
+
+    .mobile-menu-btn {
+        width: 40px;
+        height: 40px;
+        margin-right: 8px;
+    }
+
+    .btn-icon {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .btn-save {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+    }
+
+    /* Content area */
+    .content-area {
+        padding: 12px !important;
+    }
+
+    /* Cards */
+    .dashboard-card,
+    .settings-card,
+    .sync-card {
+        padding: 16px !important;
+    }
+
+    .card-header h3 {
+        font-size: 15px !important;
+    }
+
+    /* Form inputs */
     input, select, textarea {
         font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+
+    .form-input {
+        padding: 12px !important;
+    }
+
+    /* Buttons */
+    .btn-primary,
+    .btn-secondary,
+    .btn-warning {
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+    }
+
+    /* Settings tabs - vertical */
+    .settings-tab {
+        flex: 1 1 100% !important;
+    }
+
+    /* Login container */
+    .login-container {
+        padding: 24px !important;
+        margin: 16px !important;
+    }
+
+    .login-logo {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 24px !important;
+    }
+
+    .login-header h1 {
+        font-size: 20px !important;
     }
 }

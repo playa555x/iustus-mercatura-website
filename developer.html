@@ -148,6 +148,10 @@
             <!-- Top Bar -->
             <div class="top-bar">
                 <div class="top-bar-left">
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleDevSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <h2 id="currentSectionTitle">Dashboard</h2>
                 </div>
                 <div class="top-bar-right">
@@ -1743,7 +1747,31 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleDevSidebar()"></div>
+
     <script src="dev-admin.js"></script>
     <script src="deploy-orchestrator.js"></script>
+    <script>
+        // Mobile Sidebar Toggle
+        function toggleDevSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const menuBtn = document.getElementById('mobileMenuBtn');
+
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            menuBtn.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking nav item on mobile
+        document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    toggleDevSidebar();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

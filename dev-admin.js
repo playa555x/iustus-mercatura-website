@@ -3310,11 +3310,15 @@ class DevAdmin {
     }
 
     openPreview() {
-        window.open('index.html', '_blank');
+        // Use origin to ensure correct domain
+        const url = `${window.location.origin}/index.html`;
+        window.open(url, '_blank');
     }
 
     openAdminPanel() {
-        window.open('admin.html', '_blank');
+        // Use origin to ensure correct domain
+        const url = `${window.location.origin}/admin.html`;
+        window.open(url, '_blank');
     }
 
     // ============================================
@@ -3509,7 +3513,9 @@ class DevAdmin {
     }
 
     openWebsite() {
-        window.open('index.html', '_blank');
+        // Use origin to ensure correct domain
+        const url = `${window.location.origin}/index.html`;
+        window.open(url, '_blank');
         this.showToast('info', 'Website', 'Website wurde in neuem Tab geoeffnet');
     }
 
