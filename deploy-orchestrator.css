@@ -41,6 +41,119 @@
     margin: 0;
 }
 
+/* Status Overview Cards */
+.deploy-status-overview {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+}
+
+.deploy-status-overview h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+    margin: 0 0 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.status-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: white;
+    border-radius: 10px;
+    border: 2px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.status-card.connected {
+    border-color: #28a745;
+    background: linear-gradient(135deg, #ffffff 0%, #d4edda 100%);
+}
+
+.status-card.disconnected {
+    border-color: #dc3545;
+    background: linear-gradient(135deg, #ffffff 0%, #f8d7da 100%);
+}
+
+.status-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    background: #0f2847;
+    color: white;
+}
+
+.status-card.connected .status-card-icon {
+    background: #28a745;
+}
+
+.status-card.disconnected .status-card-icon {
+    background: #dc3545;
+}
+
+.status-card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.status-card-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0a1628;
+}
+
+.status-card-detail {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.status-card.connected .status-card-detail {
+    color: #155724;
+}
+
+.status-card.disconnected .status-card-detail {
+    color: #721c24;
+}
+
+.status-card-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #6c757d;
+}
+
+.status-card-indicator.connected {
+    background: #28a745;
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.5);
+}
+
+.status-card-indicator.disconnected {
+    background: #dc3545;
+}
+
+@media (max-width: 768px) {
+    .status-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Status Badge */
 .deploy-status-badge {
     display: flex;

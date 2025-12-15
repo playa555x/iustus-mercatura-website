@@ -146,6 +146,37 @@ const DeployOrchestrator = {
                 </div>
             </div>
 
+            <!-- Status Overview -->
+            <div class="deploy-status-overview" id="deploy-status-overview">
+                <h3><i class="fas fa-server"></i> Verbindungsstatus</h3>
+                <div class="status-cards">
+                    <div class="status-card" id="status-github">
+                        <div class="status-card-icon"><i class="fab fa-github"></i></div>
+                        <div class="status-card-info">
+                            <span class="status-card-name">GitHub</span>
+                            <span class="status-card-detail" id="github-detail">Nicht verbunden</span>
+                        </div>
+                        <span class="status-card-indicator disconnected"></span>
+                    </div>
+                    <div class="status-card" id="status-netlify">
+                        <div class="status-card-icon"><i class="fas fa-cloud"></i></div>
+                        <div class="status-card-info">
+                            <span class="status-card-name">Netlify</span>
+                            <span class="status-card-detail" id="netlify-detail">Nicht verbunden</span>
+                        </div>
+                        <span class="status-card-indicator disconnected"></span>
+                    </div>
+                    <div class="status-card" id="status-render">
+                        <div class="status-card-icon"><i class="fas fa-cube"></i></div>
+                        <div class="status-card-info">
+                            <span class="status-card-name">Render</span>
+                            <span class="status-card-detail" id="render-detail">Nicht verbunden</span>
+                        </div>
+                        <span class="status-card-indicator disconnected"></span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Credentials Section -->
             <div class="deploy-credentials-section">
                 <h3><i class="fas fa-key"></i> API Credentials</h3>
@@ -358,11 +389,34 @@ const DeployOrchestrator = {
             this.updateCredentialStatus('render', 'error', '✗ Kein API Key');
         }
 
-        // Log status summary
+        // Log status summary and update status cards
         const hasGithub = !!this.credentials.github.token;
         const hasNetlify = !!this.credentials.netlify.token;
         const hasRender = !!this.credentials.render.apiKey;
         this.log('info', `Credentials Status: GitHub ${hasGithub ? '✓' : '✗'} | Netlify ${hasNetlify ? '✓' : '✗'} | Render ${hasRender ? '✓' : '✗'}`);
+
+        // Update status overview cards
+        this.updateStatusCard('github', hasGithub, this.credentials.github.username || 'Verbunden');
+        this.updateStatusCard('netlify', hasNetlify, this.credentials.netlify.email || 'Verbunden');
+        this.updateStatusCard('render', hasRender, this.credentials.render.ownerName ? `${this.credentials.render.ownerName} (Frankfurt EU)` : 'Verbunden');
+    },
+
+    updateStatusCard(provider, connected, detail) {
+        const card = document.getElementById(`status-${provider}`);
+        const detailEl = document.getElementById(`${provider}-detail`);
+        const indicator = card?.querySelector('.status-card-indicator');
+
+        if (card) {
+            card.classList.toggle('connected', connected);
+            card.classList.toggle('disconnected', !connected);
+        }
+        if (detailEl) {
+            detailEl.textContent = connected ? detail : 'Nicht verbunden';
+        }
+        if (indicator) {
+            indicator.classList.toggle('connected', connected);
+            indicator.classList.toggle('disconnected', !connected);
+        }
     },
 
     // ==========================================
