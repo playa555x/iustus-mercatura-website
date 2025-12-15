@@ -112,7 +112,7 @@ class AdminErrorHandler {
         if (errorScreen) {
             errorMessage.textContent = errorInfo.message;
             errorStack.textContent = errorInfo.stack || 'Kein Stack-Trace verfügbar';
-            serverUrl.textContent = window.CMS_API_URL || 'http://localhost:3005';
+            serverUrl.textContent = window.CMS_API_URL || 'https://iustus-mercatura-eu.onrender.com';
             errorScreen.style.display = 'flex';
         }
     }
@@ -243,7 +243,7 @@ class AdminErrorHandler {
      * Server-Verbindung prüfen
      */
     static async checkServerConnection() {
-        const apiUrl = window.CMS_API_URL || 'http://localhost:3005';
+        const apiUrl = window.CMS_API_URL || 'https://iustus-mercatura-eu.onrender.com';
 
         try {
             const controller = new AbortController();
