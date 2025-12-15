@@ -6294,13 +6294,15 @@ section {
 
     .hero-stats .stat-item {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 12px;
-        padding: 12px 0;
+        gap: 4px;
+        padding: 16px 0;
         border: none;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         position: relative;
+        text-align: center;
     }
 
     .hero-stats .stat-item::after {
@@ -6317,8 +6319,8 @@ section {
         color: var(--accent-gold);
         display: inline;
         line-height: 1;
-        min-width: 80px;
-        text-align: right;
+        min-width: auto;
+        text-align: center;
         text-shadow: none;
     }
 
@@ -6329,15 +6331,15 @@ section {
     }
 
     .hero-stats .stat-label {
-        font-size: 12px;
+        font-size: 11px;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 1.5px;
         opacity: 0.7;
-        margin-top: 0;
-        display: inline;
+        margin-top: 4px;
+        display: block;
         color: var(--text-white);
-        text-align: left;
-        flex: 1;
+        text-align: center;
+        flex: none;
     }
 
     .products-grid {
