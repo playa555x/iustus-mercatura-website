@@ -1,0 +1,69 @@
+{
+  "locations": [
+    {
+      "id": "loc_1",
+      "dataLocation": "bvi",
+      "countryCode": "VG",
+      "countryName": "British Virgin Islands",
+      "locationType": "Holding Company HQ",
+      "companyName": "Iustus Mercatura Holding Inc.",
+      "address": "Intershore Chambers 3rd Floor, 333 Waterfront Dr. Geneva Place, Road Town, Tortola, VG 1110"
+    },
+    {
+      "id": "loc_2",
+      "dataLocation": "usa",
+      "countryCode": "US",
+      "countryName": "United States",
+      "locationType": "Regional Office",
+      "companyName": "FITC Energy Group Inc. & Iustus Mercatura USA Inc.",
+      "address": "31 Airpark Road, Princeton, 08540 New Jersey, USA"
+    },
+    {
+      "id": "loc_3",
+      "dataLocation": "brazil",
+      "countryCode": "BR",
+      "countryName": "Brazil",
+      "locationType": "Sourcing & Trading",
+      "companyName": "Iustus Mercatura Brazil Ltda.",
+      "address": "Suite 92, 6th Floor, Av. Dr. Cardoso de Melo 1340, Vila Olimpia, 04.548-004 São Paulo"
+    },
+    {
+      "id": "loc_4",
+      "dataLocation": "uae",
+      "countryCode": "AE",
+      "countryName": "United Arab Emirates",
+      "locationType": "Finance & Trading",
+      "companyName": "FITC Energy Group DXBS FZ-LLC",
+      "address": "Meydan Grandstand, 6th floor, Meydan Road, Nad Al Sheba, Dubai, U.A.E."
+    },
+    {
+      "id": "loc_5",
+      "dataLocation": "uk",
+      "countryCode": "GB",
+      "countryName": "United Kingdom",
+      "locationType": "Maritime Logistics",
+      "companyName": "Iustus Mercatura Maritime Logistics UK Limited",
+      "address": "7th Floor, Tower 42, 25 Old Broad Street, London EC2N 1HN"
+    },
+    {
+      "id": "loc_6",
+      "dataLocation": "uganda",
+      "countryCode": "UG",
+      "countryName": "Uganda",
+      "locationType": "Refinery & Distribution",
+      "companyName": "FITC Energy Group Inc. UG & Iustus Mercatura UG Ltd.",
+      "address": "2nd Floor Plot 51, 14 Ntinda Avenue, Nakawa 10005, Ntinda - Kampala"
+    },
+    {
+      "id": "loc_7",
+      "dataLocation": "kenya",
+      "countryCode": "KE",
+      "countryName": "Kenya",
+      "locationType": "Regional Distribution",
+      "companyName": "FITC Energy Group Inc Kenya",
+      "address": "2nd Floor, Kimathi House, Kenyatta Avenue, Nairobi 00100, Kenya"
+    }
+  ],
+  "updatedAt": "2024-12-15T00:00:00.000Z",
+  "updatedBy": "system"
+}

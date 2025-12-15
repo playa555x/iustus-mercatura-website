@@ -1112,30 +1112,27 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
 
                 const locations: any[] = [];
 
-                // Extract from location-card elements with title attribute
-                const locationCardRegex = /<div class="location-card"[^>]*data-location="([^"]+)"[^>]*title="([^"]*)"[^>]*>[\s\S]*?<div class="location-flag">([^<]+)<\/div>[\s\S]*?<h4>([^<]+)<\/h4>[\s\S]*?<p>([^<]+)<\/p>/g;
+                // Extract from map-info-box elements (new structure)
+                const mapInfoBoxRegex = /<div class="map-info-box"[^>]*data-location="([^"]+)"[^>]*>[\s\S]*?<span class="info-flag[^"]*">([^<]+)<\/span>[\s\S]*?<h4>([^<]+)<\/h4>[\s\S]*?<span class="info-type">([^<]+)<\/span>[\s\S]*?<p class="info-company">([^<]+)<\/p>[\s\S]*?<p class="info-address">([^<]+)<\/p>/g;
                 let match;
                 let idx = 0;
 
-                while ((match = locationCardRegex.exec(html)) !== null) {
-                    const [_, dataLocation, title, flag, name, city] = match;
-                    // Parse title: "Company Name | Address"
-                    const titleParts = title.split(' | ');
-                    const companyName = titleParts[0]?.replace(/&amp;/g, '&').trim() || '';
-                    const address = titleParts[1]?.trim() || city;
+                while ((match = mapInfoBoxRegex.exec(html)) !== null) {
+                    const [_, dataLocation, countryCode, countryName, locationType, companyName, address] = match;
 
                     locations.push({
-                        id: idx + 1,
-                        name: name.trim(),
-                        city: city.trim(),
-                        country: dataLocation.toUpperCase(),
-                        flag: flag.trim(),
-                        companyName,
-                        address
+                        id: `loc_${idx + 1}`,
+                        dataLocation: dataLocation.trim(),
+                        countryCode: countryCode.trim(),
+                        countryName: countryName.trim(),
+                        locationType: locationType.replace(/&amp;/g, '&').trim(),
+                        companyName: companyName.replace(/&amp;/g, '&').trim(),
+                        address: address.replace(/&atilde;/g, 'ã').replace(/&amp;/g, '&').trim()
                     });
                     idx++;
                 }
 
+                log("INFO", `Extracted ${locations.length} locations from index.html`);
                 return new Response(JSON.stringify({ locations }), { headers: jsonHeaders });
             } catch (e) {
                 log("ERROR", `Failed to extract locations: ${e}`);
