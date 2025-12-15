@@ -8326,7 +8326,7 @@ body.in-iframe [data-hover-trigger].hover-triggered {
         display: block !important;
         width: 100%;
         height: 2.5px;
-        background: #ffffff !important;
+        background: #0a1628 !important; /* Navy on white navbar (before scroll) */
         border-radius: 2px;
         transition: all 0.3s ease;
         transform-origin: center;
@@ -8343,6 +8343,11 @@ body.in-iframe [data-hover-trigger].hover-triggered {
 
     .hamburger-line:nth-child(3) {
         width: 85%;
+    }
+
+    /* After scroll - white lines on dark navbar */
+    .main-header.scrolled .hamburger-line {
+        background: #ffffff !important;
     }
 
     .mobile-menu-toggle:hover .hamburger-line {
