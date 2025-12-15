@@ -97,10 +97,15 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Navigation */
+/* Navigation - Desktop (visible by default) */
 .admin-nav {
     display: flex;
     gap: 4px;
+}
+
+/* Mobile Navigation - Hidden by default on desktop */
+.mobile-nav-dropdown {
+    display: none;
 }
 
 .nav-btn {
@@ -6348,12 +6353,13 @@ body {
    COMPREHENSIVE MOBILE OPTIMIZATION
    ============================================ */
 
-/* Tablet & Small Desktop */
+/* Tablet & Small Desktop - nav is still visible here */
 @media (max-width: 1024px) {
     .admin-header-content {
         padding: 0 20px;
     }
 
+    /* Nav stays visible but compact at this breakpoint */
     .admin-nav {
         gap: 2px;
     }
@@ -6377,6 +6383,17 @@ body {
     }
 }
 
+/* Hide desktop nav at 992px - show mobile dropdown instead */
+@media (max-width: 992px) {
+    .admin-nav {
+        display: none !important;
+    }
+
+    .mobile-nav-dropdown {
+        display: block !important;
+    }
+}
+
 /* Mobile - Main Breakpoint */
 @media (max-width: 768px) {
     /* Admin Header - Mobile */
@@ -6392,8 +6409,8 @@ body {
     }
 
     .admin-logo {
-        width: 100%;
-        justify-content: space-between;
+        width: auto;
+        flex: 1;
     }
 
     .admin-logo .logo-img {
@@ -6405,46 +6422,18 @@ body {
         padding: 3px 8px;
     }
 
-    /* Navigation - Horizontal Scroll */
-    .admin-nav {
-        width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        gap: 6px;
-        padding-bottom: 4px;
-    }
-
-    .admin-nav::-webkit-scrollbar {
-        display: none;
-    }
-
-    .nav-btn {
-        flex-shrink: 0;
-        padding: 8px 14px;
-        font-size: 12px;
-        white-space: nowrap;
-    }
-
-    .nav-btn i {
-        font-size: 14px;
-    }
+    /* Desktop nav is already hidden at 992px - do NOT show here */
+    /* .admin-nav is display: none at this point */
 
     /* Header Actions - Mobile */
     .admin-actions {
-        width: 100%;
-        justify-content: stretch;
         gap: 8px;
     }
 
     .btn-preview,
     .btn-save {
-        flex: 1;
         padding: 10px 16px;
         font-size: 13px;
-        justify-content: center;
     }
 
     .btn-preview span,
@@ -7055,10 +7044,10 @@ body {
 }
 
 /* ============================================
-   MOBILE NAVIGATION DROPDOWN
+   MOBILE NAVIGATION DROPDOWN STYLES
    ============================================ */
+/* Note: .mobile-nav-dropdown display:none is set at top of file */
 .mobile-nav-dropdown {
-    display: none;
     position: relative;
 }
 
