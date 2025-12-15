@@ -333,19 +333,36 @@ const DeployOrchestrator = {
             this.credentials.render.apiKey = e.target.value;
         });
 
-        // Load saved tokens into inputs
+        // Load saved tokens into inputs and show status
         if (this.credentials.github.token) {
             const ghInput = document.getElementById('github-token');
             if (ghInput) ghInput.value = this.credentials.github.token;
+            this.updateCredentialStatus('github', 'success', '✓ Token gespeichert');
+        } else {
+            this.updateCredentialStatus('github', 'error', '✗ Kein Token');
         }
+
         if (this.credentials.netlify.token) {
             const nlInput = document.getElementById('netlify-token');
             if (nlInput) nlInput.value = this.credentials.netlify.token;
+            this.updateCredentialStatus('netlify', 'success', '✓ Token gespeichert');
+        } else {
+            this.updateCredentialStatus('netlify', 'error', '✗ Kein Token');
         }
+
         if (this.credentials.render.apiKey) {
             const renderInput = document.getElementById('render-token');
             if (renderInput) renderInput.value = this.credentials.render.apiKey;
+            this.updateCredentialStatus('render', 'success', '✓ API Key gespeichert');
+        } else {
+            this.updateCredentialStatus('render', 'error', '✗ Kein API Key');
         }
+
+        // Log status summary
+        const hasGithub = !!this.credentials.github.token;
+        const hasNetlify = !!this.credentials.netlify.token;
+        const hasRender = !!this.credentials.render.apiKey;
+        this.log('info', `Credentials Status: GitHub ${hasGithub ? '✓' : '✗'} | Netlify ${hasNetlify ? '✓' : '✗'} | Render ${hasRender ? '✓' : '✗'}`);
     },
 
     // ==========================================
