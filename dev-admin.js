@@ -4159,6 +4159,163 @@ class DevAdmin {
             this.trackChange();
         }
     }
+
+    // ============================================
+    // ASSETS LIBRARY METHODS
+    // ============================================
+
+    // Switch between Assets tabs
+    switchAssetsTab(tabName) {
+        // Update tab buttons
+        document.querySelectorAll('.assets-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.tab === tabName);
+        });
+
+        // Update tab content
+        document.querySelectorAll('.assets-tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+
+        const targetContent = document.getElementById(`assets${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
+        if (targetContent) {
+            targetContent.classList.add('active');
+        }
+    }
+
+    // Search icons
+    searchIcons(query) {
+        const icons = document.querySelectorAll('.icon-item');
+        const searchTerm = query.toLowerCase();
+
+        icons.forEach(icon => {
+            const name = icon.querySelector('span').textContent.toLowerCase();
+            const iconClass = icon.dataset.icon.toLowerCase();
+            const matches = name.includes(searchTerm) || iconClass.includes(searchTerm);
+            icon.style.display = matches ? '' : 'none';
+        });
+    }
+
+    // Filter icons by category
+    filterIcons(category) {
+        // Update category buttons
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.category === category);
+        });
+
+        // Filter icons
+        const icons = document.querySelectorAll('.icon-item');
+        icons.forEach(icon => {
+            if (category === 'all') {
+                icon.style.display = '';
+            } else {
+                icon.style.display = icon.dataset.category === category ? '' : 'none';
+            }
+        });
+    }
+
+    // Copy icon class to clipboard
+    copyIcon(element) {
+        const iconClass = element.dataset.icon;
+        navigator.clipboard.writeText(`<i class="${iconClass}"></i>`).then(() => {
+            this.showToast('success', 'Icon kopiert', `${iconClass} wurde in die Zwischenablage kopiert`);
+            element.style.transform = 'scale(0.95)';
+            setTimeout(() => element.style.transform = '', 150);
+        });
+    }
+
+    // Copy color to clipboard
+    copyColor(color) {
+        navigator.clipboard.writeText(color).then(() => {
+            this.showToast('success', 'Farbe kopiert', `${color} wurde in die Zwischenablage kopiert`);
+        });
+    }
+
+    // Add custom icon
+    addCustomIcon() {
+        const iconClass = prompt('Font Awesome Icon-Klasse eingeben (z.B. fas fa-star):');
+        if (iconClass) {
+            const name = prompt('Name für das Icon:') || iconClass;
+            const iconsGrid = document.getElementById('iconsGrid');
+            const newIcon = document.createElement('div');
+            newIcon.className = 'icon-item';
+            newIcon.dataset.category = 'custom';
+            newIcon.dataset.icon = iconClass;
+            newIcon.onclick = () => this.copyIcon(newIcon);
+            newIcon.innerHTML = `
+                <i class="${iconClass}"></i>
+                <span>${name}</span>
+            `;
+            iconsGrid.appendChild(newIcon);
+            this.showToast('success', 'Icon hinzugefuegt', `${name} wurde zur Bibliothek hinzugefuegt`);
+        }
+    }
+
+    // Add custom color
+    addCustomColor() {
+        const color = prompt('Farbe eingeben (z.B. #ff0000):');
+        if (color) {
+            const name = prompt('Name für die Farbe:') || color;
+            const colorsGrid = document.getElementById('accentColors');
+            const newColor = document.createElement('div');
+            newColor.className = 'color-item';
+            newColor.style.setProperty('--color', color);
+            newColor.onclick = () => this.copyColor(color);
+            newColor.innerHTML = `
+                <div class="color-swatch"></div>
+                <span>${name}</span>
+                <code>${color}</code>
+            `;
+            colorsGrid.appendChild(newColor);
+            this.showToast('success', 'Farbe hinzugefuegt', `${name} wurde zur Palette hinzugefuegt`);
+        }
+    }
+
+    // Search components
+    searchComponents(query) {
+        const items = document.querySelectorAll('.component-item');
+        const searchTerm = query.toLowerCase();
+
+        items.forEach(item => {
+            const name = item.querySelector('span').textContent.toLowerCase();
+            item.style.display = name.includes(searchTerm) ? '' : 'none';
+        });
+    }
+
+    // Search layouts
+    searchLayouts(query) {
+        const items = document.querySelectorAll('.layout-item');
+        const searchTerm = query.toLowerCase();
+
+        items.forEach(item => {
+            const name = item.querySelector('h4').textContent.toLowerCase();
+            const desc = item.querySelector('p').textContent.toLowerCase();
+            item.style.display = (name.includes(searchTerm) || desc.includes(searchTerm)) ? '' : 'none';
+        });
+    }
+
+    // Preview component
+    previewComponent(componentId) {
+        this.showToast('info', 'Vorschau', `Komponente "${componentId}" wird geladen...`);
+        // TODO: Implement component preview modal
+    }
+
+    // Preview layout
+    previewLayout(layoutId) {
+        this.showToast('info', 'Vorschau', `Layout "${layoutId}" wird geladen...`);
+        // TODO: Implement layout preview modal
+    }
+
+    // Create new component
+    createComponent() {
+        this.showToast('info', 'Baustein erstellen', 'Diese Funktion wird bald verfuegbar sein');
+        // TODO: Implement component creation wizard
+    }
+
+    // Create/save layout
+    createLayout() {
+        this.showToast('info', 'Layout speichern', 'Diese Funktion wird bald verfuegbar sein');
+        // TODO: Implement layout saving from current page
+    }
 }
 
 // Initialize

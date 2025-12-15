@@ -3754,10 +3754,86 @@ class AdminPanel {
                     z-index: 10;
                 }
 
-                body.admin-edit-mode button:not(.admin-element-toolbar button):hover::after,
-                body.admin-edit-mode .btn:hover::after,
-                body.admin-edit-mode a.btn:hover::after {
+                /* Click-to-activate statt hover - Klasse wird per JS hinzugefügt */
+                body.admin-edit-mode button:not(.admin-element-toolbar button).admin-click-active::after,
+                body.admin-edit-mode .btn.admin-click-active::after,
+                body.admin-edit-mode a.btn.admin-click-active::after,
+                body.admin-edit-mode .admin-editable.admin-click-active::after {
                     opacity: 1;
+                }
+
+                /* Drag-Hilfe Info Box */
+                .admin-drag-help {
+                    position: fixed !important;
+                    bottom: 20px !important;
+                    left: 50% !important;
+                    transform: translateX(-50%) !important;
+                    background: linear-gradient(135deg, #0a1628 0%, #1a2d4a 100%) !important;
+                    color: white !important;
+                    padding: 12px 24px !important;
+                    border-radius: 10px !important;
+                    font-family: -apple-system, BlinkMacSystemFont, sans-serif !important;
+                    font-size: 13px !important;
+                    z-index: 999999 !important;
+                    box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+                    display: flex !important;
+                    gap: 20px !important;
+                    align-items: center !important;
+                    border: 1px solid rgba(201, 162, 39, 0.3) !important;
+                    pointer-events: none !important;
+                }
+                .admin-drag-help .help-item {
+                    display: flex !important;
+                    align-items: center !important;
+                    gap: 8px !important;
+                }
+                .admin-drag-help .help-key {
+                    background: rgba(201, 162, 39, 0.2) !important;
+                    color: #c9a227 !important;
+                    padding: 4px 8px !important;
+                    border-radius: 4px !important;
+                    font-weight: 600 !important;
+                    font-size: 11px !important;
+                }
+                .admin-drag-help .help-text {
+                    color: rgba(255,255,255,0.8) !important;
+                }
+
+                /* Drag-Drop Zone Highlight */
+                .admin-drop-zone {
+                    position: relative !important;
+                }
+                .admin-drop-zone::before {
+                    content: '' !important;
+                    position: absolute !important;
+                    inset: -4px !important;
+                    border: 2px dashed rgba(201, 162, 39, 0.5) !important;
+                    border-radius: 8px !important;
+                    pointer-events: none !important;
+                    opacity: 0 !important;
+                    transition: opacity 0.2s !important;
+                }
+                .admin-drop-zone.admin-drop-active::before {
+                    opacity: 1 !important;
+                    border-color: #c9a227 !important;
+                    background: rgba(201, 162, 39, 0.1) !important;
+                }
+
+                /* Grid-Overlay für präzise Positionierung */
+                .admin-grid-overlay {
+                    position: fixed !important;
+                    inset: 0 !important;
+                    pointer-events: none !important;
+                    z-index: 999985 !important;
+                    opacity: 0.15 !important;
+                    background-image:
+                        linear-gradient(rgba(201, 162, 39, 0.3) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(201, 162, 39, 0.3) 1px, transparent 1px) !important;
+                    background-size: 20px 20px !important;
+                    display: none !important;
+                }
+                .admin-grid-overlay.visible {
+                    display: block !important;
                 }
 
                 /* Alle interaktiven Elemente müssen position relative haben für ::after */
@@ -3985,6 +4061,12 @@ class AdminPanel {
         // WICHTIG: admin-edit-mode Klasse auf body setzen um Hover-Effekte zu deaktivieren
         doc.body.classList.add('admin-edit-mode');
 
+        // Erstelle Drag-Hilfe Info Box
+        this.createDragHelp(doc);
+
+        // Erstelle Grid-Overlay für präzise Positionierung
+        this.createGridOverlay(doc);
+
         // Mache ALLE sichtbaren Elemente editierbar
         const editableSelectors = [
             'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -4009,10 +4091,21 @@ class AdminPanel {
 
             el.classList.add('admin-editable');
 
-            // Click Event - Element auswählen
+            // Click Event - Element auswählen + Click-to-Activate (statt Hover)
             el.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+
+                // Entferne admin-click-active von allen anderen Elementen
+                doc.querySelectorAll('.admin-click-active').forEach(activeEl => {
+                    if (activeEl !== el) {
+                        activeEl.classList.remove('admin-click-active');
+                    }
+                });
+
+                // Toggle admin-click-active auf diesem Element (ersetzt Hover-Effekt)
+                el.classList.toggle('admin-click-active');
+
                 this.selectElement(el, doc);
             });
 
@@ -4309,6 +4402,68 @@ class AdminPanel {
 
     hidePositionInfo(doc) {
         doc.querySelectorAll('.admin-position-info').forEach(i => i.remove());
+    }
+
+    // Drag-Hilfe Info Box erstellen
+    createDragHelp(doc) {
+        // Entferne vorherige
+        doc.querySelectorAll('.admin-drag-help').forEach(h => h.remove());
+
+        const helpBox = doc.createElement('div');
+        helpBox.className = 'admin-drag-help';
+        helpBox.innerHTML = `
+            <div class="help-item">
+                <span class="help-key">Klick</span>
+                <span class="help-text">Element auswählen</span>
+            </div>
+            <div class="help-item">
+                <span class="help-key">Doppelklick</span>
+                <span class="help-text">Text bearbeiten</span>
+            </div>
+            <div class="help-item">
+                <span class="help-key">Ziehen</span>
+                <span class="help-text">Verschieben</span>
+            </div>
+            <div class="help-item">
+                <span class="help-key">⬆⬇⬅➡</span>
+                <span class="help-text">Feinpositionierung</span>
+            </div>
+            <div class="help-item">
+                <span class="help-key">Shift</span>
+                <span class="help-text">+10px Schritte</span>
+            </div>
+            <div class="help-item">
+                <span class="help-key">G</span>
+                <span class="help-text">Raster ein/aus</span>
+            </div>
+        `;
+        doc.body.appendChild(helpBox);
+
+        // Nach 8 Sekunden ausblenden
+        setTimeout(() => {
+            if (helpBox.parentElement) {
+                helpBox.style.transition = 'opacity 0.5s';
+                helpBox.style.opacity = '0';
+                setTimeout(() => helpBox.remove(), 500);
+            }
+        }, 8000);
+    }
+
+    // Grid-Overlay für präzise Positionierung
+    createGridOverlay(doc) {
+        // Entferne vorherigen
+        doc.querySelectorAll('.admin-grid-overlay').forEach(g => g.remove());
+
+        const grid = doc.createElement('div');
+        grid.className = 'admin-grid-overlay';
+        doc.body.appendChild(grid);
+
+        // Toggle Grid mit 'G' Taste
+        doc.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'g' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                grid.classList.toggle('visible');
+            }
+        });
     }
 
     selectElement(el, doc) {

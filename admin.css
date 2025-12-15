@@ -740,7 +740,7 @@ body {
 }
 
 .social-link-item.twitter {
-    background: linear-gradient(135deg, #1da1f2 0%, #0c85d0 100%);
+    background: linear-gradient(135deg, #000000 0%, #14171a 100%);
 }
 
 /* Help Links */
@@ -7313,5 +7313,67 @@ body {
     .form-select {
         font-size: 16px; /* Prevents zoom on iOS */
         padding: 12px;
+    }
+}
+
+/* ============================================
+   STRUCTURE SECTION - MOBILE NOT AVAILABLE
+   ============================================ */
+.mobile-not-available {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    background: linear-gradient(135deg, var(--gray-50), var(--white));
+    border-radius: var(--radius-lg);
+    border: 2px dashed var(--gray-300);
+    margin: 20px;
+}
+
+.mobile-notice-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.mobile-notice-icon i {
+    font-size: 32px;
+    color: var(--gold);
+}
+
+.mobile-not-available h2 {
+    font-size: 24px;
+    color: var(--navy-dark);
+    margin-bottom: 12px;
+}
+
+.mobile-not-available p {
+    font-size: 15px;
+    color: var(--gray-600);
+    max-width: 400px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.mobile-notice-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Show mobile notice, hide desktop content on small screens */
+@media (max-width: 992px) {
+    .mobile-not-available {
+        display: flex;
+    }
+
+    .structure-desktop-only {
+        display: none !important;
     }
 }

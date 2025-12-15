@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex, nofollow">
     <title>Developer Admin - Universal CMS</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/dev-admin.css">
     <link rel="stylesheet" href="/deploy-orchestrator.css">
     <link rel="stylesheet" href="/developer-mobile.css">
@@ -107,6 +107,10 @@
                 </div>
 
                 <div class="nav-divider"><span>Tools</span></div>
+                <button class="nav-item" data-section="assets">
+                    <i class="fas fa-cubes"></i>
+                    <span>Assets Library</span>
+                </button>
                 <button class="nav-item" data-section="templates">
                     <i class="fas fa-copy"></i>
                     <span>Templates</span>
@@ -763,6 +767,350 @@
                     </div>
                     <div class="items-grid" id="collectionsGrid">
                         <!-- Collections via JS -->
+                    </div>
+                </section>
+
+                <!-- Assets Library Section -->
+                <section class="content-section" id="section-assets">
+                    <div class="assets-library">
+                        <!-- Assets Tabs -->
+                        <div class="assets-tabs">
+                            <button class="assets-tab active" data-tab="icons" onclick="devAdmin.switchAssetsTab('icons')">
+                                <i class="fas fa-icons"></i> Icons
+                            </button>
+                            <button class="assets-tab" data-tab="components" onclick="devAdmin.switchAssetsTab('components')">
+                                <i class="fas fa-puzzle-piece"></i> Bausteine
+                            </button>
+                            <button class="assets-tab" data-tab="layouts" onclick="devAdmin.switchAssetsTab('layouts')">
+                                <i class="fas fa-columns"></i> Layouts
+                            </button>
+                            <button class="assets-tab" data-tab="colors" onclick="devAdmin.switchAssetsTab('colors')">
+                                <i class="fas fa-palette"></i> Farben
+                            </button>
+                        </div>
+
+                        <!-- Icons Tab -->
+                        <div class="assets-tab-content active" id="assetsIcons">
+                            <div class="assets-toolbar">
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="iconSearch" placeholder="Icons suchen..." oninput="devAdmin.searchIcons(this.value)">
+                                </div>
+                                <div class="icon-categories">
+                                    <button class="category-btn active" data-category="all" onclick="devAdmin.filterIcons('all')">Alle</button>
+                                    <button class="category-btn" data-category="social" onclick="devAdmin.filterIcons('social')">Social</button>
+                                    <button class="category-btn" data-category="ui" onclick="devAdmin.filterIcons('ui')">UI</button>
+                                    <button class="category-btn" data-category="business" onclick="devAdmin.filterIcons('business')">Business</button>
+                                    <button class="category-btn" data-category="custom" onclick="devAdmin.filterIcons('custom')">Custom</button>
+                                </div>
+                            </div>
+                            <div class="icons-grid" id="iconsGrid">
+                                <!-- Social Icons -->
+                                <div class="icon-item" data-category="social" data-icon="fab fa-x-twitter" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fab fa-x-twitter"></i>
+                                    <span>X (Twitter)</span>
+                                </div>
+                                <div class="icon-item" data-category="social" data-icon="fab fa-linkedin-in" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fab fa-linkedin-in"></i>
+                                    <span>LinkedIn</span>
+                                </div>
+                                <div class="icon-item" data-category="social" data-icon="fab fa-instagram" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fab fa-instagram"></i>
+                                    <span>Instagram</span>
+                                </div>
+                                <div class="icon-item" data-category="social" data-icon="fab fa-facebook-f" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fab fa-facebook-f"></i>
+                                    <span>Facebook</span>
+                                </div>
+                                <div class="icon-item" data-category="social" data-icon="fab fa-youtube" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fab fa-youtube"></i>
+                                    <span>YouTube</span>
+                                </div>
+                                <div class="icon-item" data-category="social" data-icon="fab fa-tiktok" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fab fa-tiktok"></i>
+                                    <span>TikTok</span>
+                                </div>
+                                <div class="icon-item" data-category="social" data-icon="fab fa-whatsapp" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <span>WhatsApp</span>
+                                </div>
+                                <div class="icon-item" data-category="social" data-icon="fab fa-telegram" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fab fa-telegram"></i>
+                                    <span>Telegram</span>
+                                </div>
+                                <!-- UI Icons -->
+                                <div class="icon-item" data-category="ui" data-icon="fas fa-home" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-home"></i>
+                                    <span>Home</span>
+                                </div>
+                                <div class="icon-item" data-category="ui" data-icon="fas fa-envelope" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>Email</span>
+                                </div>
+                                <div class="icon-item" data-category="ui" data-icon="fas fa-phone" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-phone"></i>
+                                    <span>Phone</span>
+                                </div>
+                                <div class="icon-item" data-category="ui" data-icon="fas fa-map-marker-alt" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Location</span>
+                                </div>
+                                <div class="icon-item" data-category="ui" data-icon="fas fa-search" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-search"></i>
+                                    <span>Search</span>
+                                </div>
+                                <div class="icon-item" data-category="ui" data-icon="fas fa-bars" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-bars"></i>
+                                    <span>Menu</span>
+                                </div>
+                                <div class="icon-item" data-category="ui" data-icon="fas fa-times" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-times"></i>
+                                    <span>Close</span>
+                                </div>
+                                <div class="icon-item" data-category="ui" data-icon="fas fa-check" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-check"></i>
+                                    <span>Check</span>
+                                </div>
+                                <div class="icon-item" data-category="ui" data-icon="fas fa-arrow-right" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-arrow-right"></i>
+                                    <span>Arrow Right</span>
+                                </div>
+                                <div class="icon-item" data-category="ui" data-icon="fas fa-arrow-left" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-arrow-left"></i>
+                                    <span>Arrow Left</span>
+                                </div>
+                                <!-- Business Icons -->
+                                <div class="icon-item" data-category="business" data-icon="fas fa-briefcase" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>Briefcase</span>
+                                </div>
+                                <div class="icon-item" data-category="business" data-icon="fas fa-building" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-building"></i>
+                                    <span>Building</span>
+                                </div>
+                                <div class="icon-item" data-category="business" data-icon="fas fa-chart-line" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Chart</span>
+                                </div>
+                                <div class="icon-item" data-category="business" data-icon="fas fa-users" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-users"></i>
+                                    <span>Team</span>
+                                </div>
+                                <div class="icon-item" data-category="business" data-icon="fas fa-handshake" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-handshake"></i>
+                                    <span>Handshake</span>
+                                </div>
+                                <div class="icon-item" data-category="business" data-icon="fas fa-globe" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-globe"></i>
+                                    <span>Globe</span>
+                                </div>
+                                <div class="icon-item" data-category="business" data-icon="fas fa-ship" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-ship"></i>
+                                    <span>Ship</span>
+                                </div>
+                                <div class="icon-item" data-category="business" data-icon="fas fa-industry" onclick="devAdmin.copyIcon(this)">
+                                    <i class="fas fa-industry"></i>
+                                    <span>Industry</span>
+                                </div>
+                            </div>
+                            <div class="add-custom-icon">
+                                <button class="btn-secondary" onclick="devAdmin.addCustomIcon()">
+                                    <i class="fas fa-plus"></i> Eigenes Icon hinzufuegen
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Components Tab -->
+                        <div class="assets-tab-content" id="assetsComponents">
+                            <div class="assets-toolbar">
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="componentSearch" placeholder="Bausteine suchen..." oninput="devAdmin.searchComponents(this.value)">
+                                </div>
+                                <button class="btn-primary" onclick="devAdmin.createComponent()">
+                                    <i class="fas fa-plus"></i> Neuen Baustein erstellen
+                                </button>
+                            </div>
+                            <div class="components-grid" id="componentsGrid">
+                                <!-- Header Components -->
+                                <div class="component-category">
+                                    <h4><i class="fas fa-heading"></i> Headers</h4>
+                                    <div class="component-items" id="headerComponents">
+                                        <div class="component-item" onclick="devAdmin.previewComponent('header-1')">
+                                            <div class="component-preview">
+                                                <div class="preview-placeholder header"></div>
+                                            </div>
+                                            <span>Classic Header</span>
+                                        </div>
+                                        <div class="component-item" onclick="devAdmin.previewComponent('header-2')">
+                                            <div class="component-preview">
+                                                <div class="preview-placeholder header-centered"></div>
+                                            </div>
+                                            <span>Centered Header</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Hero Components -->
+                                <div class="component-category">
+                                    <h4><i class="fas fa-star"></i> Heroes</h4>
+                                    <div class="component-items" id="heroComponents">
+                                        <div class="component-item" onclick="devAdmin.previewComponent('hero-1')">
+                                            <div class="component-preview">
+                                                <div class="preview-placeholder hero-split"></div>
+                                            </div>
+                                            <span>Split Hero</span>
+                                        </div>
+                                        <div class="component-item" onclick="devAdmin.previewComponent('hero-2')">
+                                            <div class="component-preview">
+                                                <div class="preview-placeholder hero-full"></div>
+                                            </div>
+                                            <span>Fullscreen Hero</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Footer Components -->
+                                <div class="component-category">
+                                    <h4><i class="fas fa-shoe-prints"></i> Footers</h4>
+                                    <div class="component-items" id="footerComponents">
+                                        <div class="component-item" onclick="devAdmin.previewComponent('footer-1')">
+                                            <div class="component-preview">
+                                                <div class="preview-placeholder footer"></div>
+                                            </div>
+                                            <span>Multi-Column Footer</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Layouts Tab -->
+                        <div class="assets-tab-content" id="assetsLayouts">
+                            <div class="assets-toolbar">
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="layoutSearch" placeholder="Layouts suchen..." oninput="devAdmin.searchLayouts(this.value)">
+                                </div>
+                                <button class="btn-primary" onclick="devAdmin.createLayout()">
+                                    <i class="fas fa-plus"></i> Neues Layout speichern
+                                </button>
+                            </div>
+                            <div class="layouts-grid" id="layoutsGrid">
+                                <div class="layout-item" onclick="devAdmin.previewLayout('corporate')">
+                                    <div class="layout-preview corporate">
+                                        <div class="layout-mini-preview">
+                                            <div class="lmp-header"></div>
+                                            <div class="lmp-hero"></div>
+                                            <div class="lmp-content"></div>
+                                            <div class="lmp-footer"></div>
+                                        </div>
+                                    </div>
+                                    <div class="layout-info">
+                                        <h4>Corporate</h4>
+                                        <p>Professionelles Business-Layout</p>
+                                        <span class="layout-sections">4 Sections</span>
+                                    </div>
+                                </div>
+                                <div class="layout-item" onclick="devAdmin.previewLayout('creative')">
+                                    <div class="layout-preview creative">
+                                        <div class="layout-mini-preview">
+                                            <div class="lmp-header-transparent"></div>
+                                            <div class="lmp-hero-full"></div>
+                                            <div class="lmp-gallery"></div>
+                                            <div class="lmp-cta"></div>
+                                        </div>
+                                    </div>
+                                    <div class="layout-info">
+                                        <h4>Creative Portfolio</h4>
+                                        <p>Kreatives, modernes Design</p>
+                                        <span class="layout-sections">6 Sections</span>
+                                    </div>
+                                </div>
+                                <div class="layout-item" onclick="devAdmin.previewLayout('landing')">
+                                    <div class="layout-preview landing">
+                                        <div class="layout-mini-preview">
+                                            <div class="lmp-hero-cta"></div>
+                                            <div class="lmp-features"></div>
+                                            <div class="lmp-testimonials"></div>
+                                            <div class="lmp-pricing"></div>
+                                        </div>
+                                    </div>
+                                    <div class="layout-info">
+                                        <h4>Landing Page</h4>
+                                        <p>Conversion-optimiert</p>
+                                        <span class="layout-sections">5 Sections</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="saved-layouts">
+                                <h4><i class="fas fa-save"></i> Gespeicherte Layouts</h4>
+                                <div class="saved-layouts-list" id="savedLayouts">
+                                    <div class="no-layouts">
+                                        <i class="fas fa-folder-open"></i>
+                                        <p>Keine gespeicherten Layouts</p>
+                                        <span>Speichere ein Layout von einer bestehenden Seite</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Colors Tab -->
+                        <div class="assets-tab-content" id="assetsColors">
+                            <div class="color-palettes">
+                                <div class="palette-section">
+                                    <h4><i class="fas fa-tint"></i> Brand Farben</h4>
+                                    <div class="colors-grid" id="brandColors">
+                                        <div class="color-item" style="--color: #c9a227" onclick="devAdmin.copyColor('#c9a227')">
+                                            <div class="color-swatch"></div>
+                                            <span>Gold</span>
+                                            <code>#c9a227</code>
+                                        </div>
+                                        <div class="color-item" style="--color: #0a1628" onclick="devAdmin.copyColor('#0a1628')">
+                                            <div class="color-swatch"></div>
+                                            <span>Navy Dark</span>
+                                            <code>#0a1628</code>
+                                        </div>
+                                        <div class="color-item" style="--color: #1a2d4a" onclick="devAdmin.copyColor('#1a2d4a')">
+                                            <div class="color-swatch"></div>
+                                            <span>Navy</span>
+                                            <code>#1a2d4a</code>
+                                        </div>
+                                        <div class="color-item" style="--color: #ffffff" onclick="devAdmin.copyColor('#ffffff')">
+                                            <div class="color-swatch"></div>
+                                            <span>White</span>
+                                            <code>#ffffff</code>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="palette-section">
+                                    <h4><i class="fas fa-palette"></i> Akzent Farben</h4>
+                                    <div class="colors-grid" id="accentColors">
+                                        <div class="color-item" style="--color: #3498db" onclick="devAdmin.copyColor('#3498db')">
+                                            <div class="color-swatch"></div>
+                                            <span>Blue</span>
+                                            <code>#3498db</code>
+                                        </div>
+                                        <div class="color-item" style="--color: #2ecc71" onclick="devAdmin.copyColor('#2ecc71')">
+                                            <div class="color-swatch"></div>
+                                            <span>Green</span>
+                                            <code>#2ecc71</code>
+                                        </div>
+                                        <div class="color-item" style="--color: #e74c3c" onclick="devAdmin.copyColor('#e74c3c')">
+                                            <div class="color-swatch"></div>
+                                            <span>Red</span>
+                                            <code>#e74c3c</code>
+                                        </div>
+                                        <div class="color-item" style="--color: #9b59b6" onclick="devAdmin.copyColor('#9b59b6')">
+                                            <div class="color-swatch"></div>
+                                            <span>Purple</span>
+                                            <code>#9b59b6</code>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn-secondary" onclick="devAdmin.addCustomColor()">
+                                    <i class="fas fa-plus"></i> Eigene Farbe hinzufuegen
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
