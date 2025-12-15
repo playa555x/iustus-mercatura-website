@@ -93,7 +93,7 @@
     <header class="admin-header">
         <div class="admin-header-content">
             <div class="admin-logo">
-                <img src="assets/images/logo.png" alt="Iustus Mercatura" class="logo-img">
+                <img src="/assets/images/logo.png" alt="Iustus Mercatura" class="logo-img">
                 <span class="admin-badge">Admin Panel</span>
             </div>
             <nav class="admin-nav">
@@ -1864,7 +1864,7 @@
     <!-- API Configuration -->
     <script>
         // Konfiguration für diese Site - ändern wenn API läuft
-        window.CMS_API_URL = 'http://localhost:3005';
+        window.CMS_API_URL = window.location.origin;
         window.CMS_SITE_ID = 'iustus-mercatura';
     </script>
 
