@@ -8,6 +8,10 @@ node_modules/
 .env
 .env.local
 
+# Local credentials (NEVER commit)
+credentials.local.js
+*.local.js
+
 # IDE
 .vscode/
 .idea/

@@ -54,7 +54,15 @@ const DeployOrchestrator = {
     },
 
     async loadCredentials() {
-        // Load from localStorage (encrypted in production)
+        // First check for window.DEPLOY_CREDENTIALS (from credentials.local.js)
+        if (window.DEPLOY_CREDENTIALS) {
+            this.credentials = { ...this.credentials, ...window.DEPLOY_CREDENTIALS };
+            this.log('success', 'Credentials loaded from local config');
+            this.saveCredentials();
+            return;
+        }
+
+        // Fallback: Load from localStorage
         const saved = localStorage.getItem('deploy_credentials');
         if (saved) {
             try {

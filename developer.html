@@ -2164,6 +2164,8 @@
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleDevSidebar()"></div>
 
     <script src="dev-admin.js"></script>
+    <!-- Local credentials (not in Git) - loads before orchestrator -->
+    <script src="credentials.local.js" onerror="console.log('No local credentials file')"></script>
     <script src="deploy-orchestrator.js"></script>
     <script>
         // Mobile Sidebar Toggle
