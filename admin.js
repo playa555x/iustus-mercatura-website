@@ -77,6 +77,7 @@ class AdminPanel {
     constructor() {
         this.data = null;
         this.changes = 0;
+        this.changesList = []; // Track change descriptions for tooltip
         this.initialized = false;
         this.draggedSection = null;
         this.apiAvailable = false;
@@ -416,7 +417,9 @@ class AdminPanel {
             this.publishToWebsite();
 
             this.changes = 0;
+            this.changesList = [];
             this.updateChangeCount();
+            this.updateChangesTooltip();
             this.updateLastSaved();
             this.showToast('success', 'Gespeichert', 'Alle Änderungen wurden gespeichert.');
 
@@ -997,7 +1000,7 @@ class AdminPanel {
             this.data.settings[key] = value;
         });
 
-        this.trackChange();
+        this.trackChange('Farben zurückgesetzt');
         this.showToast('info', 'Zurückgesetzt', 'Standardfarben wurden wiederhergestellt.');
     }
 
@@ -1013,7 +1016,7 @@ class AdminPanel {
         // Apply to CSS (preview)
         this.applyCssColors();
 
-        this.trackChange();
+        this.trackChange('Farben angewendet');
         this.showToast('success', 'Farben angewendet', 'Die Farben wurden aktualisiert. Speichern Sie, um die Änderungen zu übernehmen.');
     }
 
@@ -1037,22 +1040,55 @@ class AdminPanel {
         }
 
         obj[parts[parts.length - 1]] = value;
-        this.trackChange();
+        this.trackChange('Inhalt geändert');
     }
 
     updateSetting(key, value) {
         this.data.settings[key] = value;
-        this.trackChange();
+        this.trackChange('Einstellung geändert');
     }
 
-    trackChange() {
+    trackChange(description = 'Änderung') {
         this.changes++;
+        // Add to changes list (max 20 items)
+        if (this.changesList.length >= 20) {
+            this.changesList.shift();
+        }
+        this.changesList.push({
+            description,
+            timestamp: new Date()
+        });
         this.updateChangeCount();
+        this.updateChangesTooltip();
     }
 
     updateChangeCount() {
         const el = document.getElementById('changeCount');
         if (el) el.textContent = this.changes;
+    }
+
+    updateChangesTooltip() {
+        const list = document.getElementById('changesList');
+        if (!list) return;
+
+        if (this.changesList.length === 0) {
+            list.innerHTML = '<li class="no-changes">Keine Änderungen</li>';
+            return;
+        }
+
+        list.innerHTML = this.changesList.map(change => {
+            const timeAgo = this.getTimeAgo(change.timestamp);
+            return `<li><span class="change-desc">${change.description}</span><span class="change-time">${timeAgo}</span></li>`;
+        }).reverse().join('');
+    }
+
+    getTimeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        if (seconds < 60) return 'gerade eben';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `vor ${minutes} Min.`;
+        const hours = Math.floor(minutes / 60);
+        return `vor ${hours} Std.`;
     }
 
     updateLastSaved() {
@@ -1577,7 +1613,7 @@ class AdminPanel {
         if (!loc) return;
 
         loc.image = imageUrl;
-        this.trackChange();
+        this.trackChange('Standortbild gesetzt');
         this.closeModal();
         this.renderLocations();
         this.showToast('success', 'Bild gesetzt', 'Standortbild wurde aktualisiert.');
@@ -1588,7 +1624,7 @@ class AdminPanel {
         if (!loc) return;
 
         delete loc.image;
-        this.trackChange();
+        this.trackChange('Standortbild entfernt');
         this.renderLocations();
         this.showToast('success', 'Entfernt', 'Standortbild wurde entfernt.');
     }
@@ -1834,7 +1870,7 @@ class AdminPanel {
                 linkedin: document.getElementById('modalTeamLinkedin').value
             });
 
-            this.trackChange();
+            this.trackChange('Team-Mitglied hinzugefügt');
             this.renderTeam();
             this.updateStats();
             this.showToast('success', 'Hinzugefügt', 'Team-Mitglied wurde hinzugefügt.');
@@ -1873,7 +1909,7 @@ class AdminPanel {
             member.image = document.getElementById('modalTeamImage').value;
             member.linkedin = document.getElementById('modalTeamLinkedin').value;
 
-            this.trackChange();
+            this.trackChange('Team-Mitglied bearbeitet');
             this.renderTeam();
             this.showToast('success', 'Aktualisiert', 'Team-Mitglied wurde aktualisiert.');
         });
@@ -1885,7 +1921,7 @@ class AdminPanel {
         const index = this.data.team[category]?.findIndex(m => m.id === id);
         if (index > -1) {
             this.data.team[category].splice(index, 1);
-            this.trackChange();
+            this.trackChange('Team-Mitglied gelöscht');
             this.renderTeam();
             this.updateStats();
             this.showToast('success', 'Gelöscht', 'Team-Mitglied wurde entfernt.');
@@ -1934,7 +1970,7 @@ class AdminPanel {
                 flag: document.getElementById('modalLocFlag').value || '🏳️'
             });
 
-            this.trackChange();
+            this.trackChange('Standort hinzugefügt');
             this.renderLocations();
             this.updateStats();
             this.showToast('success', 'Hinzugefügt', 'Standort wurde hinzugefügt.');
@@ -1973,7 +2009,7 @@ class AdminPanel {
             loc.address = document.getElementById('modalLocAddress').value;
             loc.flag = document.getElementById('modalLocFlag').value;
 
-            this.trackChange();
+            this.trackChange('Standort bearbeitet');
             this.renderLocations();
             this.showToast('success', 'Aktualisiert', 'Standort wurde aktualisiert.');
         });
@@ -1985,7 +2021,7 @@ class AdminPanel {
         const index = this.data.locations?.findIndex(l => l.id === id);
         if (index > -1) {
             this.data.locations.splice(index, 1);
-            this.trackChange();
+            this.trackChange('Standort gelöscht');
             this.renderLocations();
             this.updateStats();
             this.showToast('success', 'Gelöscht', 'Standort wurde entfernt.');
@@ -2030,7 +2066,7 @@ class AdminPanel {
                 image: document.getElementById('modalProdImage').value || 'assets/images/placeholder.jpg'
             });
 
-            this.trackChange();
+            this.trackChange('Produkt hinzugefügt');
             this.renderProducts();
             this.updateStats();
             this.showToast('success', 'Hinzugefügt', 'Produkt wurde hinzugefügt.');
@@ -2068,7 +2104,7 @@ class AdminPanel {
             product.description = document.getElementById('modalProdDesc').value;
             product.image = document.getElementById('modalProdImage').value;
 
-            this.trackChange();
+            this.trackChange('Produkt bearbeitet');
             this.renderProducts();
             this.showToast('success', 'Aktualisiert', 'Produkt wurde aktualisiert.');
         });
@@ -2080,7 +2116,7 @@ class AdminPanel {
         const index = this.data.products?.findIndex(p => p.id === id);
         if (index > -1) {
             this.data.products.splice(index, 1);
-            this.trackChange();
+            this.trackChange('Produkt gelöscht');
             this.renderProducts();
             this.updateStats();
             this.showToast('success', 'Gelöscht', 'Produkt wurde entfernt.');
@@ -2432,7 +2468,7 @@ class AdminPanel {
         sections.forEach((s, i) => s.order = i);
         SyncBridge.saveStructure(structure);
         this.renderStructure();
-        this.trackChange();
+        this.trackChange('Sektion verschoben');
         this.showToast('success', 'Verschoben', 'Sektion wurde neu angeordnet.');
     }
 
@@ -2463,7 +2499,7 @@ class AdminPanel {
         if (!window.SyncBridge) return;
         SyncBridge.addSection(type);
         this.renderStructure();
-        this.trackChange();
+        this.trackChange('Sektion hinzugefügt');
         this.showToast('success', 'Hinzugefügt', `${type} Sektion wurde hinzugefügt.`);
     }
 
@@ -2471,14 +2507,14 @@ class AdminPanel {
         if (!window.SyncBridge) return;
         SyncBridge.toggleSection(sectionId, enabled);
         this.renderStructure();
-        this.trackChange();
+        this.trackChange(enabled ? 'Sektion aktiviert' : 'Sektion deaktiviert');
     }
 
     moveSectionUp(sectionId) {
         if (!window.SyncBridge) return;
         if (SyncBridge.moveSection(sectionId, 'up')) {
             this.renderStructure();
-            this.trackChange();
+            this.trackChange('Sektion nach oben verschoben');
         }
     }
 
@@ -2486,7 +2522,7 @@ class AdminPanel {
         if (!window.SyncBridge) return;
         if (SyncBridge.moveSection(sectionId, 'down')) {
             this.renderStructure();
-            this.trackChange();
+            this.trackChange('Sektion nach unten verschoben');
         }
     }
 
@@ -2495,7 +2531,7 @@ class AdminPanel {
         if (!window.SyncBridge) return;
         if (SyncBridge.removeSection(sectionId)) {
             this.renderStructure();
-            this.trackChange();
+            this.trackChange('Sektion entfernt');
             this.showToast('success', 'Entfernt', 'Sektion wurde entfernt.');
         }
     }
@@ -2570,7 +2606,7 @@ class AdminPanel {
             SyncBridge.updateSectionConfig(sectionId, newConfig);
             this.renderStructure();
             this.renderVisualBuilder();
-            this.trackChange();
+            this.trackChange('Sektionskonfiguration geändert');
             this.showToast('success', 'Gespeichert', 'Konfiguration wurde aktualisiert.');
         });
     }
@@ -7484,7 +7520,7 @@ class AdminPanel {
         SyncBridge.setStructure(structure);
         this.renderVisualBuilder();
         this.renderStructure();
-        this.trackChange();
+        this.trackChange(`${type}-Sektion eingefügt`);
         this.showToast('success', 'Hinzugefügt', `${type} wurde hinzugefügt.`);
     }
 
@@ -7506,7 +7542,7 @@ class AdminPanel {
         this.renderVisualBuilder();
         this.renderStructure();
         this.renderStructurePreview();
-        this.trackChange();
+        this.trackChange('Sektion verschoben');
     }
 
     resetLayout() {
@@ -7528,7 +7564,7 @@ class AdminPanel {
             SyncBridge.setStructure(defaultStructure);
             this.renderVisualBuilder();
             this.renderStructure();
-            this.trackChange();
+            this.trackChange('Layout zurückgesetzt');
             this.showToast('success', 'Zurückgesetzt', 'Layout wurde zurückgesetzt.');
         }
     }

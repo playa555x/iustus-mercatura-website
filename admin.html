@@ -242,9 +242,15 @@
             </div>
             <div class="sidebar-section">
                 <h3>Status</h3>
-                <div class="status-item">
+                <div class="status-item changes-status" id="changesStatus">
                     <span class="status-dot green"></span>
                     <span>Unsaved changes: <strong id="changeCount">0</strong></span>
+                    <div class="changes-tooltip" id="changesTooltip">
+                        <div class="tooltip-header">Ungespeicherte Änderungen</div>
+                        <ul class="tooltip-list" id="changesList">
+                            <li class="no-changes">Keine Änderungen</li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="status-item">
                     <span class="status-dot blue"></span>
