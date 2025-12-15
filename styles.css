@@ -6357,7 +6357,8 @@ section {
     }
 
     .team-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
     }
 
     .projects-grid {
@@ -8186,7 +8187,7 @@ body.in-iframe [data-hover-trigger].hover-triggered {
     object-fit: cover;
 }
 
-/* Team grid 5-block responsive */
+/* Team grid responsive - unified for all team grids */
 @media (max-width: 1200px) {
     .team-grid.team-grid-5 {
         grid-template-columns: repeat(3, 1fr);
@@ -8206,11 +8207,16 @@ body.in-iframe [data-hover-trigger].hover-triggered {
 }
 
 @media (max-width: 768px) {
+    /* All team grids: 2 columns on mobile */
+    .team-grid,
+    .team-grid.team-grid-3,
     .team-grid.team-grid-5 {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 15px;
+        max-width: 100%;
     }
 
+    /* Unified card height for all team cards */
     .team-card-flip {
         height: 280px;
     }
@@ -8245,8 +8251,11 @@ body.in-iframe [data-hover-trigger].hover-triggered {
 }
 
 @media (max-width: 576px) {
+    /* All team grids: 2 columns on small mobile */
+    .team-grid,
+    .team-grid.team-grid-3,
     .team-grid.team-grid-5 {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 12px;
     }
 
