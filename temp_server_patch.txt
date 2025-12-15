@@ -1,0 +1,4 @@
+            const contentType = MIME_TYPES[ext] || "application/octet-stream";
+            return new Response(bunFile, {
+                headers: { ...headers, "Content-Type": contentType },
+            });

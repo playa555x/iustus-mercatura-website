@@ -892,3 +892,55 @@
         font-size: 0.85rem;
     }
 }
+
+/* ============================================
+   ENHANCED MOBILE - Booking
+   ============================================ */
+
+@media (max-width: 768px) {
+    .booking-container {
+        padding: 20px !important;
+        margin: 20px 10px !important;
+    }
+    
+    .booking-header h1 {
+        font-size: 1.75rem !important;
+    }
+    
+    .booking-steps {
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+    
+    .step {
+        width: 100% !important;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .service-cards {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .service-card {
+        padding: 15px !important;
+    }
+    
+    .date-time-picker {
+        flex-direction: column !important;
+    }
+    
+    .summary-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .btn-group {
+        flex-direction: column-reverse !important;
+    }
+    
+    .btn {
+        width: 100% !important;
+    }
+}

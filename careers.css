@@ -872,3 +872,73 @@
         padding: 24px;
     }
 }
+
+/* ============================================
+   MOBILE OPTIMIZATION - Careers
+   ============================================ */
+
+@media (max-width: 768px) {
+    .careers-hero {
+        padding: 60px 20px !important;
+        min-height: 50vh !important;
+    }
+    
+    .careers-hero h1 {
+        font-size: 2rem !important;
+    }
+    
+    .careers-hero p {
+        font-size: 1rem !important;
+    }
+    
+    .job-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+    
+    .job-card {
+        padding: 20px !important;
+    }
+    
+    .job-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+    
+    .job-details {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .apply-form {
+        padding: 30px 20px !important;
+    }
+    
+    .form-row {
+        flex-direction: column !important;
+    }
+    
+    .form-group {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .careers-hero h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .job-card {
+        padding: 15px !important;
+    }
+    
+    .btn {
+        width: 100% !important;
+        padding: 12px !important;
+    }
+}

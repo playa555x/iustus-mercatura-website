@@ -1,0 +1,82 @@
+/* ============================================
+   MOBILE STYLES - Developer Page
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .dev-sidebar {
+        width: 100% !important;
+        position: relative !important;
+        height: auto !important;
+    }
+    
+    .dev-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    
+    .dev-container {
+        flex-direction: column !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .dev-header {
+        padding: 15px !important;
+    }
+    
+    .dev-header h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .dev-tools {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+    
+    .dev-card {
+        padding: 20px !important;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+    
+    .table-container {
+        overflow-x: auto !important;
+    }
+    
+    table {
+        font-size: 0.875rem !important;
+    }
+    
+    .btn-group {
+        flex-direction: column !important;
+    }
+    
+    .btn-group .btn {
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .code-editor {
+        font-size: 12px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .dev-header h1 {
+        font-size: 1.25rem !important;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .dev-card {
+        padding: 15px !important;
+    }
+    
+    input, select, textarea {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+}

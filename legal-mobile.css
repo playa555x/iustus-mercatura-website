@@ -1,0 +1,67 @@
+/* ============================================
+   MOBILE STYLES - Legal Pages
+   (Imprint, Privacy, Terms)
+   ============================================ */
+
+@media (max-width: 768px) {
+    .legal-container {
+        padding: 20px !important;
+        margin: 20px 10px !important;
+        max-width: 100% !important;
+    }
+    
+    .legal-header {
+        padding: 40px 20px !important;
+    }
+    
+    .legal-header h1 {
+        font-size: 2rem !important;
+    }
+    
+    .legal-content {
+        padding: 30px 20px !important;
+    }
+    
+    .legal-content h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    .legal-content h3 {
+        font-size: 1.25rem !important;
+    }
+    
+    .legal-content p, 
+    .legal-content li {
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    .legal-section {
+        padding: 20px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .contact-info {
+        flex-direction: column !important;
+    }
+    
+    table {
+        font-size: 0.875rem !important;
+        overflow-x: auto !important;
+        display: block !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .legal-header h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .legal-content {
+        padding: 20px 15px !important;
+    }
+    
+    .legal-content h2 {
+        font-size: 1.25rem !important;
+    }
+}

@@ -1527,3 +1527,60 @@ body.quote-page::after {
         color: #b8960f !important;
     }
 }
+
+/* ============================================
+   ENHANCED MOBILE - Quote
+   ============================================ */
+
+@media (max-width: 768px) {
+    .quote-hero {
+        padding: 60px 20px !important;
+        min-height: 50vh !important;
+    }
+    
+    .quote-hero h1 {
+        font-size: 2rem !important;
+    }
+    
+    .quote-form-container {
+        padding: 20px !important;
+        margin: 20px 10px !important;
+    }
+    
+    .form-sections {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .form-section {
+        padding: 20px !important;
+    }
+    
+    .cargo-grid, .dimensions-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .route-selector {
+        flex-direction: column !important;
+    }
+    
+    .route-point {
+        width: 100% !important;
+    }
+    
+    .insurance-options {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .total-summary {
+        padding: 20px !important;
+    }
+    
+    .actions {
+        flex-direction: column !important;
+    }
+    
+    .btn {
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+}
