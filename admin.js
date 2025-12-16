@@ -8256,12 +8256,12 @@ class AdminPanel {
             };
 
             data.images.forEach(img => {
-                const path = img.url || '';
-                if (path.includes('/flags/')) counts.flags++;
-                else if (path.includes('/team/')) counts.team++;
-                else if (path.includes('/products/')) counts.products++;
-                else if (path.includes('/locations/')) counts.locations++;
-                else counts.uploads++;
+                const folder = this.getImageFolder(img);
+                if (counts.hasOwnProperty(folder)) {
+                    counts[folder]++;
+                } else {
+                    counts.uploads++;
+                }
             });
 
             // Update count displays
@@ -8284,6 +8284,42 @@ class AdminPanel {
         } catch (e) {
             console.error('Error updating folder counts:', e);
         }
+    }
+
+    getImageFolder(img) {
+        // Use folder from server if available
+        if (img.folder) return img.folder;
+
+        const path = img.url || '';
+        const filename = (img.filename || '').toLowerCase();
+        const originalName = (img.original_name || '').toLowerCase();
+
+        // Path-based detection
+        if (path.includes('/flags/')) return 'flags';
+        if (path.includes('/team/')) return 'team';
+        if (path.includes('/products/')) return 'products';
+        if (path.includes('/locations/')) return 'locations';
+
+        // Check original_name for team member detection
+        if (originalName && originalName !== filename) {
+            return 'team';
+        }
+
+        // Name-based detection for team members
+        const teamNames = ['emir', 'keco', 'tobias', 'westerfield', 'rafael', 'arevalo',
+                          'kevin', 'barrios', 'gerhard', 'schobesberger', 'david', 'awori',
+                          'emmanuel', 'musinguzi', 'tony', 'kamya', 'isaac', 'cheruiyot',
+                          'julius', 'muraya', 'placeholder'];
+        for (const name of teamNames) {
+            if (filename.includes(name) || originalName.includes(name)) return 'team';
+        }
+
+        // Flag detection by filename
+        if (filename.includes('flag') || filename.match(/^[a-z]{2}\.(svg|png|jpg)$/)) {
+            return 'flags';
+        }
+
+        return 'uploads';
     }
 
     selectMediaFolder(folder) {
@@ -8446,16 +8482,31 @@ class AdminPanel {
                 `;
                 if (countEl) countEl.textContent = '0';
                 this.updateMediathekToolbar();
+                this.updateFolderCounts(data.images || []);
                 return;
             }
 
-            if (countEl) countEl.textContent = data.images.length;
+            // Filter images by current folder
+            let filteredImages = data.images;
+            const currentFolder = this._currentMediaFolder || 'all';
+
+            if (currentFolder !== 'all') {
+                filteredImages = data.images.filter(img => {
+                    const folder = this.getImageFolder(img);
+                    return folder === currentFolder;
+                });
+            }
+
+            if (countEl) countEl.textContent = filteredImages.length;
+
+            // Update folder counts
+            this.updateFolderCounts(data.images);
 
             // Teile Bilder in zugeordnet und nicht zugeordnet
             const assignedImages = [];
             const unassignedImages = [];
 
-            data.images.forEach(img => {
+            filteredImages.forEach(img => {
                 const assignment = this._imageAssignments[img.url];
                 if (assignment) {
                     assignedImages.push({ ...img, assignment });

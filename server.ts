@@ -1261,13 +1261,34 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
         if (pathname === "/api/images" && req.method === "GET") {
             try {
                 const files = readdirSync(UPLOADS_DIR);
+                const mediaDb = db.media || [];
+
                 const images = files
                     .filter(f => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f))
-                    .map(filename => ({
-                        filename,
-                        url: `/uploads/${filename}`,
-                        type: `image/${filename.split('.').pop()?.toLowerCase() || 'png'}`
-                    }));
+                    .map(filename => {
+                        const url = `/uploads/${filename}`;
+                        const mediaEntry = mediaDb.find((m: any) => m.url === url);
+                        const originalName = mediaEntry?.original_name || filename;
+
+                        // Determine folder based on original_name or file path
+                        let folder = 'uploads';
+                        if (url.includes('/flags/')) folder = 'flags';
+                        else if (url.includes('/team/')) folder = 'team';
+                        else if (url.includes('/products/')) folder = 'products';
+                        else if (url.includes('/locations/')) folder = 'locations';
+                        else if (originalName && originalName !== filename) {
+                            // If it has an original name, it's likely a team member image
+                            folder = 'team';
+                        }
+
+                        return {
+                            filename,
+                            url,
+                            type: `image/${filename.split('.').pop()?.toLowerCase() || 'png'}`,
+                            original_name: originalName,
+                            folder
+                        };
+                    });
                 return new Response(JSON.stringify({ images }), { headers: jsonHeaders });
             } catch (e) {
                 return new Response(JSON.stringify({ images: [] }), { headers: jsonHeaders });

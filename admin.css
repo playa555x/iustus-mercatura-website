@@ -6337,11 +6337,16 @@ body {
     border-radius: 10px;
     font-size: 11px;
     font-weight: 600;
-    color: #ffffff !important;
+    color: var(--navy-dark) !important;
+}
+
+.mediathek-tab.active .tab-count {
+    background: rgba(255,255,255,0.9) !important;
+    color: var(--navy-dark) !important;
 }
 
 .mediathek-tab:not(.active) .tab-count {
-    background: var(--gold) !important;
+    background: var(--gray-200) !important;
     color: var(--navy-dark) !important;
 }
 
