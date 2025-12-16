@@ -1306,50 +1306,7 @@ body {
 /* ============================================
    MEDIATHEK (Neue Bildverwaltung)
    ============================================ */
-.mediathek-upload-zone {
-    border: 3px dashed var(--gray-300);
-    border-radius: var(--radius);
-    padding: 40px;
-    text-align: center;
-    cursor: pointer;
-    transition: var(--transition);
-    background: linear-gradient(135deg, var(--white) 0%, var(--gray-100) 100%);
-    margin-bottom: 24px;
-}
-
-.mediathek-upload-zone:hover {
-    border-color: var(--gold);
-    background: linear-gradient(135deg, rgba(201, 162, 39, 0.05) 0%, rgba(201, 162, 39, 0.1) 100%);
-}
-
-.mediathek-upload-zone.drag-over {
-    border-color: var(--gold);
-    background: rgba(201, 162, 39, 0.15);
-    transform: scale(1.02);
-}
-
-.mediathek-upload-zone i {
-    font-size: 56px;
-    color: var(--gold);
-    margin-bottom: 16px;
-    display: block;
-}
-
-.mediathek-upload-zone h3 {
-    font-size: 18px;
-    color: var(--navy-dark);
-    margin-bottom: 8px;
-}
-
-.mediathek-upload-zone p {
-    color: var(--gray-600);
-    font-size: 14px;
-    margin-bottom: 16px;
-}
-
-.mediathek-upload-zone input {
-    display: none;
-}
+/* Upload zone styles moved to MEDIATHEK - MODERN DESIGN section */
 
 .mediathek-stats {
     display: flex;
@@ -5433,78 +5390,47 @@ body {
 /* ============================================
    MEDIATHEK - MODERN DESIGN
    ============================================ */
-.mediathek-upload-container {
-    margin-bottom: 30px;
-}
-
-.mediathek-upload-zone {
-    background: linear-gradient(135deg, rgba(201, 162, 39, 0.05) 0%, rgba(201, 162, 39, 0.02) 100%);
-    border: 2px dashed var(--gold);
-    border-radius: 20px;
-    padding: 48px 32px;
-    text-align: center;
-    transition: var(--transition);
-    cursor: pointer;
-}
-
-.mediathek-upload-zone:hover,
-.mediathek-upload-zone.drag-over {
-    background: linear-gradient(135deg, rgba(201, 162, 39, 0.1) 0%, rgba(201, 162, 39, 0.05) 100%);
-    border-color: var(--gold-dark);
-    transform: translateY(-2px);
-}
-
-.upload-icon-wrapper {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-    border-radius: 50%;
+/* Compact Upload Zone */
+.mediathek-upload-zone.compact {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 32px;
-    color: #fff;
-}
-
-.mediathek-upload-zone h3 {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--navy-dark);
-    margin-bottom: 8px;
-}
-
-.mediathek-upload-zone p {
-    color: var(--gray-600);
-    font-size: 14px;
+    gap: 12px;
+    padding: 16px 24px;
+    background: var(--white);
+    border: 2px dashed var(--gray-300);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition);
     margin-bottom: 20px;
 }
 
-.upload-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 28px;
-    background: var(--navy-dark);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
+.mediathek-upload-zone.compact:hover {
+    border-color: var(--navy-dark);
+    background: var(--gray-50);
+}
+
+.mediathek-upload-zone.compact.drag-over {
+    border-color: var(--gold);
+    background: rgba(201, 162, 39, 0.08);
+}
+
+.mediathek-upload-zone.compact i {
+    font-size: 20px;
+    color: var(--navy-dark);
+}
+
+.mediathek-upload-zone.compact span {
     font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
+    color: var(--gray-600);
 }
 
-.upload-btn:hover {
-    background: var(--navy);
-    transform: translateY(-2px);
+.mediathek-upload-zone.compact span strong {
+    color: var(--navy-dark);
 }
 
-.upload-hint {
-    display: block;
-    margin-top: 16px;
-    font-size: 12px;
-    color: var(--gray-500);
+.mediathek-upload-zone.compact input {
+    display: none;
 }
 
 /* Mediathek Folder Layout */
@@ -5787,6 +5713,19 @@ body {
     color: var(--gold);
 }
 
+/* Toolbar Right */
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 /* Dateityp Filter Buttons */
 .type-filter-buttons {
     display: flex;
@@ -5794,7 +5733,6 @@ body {
     background: var(--gray-100);
     padding: 4px;
     border-radius: 8px;
-    margin-right: 12px;
 }
 
 .type-filter-btn {

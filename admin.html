@@ -836,33 +836,11 @@
 
                     <!-- Main Content Area -->
                     <div class="mediathek-main-content">
-                        <!-- Upload Zone -->
-                        <div class="mediathek-upload-container">
-                            <div class="mediathek-upload-zone" id="mediathekUploadZone">
-                                <div class="upload-icon-wrapper">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                </div>
-                                <h3>Dateien hochladen</h3>
-                                <p>Ziehen Sie Dateien hierher oder klicken Sie zum Auswaehlen</p>
-                                <div class="upload-folder-select">
-                                    <label>Zielordner:</label>
-                                    <select id="uploadTargetFolder">
-                                        <option value="uploads">Uploads</option>
-                                        <option value="team">Mitarbeiter</option>
-                                        <option value="products">Produkte</option>
-                                        <option value="locations">Standorte</option>
-                                        <option value="logos">Logos</option>
-                                        <option value="flags">Flaggen</option>
-                                        <option value="documents">Dokumente</option>
-                                        <option value="videos">Videos</option>
-                                    </select>
-                                </div>
-                                <input type="file" id="mediathekUpload" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.svg" multiple>
-                                <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('mediathekUpload').click()">
-                                    <i class="fas fa-folder-open"></i> Dateien auswaehlen
-                                </button>
-                                <span class="upload-hint">Bilder, Videos, PDFs, Dokumente bis 100MB</span>
-                            </div>
+                        <!-- Compact Upload Zone -->
+                        <div class="mediathek-upload-zone compact" id="mediathekUploadZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Dateien hierher ziehen oder <strong>klicken</strong></span>
+                            <input type="file" id="mediathekUpload" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.svg" multiple>
                         </div>
 
                         <!-- Media Grid -->
