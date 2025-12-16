@@ -278,7 +278,7 @@ body {
     min-width: 280px;
     max-width: 350px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    z-index: 99999 !important;
     opacity: 0;
     visibility: hidden;
     transition: all 0.2s ease;
@@ -5461,80 +5461,85 @@ body {
 
 /* Mediathek Folder Layout */
 .mediathek-layout-with-folders {
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: 24px;
+    display: grid !important;
+    grid-template-columns: 260px 1fr !important;
+    gap: 24px !important;
     min-height: 600px;
 }
 
 .mediathek-folder-sidebar {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 0;
-    box-shadow: var(--shadow);
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    padding: 0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
     overflow: hidden;
     height: fit-content;
     position: sticky;
     top: 20px;
+    border: 1px solid #e0e0e0 !important;
+    min-width: 240px;
 }
 
 .folder-sidebar-header {
-    display: flex;
+    display: flex !important;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 20px;
-    background: linear-gradient(135deg, var(--navy-dark) 0%, #1a3a5c 100%);
-    color: white;
+    padding: 16px 20px !important;
+    background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 100%) !important;
+    color: white !important;
 }
 
 .folder-sidebar-header h4 {
-    font-size: 14px;
-    font-weight: 600;
-    display: flex;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    display: flex !important;
     align-items: center;
     gap: 8px;
     margin: 0;
+    color: white !important;
 }
 
 .folder-sidebar-header h4 i {
-    color: var(--gold);
+    color: #c9a227 !important;
 }
 
 .btn-create-folder {
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.15) !important;
     border: none;
-    color: white;
+    color: white !important;
     cursor: pointer;
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
 }
 
 .btn-create-folder:hover {
-    background: var(--gold);
-    color: var(--navy-dark);
+    background: #c9a227 !important;
+    color: #0a1628 !important;
 }
 
 .folder-list {
-    padding: 12px;
+    padding: 12px !important;
+    background: #ffffff !important;
 }
 
 .folder-item {
-    display: flex;
+    display: flex !important;
     align-items: center;
     gap: 10px;
-    padding: 12px 14px;
-    border-radius: 10px;
+    padding: 12px 14px !important;
+    border-radius: 10px !important;
     cursor: pointer;
     transition: all 0.2s ease;
     margin-bottom: 4px;
-    color: var(--gray-600);
-    font-size: 13px;
+    color: #6c757d !important;
+    font-size: 13px !important;
     font-weight: 500;
+    background: transparent;
 }
 
 .folder-item:hover {
