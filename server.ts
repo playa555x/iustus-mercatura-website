@@ -1104,38 +1104,16 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
             }
         }
 
-        // GET /api/locations - Extract locations from index.html
+        // GET /api/locations - Load from locations.json
         if (pathname === "/api/locations" && req.method === "GET") {
             try {
-                const indexPath = join(BASE_DIR, "index.html");
-                const html = await readFile(indexPath, "utf-8");
-
-                const locations: any[] = [];
-
-                // Extract from map-info-box elements (new structure)
-                const mapInfoBoxRegex = /<div class="map-info-box"[^>]*data-location="([^"]+)"[^>]*>[\s\S]*?<span class="info-flag[^"]*">([^<]+)<\/span>[\s\S]*?<h4>([^<]+)<\/h4>[\s\S]*?<span class="info-type">([^<]+)<\/span>[\s\S]*?<p class="info-company">([^<]+)<\/p>[\s\S]*?<p class="info-address">([^<]+)<\/p>/g;
-                let match;
-                let idx = 0;
-
-                while ((match = mapInfoBoxRegex.exec(html)) !== null) {
-                    const [_, dataLocation, countryCode, countryName, locationType, companyName, address] = match;
-
-                    locations.push({
-                        id: `loc_${idx + 1}`,
-                        dataLocation: dataLocation.trim(),
-                        countryCode: countryCode.trim(),
-                        countryName: countryName.trim(),
-                        locationType: locationType.replace(/&amp;/g, '&').trim(),
-                        companyName: companyName.replace(/&amp;/g, '&').trim(),
-                        address: address.replace(/&atilde;/g, 'ã').replace(/&amp;/g, '&').trim()
-                    });
-                    idx++;
-                }
-
-                log("INFO", `Extracted ${locations.length} locations from index.html`);
-                return new Response(JSON.stringify({ locations }), { headers: jsonHeaders });
+                const locationsPath = join(BASE_DIR, "database", "locations.json");
+                const locationsData = await readFile(locationsPath, "utf-8");
+                const data = JSON.parse(locationsData);
+                log("INFO", `Loaded ${data.locations?.length || 0} locations from database`);
+                return new Response(JSON.stringify(data), { headers: jsonHeaders });
             } catch (e) {
-                log("ERROR", `Failed to extract locations: ${e}`);
+                log("ERROR", `Failed to load locations: ${e}`);
                 return new Response(JSON.stringify({ locations: [] }), { headers: jsonHeaders });
             }
         }
@@ -1859,6 +1837,493 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                 // Ignore
             }
             return new Response(JSON.stringify({ logs: [] }), { headers: jsonHeaders });
+        }
+
+        // ==========================================
+        // ANALYTICS SYSTEM (DSGVO-KONFORM)
+        // Keine IP-Speicherung, nur anonymisierte Daten
+        // ==========================================
+
+        const ANALYTICS_FILE = join(DB_DIR, "analytics.json");
+
+        // Analytics Datenstruktur laden
+        async function loadAnalytics() {
+            try {
+                if (existsSync(ANALYTICS_FILE)) {
+                    return JSON.parse(await readFile(ANALYTICS_FILE, "utf-8"));
+                }
+            } catch (e) {}
+            return {
+                dailyStats: {},      // { "2025-01-15": { visits: 10, pageViews: 50, ... } }
+                pageStats: {},       // { "/index.html": { views: 100, avgTime: 45 } }
+                deviceStats: {},     // { desktop: 60, mobile: 35, tablet: 5 }
+                browserStats: {},    // { chrome: 50, firefox: 20, safari: 15, ... }
+                errors: [],          // Fehler-Log (max 500)
+                securityEvents: [],  // Sicherheits-Events (max 500)
+                hourlyTraffic: {},   // { "0": 5, "1": 2, ... "23": 8 }
+                referrers: {},       // { "google.com": 20, "direct": 50, ... }
+                lastUpdated: new Date().toISOString()
+            };
+        }
+
+        async function saveAnalytics(data: any) {
+            await writeFile(ANALYTICS_FILE, JSON.stringify(data, null, 2), "utf-8");
+        }
+
+        // POST /api/analytics/track - Anonymisiertes Tracking
+        if (pathname === "/api/analytics/track" && req.method === "POST") {
+            try {
+                const body = await req.json();
+                const analytics = await loadAnalytics();
+                const today = new Date().toISOString().split('T')[0];
+                const hour = new Date().getHours().toString();
+
+                // Daily Stats initialisieren
+                if (!analytics.dailyStats[today]) {
+                    analytics.dailyStats[today] = {
+                        visits: 0,
+                        pageViews: 0,
+                        uniqueVisitors: 0,
+                        bounceRate: 0,
+                        avgSessionDuration: 0,
+                        sessions: []
+                    };
+                }
+
+                // Event-Typen verarbeiten
+                switch (body.event) {
+                    case 'pageview':
+                        analytics.dailyStats[today].pageViews++;
+
+                        // Seiten-Stats
+                        const page = body.page || '/unknown';
+                        if (!analytics.pageStats[page]) {
+                            analytics.pageStats[page] = { views: 0, avgTime: 0, totalTime: 0 };
+                        }
+                        analytics.pageStats[page].views++;
+
+                        // Stündlicher Traffic
+                        analytics.hourlyTraffic[hour] = (analytics.hourlyTraffic[hour] || 0) + 1;
+                        break;
+
+                    case 'session_start':
+                        analytics.dailyStats[today].visits++;
+                        // Anonymer Session-Hash (kein IP, nur zufällige ID)
+                        const sessionHash = body.sessionId?.substring(0, 8) || 'anon';
+                        if (!analytics.dailyStats[today].sessions.includes(sessionHash)) {
+                            analytics.dailyStats[today].sessions.push(sessionHash);
+                            analytics.dailyStats[today].uniqueVisitors = analytics.dailyStats[today].sessions.length;
+                        }
+                        break;
+
+                    case 'session_end':
+                        if (body.duration) {
+                            const stats = analytics.dailyStats[today];
+                            const currentTotal = stats.avgSessionDuration * (stats.visits - 1);
+                            stats.avgSessionDuration = (currentTotal + body.duration) / stats.visits;
+                        }
+                        break;
+                }
+
+                // Geräte-Stats (anonymisiert - nur Typ, keine Details)
+                if (body.deviceType) {
+                    const device = body.deviceType.toLowerCase();
+                    analytics.deviceStats[device] = (analytics.deviceStats[device] || 0) + 1;
+                }
+
+                // Browser-Stats (nur Name, keine Version)
+                if (body.browser) {
+                    const browser = body.browser.split('/')[0].toLowerCase();
+                    analytics.browserStats[browser] = (analytics.browserStats[browser] || 0) + 1;
+                }
+
+                // Referrer (nur Domain, keine vollständige URL)
+                if (body.referrer) {
+                    try {
+                        const refDomain = body.referrer === 'direct' ? 'direct' : new URL(body.referrer).hostname;
+                        analytics.referrers[refDomain] = (analytics.referrers[refDomain] || 0) + 1;
+                    } catch {
+                        analytics.referrers['other'] = (analytics.referrers['other'] || 0) + 1;
+                    }
+                }
+
+                // Alte Daten bereinigen (nur letzte 90 Tage behalten)
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - 90);
+                const cutoff = cutoffDate.toISOString().split('T')[0];
+                for (const date in analytics.dailyStats) {
+                    if (date < cutoff) {
+                        delete analytics.dailyStats[date];
+                    }
+                }
+
+                analytics.lastUpdated = new Date().toISOString();
+                await saveAnalytics(analytics);
+
+                return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // POST /api/analytics/error - Fehler-Tracking mit Lösungsvorschlägen
+        if (pathname === "/api/analytics/error" && req.method === "POST") {
+            try {
+                const body = await req.json();
+                const analytics = await loadAnalytics();
+
+                // Fehler-Lösungsvorschläge
+                const errorSolutions: Record<string, { cause: string; solution: string }> = {
+                    'TypeError': {
+                        cause: 'Falscher Datentyp oder undefined/null Zugriff',
+                        solution: 'Prüfe ob Variablen initialisiert sind. Nutze optionale Verkettung (?.) und Nullish Coalescing (??)'
+                    },
+                    'ReferenceError': {
+                        cause: 'Variable oder Funktion nicht definiert',
+                        solution: 'Stelle sicher, dass alle Variablen deklariert sind und Scripts in richtiger Reihenfolge geladen werden'
+                    },
+                    'SyntaxError': {
+                        cause: 'Syntaxfehler im Code',
+                        solution: 'Prüfe auf fehlende Klammern, Kommas oder Anführungszeichen'
+                    },
+                    'NetworkError': {
+                        cause: 'Netzwerkproblem oder Server nicht erreichbar',
+                        solution: 'Prüfe Server-Status, CORS-Einstellungen und Netzwerkverbindung'
+                    },
+                    'CORS': {
+                        cause: 'Cross-Origin Request blockiert',
+                        solution: 'Füge entsprechende CORS-Header auf dem Server hinzu oder nutze einen Proxy'
+                    },
+                    '404': {
+                        cause: 'Ressource nicht gefunden',
+                        solution: 'Prüfe URL und Dateipfad. Stelle sicher, dass die Datei existiert'
+                    },
+                    '500': {
+                        cause: 'Interner Server-Fehler',
+                        solution: 'Prüfe Server-Logs für Details. Häufig DB-Verbindung oder fehlende Umgebungsvariablen'
+                    },
+                    '403': {
+                        cause: 'Zugriff verweigert',
+                        solution: 'Prüfe Berechtigungen und Authentifizierung'
+                    },
+                    'ChunkLoadError': {
+                        cause: 'JavaScript-Bundle konnte nicht geladen werden',
+                        solution: 'Cache leeren, Seite neu laden oder Build-Prozess prüfen'
+                    },
+                    'QuotaExceeded': {
+                        cause: 'LocalStorage/SessionStorage voll',
+                        solution: 'Alte Daten löschen oder Speicherlogik optimieren'
+                    }
+                };
+
+                // Fehlertyp erkennen und Lösung finden
+                let errorType = 'Unknown';
+                let suggestion = { cause: 'Unbekannter Fehler', solution: 'Prüfe Browser-Konsole für Details' };
+
+                const errorMsg = body.message || body.error || '';
+                for (const [type, sol] of Object.entries(errorSolutions)) {
+                    if (errorMsg.includes(type) || body.type === type) {
+                        errorType = type;
+                        suggestion = sol;
+                        break;
+                    }
+                }
+
+                const errorEntry = {
+                    id: `err_${Date.now()}`,
+                    timestamp: new Date().toISOString(),
+                    type: errorType,
+                    message: errorMsg.substring(0, 500), // Begrenzen
+                    page: body.page || 'unknown',
+                    userAgent: (body.userAgent || 'unknown').substring(0, 100), // Nur kurze Info
+                    suggestion,
+                    stack: (body.stack || '').substring(0, 1000), // Stack begrenzen
+                    resolved: false
+                };
+
+                analytics.errors.unshift(errorEntry);
+                // Maximal 500 Fehler behalten
+                if (analytics.errors.length > 500) {
+                    analytics.errors = analytics.errors.slice(0, 500);
+                }
+
+                analytics.lastUpdated = new Date().toISOString();
+                await saveAnalytics(analytics);
+
+                log("ERROR", `Client Error: ${errorType} - ${errorMsg.substring(0, 100)}`);
+
+                return new Response(JSON.stringify({
+                    success: true,
+                    errorId: errorEntry.id,
+                    suggestion
+                }), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // POST /api/analytics/security - Sicherheits-Event (ohne personenbezogene Daten)
+        if (pathname === "/api/analytics/security" && req.method === "POST") {
+            try {
+                const body = await req.json();
+                const analytics = await loadAnalytics();
+
+                // Pattern-Erkennung für Sicherheitsbedrohungen
+                const securityPatterns: Record<string, { severity: 'low' | 'medium' | 'high' | 'critical'; description: string }> = {
+                    'sql_injection': { severity: 'critical', description: 'SQL Injection Versuch erkannt' },
+                    'xss_attempt': { severity: 'high', description: 'Cross-Site Scripting Versuch' },
+                    'path_traversal': { severity: 'high', description: 'Pfad-Traversal Versuch (../)' },
+                    'brute_force': { severity: 'medium', description: 'Mehrfache fehlgeschlagene Login-Versuche' },
+                    'rate_limit': { severity: 'low', description: 'Rate-Limit überschritten' },
+                    'invalid_token': { severity: 'medium', description: 'Ungültiger oder abgelaufener Token' },
+                    'unauthorized_access': { severity: 'high', description: 'Versuch auf geschützte Ressource' },
+                    'suspicious_payload': { severity: 'medium', description: 'Verdächtige Daten in Request' }
+                };
+
+                const pattern = securityPatterns[body.type] || {
+                    severity: 'low',
+                    description: body.description || 'Unbekanntes Sicherheits-Event'
+                };
+
+                const securityEvent = {
+                    id: `sec_${Date.now()}`,
+                    timestamp: new Date().toISOString(),
+                    type: body.type || 'unknown',
+                    severity: pattern.severity,
+                    description: pattern.description,
+                    path: body.path || 'unknown',
+                    // KEINE IP-Adresse speichern - nur anonyme Identifikation
+                    sessionHash: (body.sessionId || '').substring(0, 8) || 'anon',
+                    details: (body.details || '').substring(0, 500),
+                    blocked: body.blocked || false
+                };
+
+                analytics.securityEvents.unshift(securityEvent);
+                // Maximal 500 Events behalten
+                if (analytics.securityEvents.length > 500) {
+                    analytics.securityEvents = analytics.securityEvents.slice(0, 500);
+                }
+
+                analytics.lastUpdated = new Date().toISOString();
+                await saveAnalytics(analytics);
+
+                log("SECURITY", `${pattern.severity.toUpperCase()}: ${pattern.description} - ${body.path || 'unknown'}`);
+
+                return new Response(JSON.stringify({ success: true, eventId: securityEvent.id }), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // GET /api/analytics/dashboard - Dashboard-Daten abrufen
+        if (pathname === "/api/analytics/dashboard" && req.method === "GET") {
+            try {
+                const analytics = await loadAnalytics();
+                const url = new URL(req.url);
+                const range = url.searchParams.get("range") || "7"; // Tage
+                const days = parseInt(range);
+
+                // Daten für Zeitraum filtern
+                const now = new Date();
+                const startDate = new Date(now);
+                startDate.setDate(startDate.getDate() - days);
+                const startStr = startDate.toISOString().split('T')[0];
+
+                // Tägliche Stats für Zeitraum
+                const filteredDailyStats: Record<string, any> = {};
+                let totalVisits = 0, totalPageViews = 0, totalUniqueVisitors = 0;
+
+                for (const [date, stats] of Object.entries(analytics.dailyStats)) {
+                    if (date >= startStr) {
+                        filteredDailyStats[date] = stats;
+                        const s = stats as any;
+                        totalVisits += s.visits || 0;
+                        totalPageViews += s.pageViews || 0;
+                        totalUniqueVisitors += s.uniqueVisitors || 0;
+                    }
+                }
+
+                // Top Seiten
+                const topPages = Object.entries(analytics.pageStats)
+                    .sort((a: any, b: any) => b[1].views - a[1].views)
+                    .slice(0, 10)
+                    .map(([page, stats]: [string, any]) => ({ page, ...stats }));
+
+                // Aktuelle Fehler (letzte 50)
+                const recentErrors = analytics.errors.slice(0, 50);
+
+                // Fehler nach Typ gruppieren
+                const errorsByType: Record<string, number> = {};
+                analytics.errors.forEach((e: any) => {
+                    errorsByType[e.type] = (errorsByType[e.type] || 0) + 1;
+                });
+
+                // Security Events (letzte 50)
+                const recentSecurityEvents = analytics.securityEvents.slice(0, 50);
+
+                // Security nach Severity
+                const securityBySeverity: Record<string, number> = { low: 0, medium: 0, high: 0, critical: 0 };
+                analytics.securityEvents.forEach((e: any) => {
+                    securityBySeverity[e.severity] = (securityBySeverity[e.severity] || 0) + 1;
+                });
+
+                return new Response(JSON.stringify({
+                    summary: {
+                        totalVisits,
+                        totalPageViews,
+                        totalUniqueVisitors,
+                        avgSessionDuration: totalVisits > 0
+                            ? Object.values(filteredDailyStats).reduce((acc: number, s: any) => acc + (s.avgSessionDuration || 0), 0) / Object.keys(filteredDailyStats).length
+                            : 0,
+                        errorCount: analytics.errors.length,
+                        securityEventCount: analytics.securityEvents.length
+                    },
+                    dailyStats: filteredDailyStats,
+                    topPages,
+                    deviceStats: analytics.deviceStats,
+                    browserStats: analytics.browserStats,
+                    hourlyTraffic: analytics.hourlyTraffic,
+                    referrers: analytics.referrers,
+                    recentErrors,
+                    errorsByType,
+                    recentSecurityEvents,
+                    securityBySeverity,
+                    lastUpdated: analytics.lastUpdated
+                }), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // GET /api/analytics/export - Daten exportieren (CSV/JSON)
+        if (pathname === "/api/analytics/export" && req.method === "GET") {
+            try {
+                const analytics = await loadAnalytics();
+                const url = new URL(req.url);
+                const format = url.searchParams.get("format") || "json";
+                const type = url.searchParams.get("type") || "all"; // all, errors, security, stats
+
+                let exportData: any;
+                let filename: string;
+
+                switch (type) {
+                    case 'errors':
+                        exportData = analytics.errors;
+                        filename = `errors_export_${new Date().toISOString().split('T')[0]}`;
+                        break;
+                    case 'security':
+                        exportData = analytics.securityEvents;
+                        filename = `security_export_${new Date().toISOString().split('T')[0]}`;
+                        break;
+                    case 'stats':
+                        exportData = {
+                            dailyStats: analytics.dailyStats,
+                            pageStats: analytics.pageStats,
+                            deviceStats: analytics.deviceStats,
+                            browserStats: analytics.browserStats
+                        };
+                        filename = `stats_export_${new Date().toISOString().split('T')[0]}`;
+                        break;
+                    default:
+                        exportData = analytics;
+                        filename = `analytics_full_export_${new Date().toISOString().split('T')[0]}`;
+                }
+
+                if (format === 'csv' && Array.isArray(exportData)) {
+                    // CSV-Export für Arrays
+                    const headers = Object.keys(exportData[0] || {});
+                    const csvContent = [
+                        headers.join(';'),
+                        ...exportData.map((row: any) =>
+                            headers.map(h => {
+                                const val = row[h];
+                                if (typeof val === 'object') return JSON.stringify(val);
+                                return String(val || '').replace(/;/g, ',');
+                            }).join(';')
+                        )
+                    ].join('\n');
+
+                    return new Response(csvContent, {
+                        headers: {
+                            'Content-Type': 'text/csv; charset=utf-8',
+                            'Content-Disposition': `attachment; filename="${filename}.csv"`
+                        }
+                    });
+                }
+
+                // JSON-Export
+                return new Response(JSON.stringify(exportData, null, 2), {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Content-Disposition': `attachment; filename="${filename}.json"`
+                    }
+                });
+            } catch (e) {
+                return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // DELETE /api/analytics/error/:id - Fehler als gelöst markieren
+        if (pathname.startsWith("/api/analytics/error/") && req.method === "DELETE") {
+            try {
+                const errorId = pathname.split('/').pop();
+                const analytics = await loadAnalytics();
+
+                const error = analytics.errors.find((e: any) => e.id === errorId);
+                if (error) {
+                    error.resolved = true;
+                    await saveAnalytics(analytics);
+                    return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
+                }
+
+                return new Response(JSON.stringify({ error: 'Error not found' }), { status: 404, headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // DELETE /api/analytics/clear - Analytics-Daten löschen (mit Typ)
+        if (pathname === "/api/analytics/clear" && req.method === "DELETE") {
+            try {
+                const url = new URL(req.url);
+                const type = url.searchParams.get("type") || "all";
+                const analytics = await loadAnalytics();
+
+                switch (type) {
+                    case 'errors':
+                        analytics.errors = [];
+                        break;
+                    case 'security':
+                        analytics.securityEvents = [];
+                        break;
+                    case 'stats':
+                        analytics.dailyStats = {};
+                        analytics.pageStats = {};
+                        analytics.deviceStats = {};
+                        analytics.browserStats = {};
+                        analytics.hourlyTraffic = {};
+                        analytics.referrers = {};
+                        break;
+                    default:
+                        // Alle Daten löschen
+                        analytics.dailyStats = {};
+                        analytics.pageStats = {};
+                        analytics.deviceStats = {};
+                        analytics.browserStats = {};
+                        analytics.hourlyTraffic = {};
+                        analytics.referrers = {};
+                        analytics.errors = [];
+                        analytics.securityEvents = [];
+                }
+
+                analytics.lastUpdated = new Date().toISOString();
+                await saveAnalytics(analytics);
+
+                log("INFO", `Analytics data cleared: ${type}`);
+                return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
         }
 
         // ==========================================

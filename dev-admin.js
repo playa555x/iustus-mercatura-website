@@ -4799,3 +4799,485 @@ class SettingsManager {
 // Initialize Settings Manager
 const settingsManager = new SettingsManager();
 window.settingsManager = settingsManager;
+
+// ============================================
+// ANALYTICS UI SYSTEM (DSGVO-KONFORM)
+// ============================================
+const analyticsUI = {
+    data: null,
+    currentTab: 'overview',
+
+    async loadDashboard() {
+        try {
+            const range = document.getElementById('analyticsRange')?.value || '7';
+            const response = await fetch(`${API_BASE}/analytics/dashboard?range=${range}`);
+
+            if (!response.ok) throw new Error('Failed to load analytics');
+
+            this.data = await response.json();
+            this.renderOverview();
+            this.renderVisitors();
+            this.renderErrors();
+            this.renderSecurity();
+            this.updateBadges();
+        } catch (e) {
+            console.error('Analytics load error:', e);
+        }
+    },
+
+    switchTab(tab) {
+        this.currentTab = tab;
+
+        // Update tab buttons
+        document.querySelectorAll('.analytics-tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.tab === tab);
+        });
+
+        // Update content panels
+        document.querySelectorAll('.analytics-content').forEach(c => {
+            c.classList.toggle('active', c.id === `tab-${tab}`);
+        });
+
+        // Load data if needed
+        if (!this.data) {
+            this.loadDashboard();
+        }
+    },
+
+    updateBadges() {
+        if (!this.data) return;
+
+        const errorBadge = document.getElementById('errorBadge');
+        const securityBadge = document.getElementById('securityBadge');
+
+        if (errorBadge) {
+            const unresolvedErrors = this.data.recentErrors?.filter(e => !e.resolved).length || 0;
+            errorBadge.textContent = unresolvedErrors;
+            errorBadge.style.display = unresolvedErrors > 0 ? 'inline' : 'none';
+        }
+
+        if (securityBadge) {
+            const criticalSec = (this.data.securityBySeverity?.critical || 0) + (this.data.securityBySeverity?.high || 0);
+            securityBadge.textContent = criticalSec;
+            securityBadge.style.display = criticalSec > 0 ? 'inline' : 'none';
+        }
+    },
+
+    renderOverview() {
+        if (!this.data) return;
+
+        const { summary, hourlyTraffic, deviceStats, topPages, referrers } = this.data;
+
+        // Stats
+        document.getElementById('statTotalVisits').textContent = this.formatNumber(summary.totalVisits);
+        document.getElementById('statPageViews').textContent = this.formatNumber(summary.totalPageViews);
+        document.getElementById('statUniqueVisitors').textContent = this.formatNumber(summary.totalUniqueVisitors);
+        document.getElementById('statAvgDuration').textContent = this.formatDuration(summary.avgSessionDuration);
+
+        // Hourly Traffic Chart
+        this.renderHourlyChart(hourlyTraffic);
+
+        // Device Chart
+        this.renderDeviceChart(deviceStats);
+
+        // Top Pages
+        this.renderTable('topPagesTable', topPages, 'page', 'views');
+
+        // Referrers
+        this.renderReferrersTable(referrers);
+    },
+
+    renderHourlyChart(data) {
+        const container = document.getElementById('hourlyChart');
+        if (!container) return;
+
+        const values = [];
+        for (let i = 0; i < 24; i++) {
+            values.push(data[i.toString()] || 0);
+        }
+
+        const max = Math.max(...values, 1);
+
+        container.innerHTML = values.map((v, i) => `
+            <div class="chart-bar"
+                 style="height: ${(v / max) * 100}%"
+                 data-value="${v}"
+                 title="${i}:00 - ${v} Aufrufe">
+            </div>
+        `).join('');
+    },
+
+    renderDeviceChart(data) {
+        const container = document.getElementById('deviceChart');
+        if (!container) return;
+
+        const total = Object.values(data).reduce((a, b) => a + b, 0) || 1;
+        const desktop = data.desktop || 0;
+        const mobile = data.mobile || 0;
+        const tablet = data.tablet || 0;
+
+        const desktopPct = (desktop / total) * 100;
+        const mobilePct = (mobile / total) * 100;
+        const tabletPct = (tablet / total) * 100;
+
+        const desktopDeg = (desktopPct / 100) * 360;
+        const mobileDeg = desktopDeg + (mobilePct / 100) * 360;
+
+        container.innerHTML = `
+            <div class="donut-chart">
+                <div class="donut-visual" style="--desktop-deg: ${desktopDeg}deg; --mobile-deg: ${mobileDeg}deg;"></div>
+                <div class="donut-legend">
+                    <div class="legend-item">
+                        <span class="legend-color desktop"></span>
+                        <span>Desktop: ${desktopPct.toFixed(1)}% (${desktop})</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color mobile"></span>
+                        <span>Mobile: ${mobilePct.toFixed(1)}% (${mobile})</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color tablet"></span>
+                        <span>Tablet: ${tabletPct.toFixed(1)}% (${tablet})</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    renderTable(containerId, data, nameKey, valueKey) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        if (!data || data.length === 0) {
+            container.innerHTML = '<div class="table-empty">Keine Daten verfügbar</div>';
+            return;
+        }
+
+        container.innerHTML = data.slice(0, 10).map(item => `
+            <div class="table-row">
+                <span class="table-row-name">${item[nameKey]}</span>
+                <span class="table-row-value">${this.formatNumber(item[valueKey])}</span>
+            </div>
+        `).join('');
+    },
+
+    renderReferrersTable(data) {
+        const container = document.getElementById('referrersTable');
+        if (!container) return;
+
+        const entries = Object.entries(data || {}).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="table-empty">Keine Daten verfügbar</div>';
+            return;
+        }
+
+        container.innerHTML = entries.map(([name, value]) => `
+            <div class="table-row">
+                <span class="table-row-name">${name === 'direct' ? 'Direkt' : name}</span>
+                <span class="table-row-value">${this.formatNumber(value)}</span>
+            </div>
+        `).join('');
+    },
+
+    renderVisitors() {
+        if (!this.data) return;
+
+        const { dailyStats, browserStats, deviceStats } = this.data;
+
+        // Daily Visits Chart
+        this.renderDailyChart(dailyStats);
+
+        // Browser Table
+        this.renderBrowserTable(browserStats);
+
+        // Device Details
+        this.renderDeviceDetailTable(deviceStats);
+    },
+
+    renderDailyChart(data) {
+        const container = document.getElementById('dailyVisitsChart');
+        if (!container) return;
+
+        const entries = Object.entries(data || {}).sort((a, b) => a[0].localeCompare(b[0])).slice(-14);
+
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="table-empty">Keine Daten verfügbar</div>';
+            return;
+        }
+
+        const values = entries.map(([, stats]) => stats.visits || 0);
+        const max = Math.max(...values, 1);
+
+        container.innerHTML = entries.map(([date, stats]) => `
+            <div class="chart-bar"
+                 style="height: ${((stats.visits || 0) / max) * 100}%"
+                 data-value="${stats.visits || 0}"
+                 title="${date}: ${stats.visits || 0} Besuche">
+            </div>
+        `).join('');
+    },
+
+    renderBrowserTable(data) {
+        const container = document.getElementById('browserTable');
+        if (!container) return;
+
+        const entries = Object.entries(data || {}).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="table-empty">Keine Daten verfügbar</div>';
+            return;
+        }
+
+        container.innerHTML = entries.map(([name, value]) => `
+            <div class="table-row">
+                <span class="table-row-name">${this.capitalizeFirst(name)}</span>
+                <span class="table-row-value">${this.formatNumber(value)}</span>
+            </div>
+        `).join('');
+    },
+
+    renderDeviceDetailTable(data) {
+        const container = document.getElementById('deviceDetailTable');
+        if (!container) return;
+
+        const entries = Object.entries(data || {}).sort((a, b) => b[1] - a[1]);
+
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="table-empty">Keine Daten verfügbar</div>';
+            return;
+        }
+
+        const total = entries.reduce((acc, [, v]) => acc + v, 0) || 1;
+
+        container.innerHTML = entries.map(([name, value]) => `
+            <div class="table-row">
+                <span class="table-row-name">${this.capitalizeFirst(name)}</span>
+                <span class="table-row-value">${((value / total) * 100).toFixed(1)}% (${value})</span>
+            </div>
+        `).join('');
+    },
+
+    renderErrors() {
+        if (!this.data) return;
+
+        const { recentErrors, errorsByType } = this.data;
+
+        // Error Stats by Type
+        const statsContainer = document.getElementById('errorStatsByType');
+        if (statsContainer) {
+            const entries = Object.entries(errorsByType || {});
+            statsContainer.innerHTML = entries.map(([type, count]) => `
+                <div class="error-type-badge">
+                    ${type}
+                    <span class="count">${count}</span>
+                </div>
+            `).join('') || '<span style="color: var(--text-muted)">Keine Fehler</span>';
+        }
+
+        // Error List
+        this.filterErrors();
+    },
+
+    filterErrors() {
+        if (!this.data) return;
+
+        const typeFilter = document.getElementById('errorTypeFilter')?.value || 'all';
+        const hideResolved = document.getElementById('hideResolved')?.checked || false;
+
+        let errors = this.data.recentErrors || [];
+
+        if (typeFilter !== 'all') {
+            errors = errors.filter(e => e.type === typeFilter);
+        }
+
+        if (hideResolved) {
+            errors = errors.filter(e => !e.resolved);
+        }
+
+        const container = document.getElementById('errorList');
+        if (!container) return;
+
+        if (errors.length === 0) {
+            container.innerHTML = '<div class="table-empty">Keine Fehler gefunden</div>';
+            return;
+        }
+
+        container.innerHTML = errors.map(error => `
+            <div class="error-item ${error.resolved ? 'resolved' : ''}">
+                <div class="error-header">
+                    <span class="error-type">${error.type}</span>
+                    <span class="error-time">${this.formatTime(error.timestamp)}</span>
+                </div>
+                <div class="error-message">${this.escapeHtml(error.message)}</div>
+                ${error.suggestion ? `
+                    <div class="error-suggestion">
+                        <div class="error-suggestion-title">Lösungsvorschlag</div>
+                        <div class="error-suggestion-text">
+                            <strong>Ursache:</strong> ${error.suggestion.cause}<br>
+                            <strong>Lösung:</strong> ${error.suggestion.solution}
+                        </div>
+                    </div>
+                ` : ''}
+                <div class="error-actions">
+                    ${!error.resolved ? `
+                        <button class="btn-resolve" onclick="analyticsUI.resolveError('${error.id}')">
+                            <i class="fas fa-check"></i> Als gelöst markieren
+                        </button>
+                    ` : '<span style="color: var(--accent-green); font-size: 12px;"><i class="fas fa-check"></i> Gelöst</span>'}
+                </div>
+            </div>
+        `).join('');
+    },
+
+    async resolveError(errorId) {
+        try {
+            const response = await fetch(`${API_BASE}/analytics/error/${errorId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                devAdmin.showToast('success', 'Erledigt', 'Fehler als gelöst markiert');
+                this.loadDashboard();
+            }
+        } catch (e) {
+            devAdmin.showToast('error', 'Fehler', 'Konnte nicht markieren');
+        }
+    },
+
+    renderSecurity() {
+        if (!this.data) return;
+
+        const { securityBySeverity, recentSecurityEvents } = this.data;
+
+        // Security Stats
+        document.getElementById('secCritical').textContent = securityBySeverity?.critical || 0;
+        document.getElementById('secHigh').textContent = securityBySeverity?.high || 0;
+        document.getElementById('secMedium').textContent = securityBySeverity?.medium || 0;
+        document.getElementById('secLow').textContent = securityBySeverity?.low || 0;
+
+        // Security List
+        this.filterSecurity();
+    },
+
+    filterSecurity() {
+        if (!this.data) return;
+
+        const severityFilter = document.getElementById('severityFilter')?.value || 'all';
+
+        let events = this.data.recentSecurityEvents || [];
+
+        if (severityFilter !== 'all') {
+            events = events.filter(e => e.severity === severityFilter);
+        }
+
+        const container = document.getElementById('securityList');
+        if (!container) return;
+
+        if (events.length === 0) {
+            container.innerHTML = '<div class="table-empty">Keine Sicherheits-Events gefunden</div>';
+            return;
+        }
+
+        container.innerHTML = events.map(event => `
+            <div class="security-item ${event.severity}">
+                <div class="security-item-header">
+                    <div class="security-type">
+                        <span class="security-type-name">${event.type.replace(/_/g, ' ').toUpperCase()}</span>
+                        <span class="severity-badge ${event.severity}">${event.severity}</span>
+                    </div>
+                    <span class="security-time">${this.formatTime(event.timestamp)}</span>
+                </div>
+                <div class="security-description">${event.description}</div>
+                <div class="security-path">${event.path}</div>
+            </div>
+        `).join('');
+    },
+
+    async exportData(type, format) {
+        try {
+            const url = `${API_BASE}/analytics/export?type=${type}&format=${format}`;
+            const response = await fetch(url);
+
+            if (!response.ok) throw new Error('Export failed');
+
+            const blob = await response.blob();
+            const filename = response.headers.get('Content-Disposition')?.match(/filename="(.+)"/)?.[1] || `export.${format}`;
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+
+            devAdmin.showToast('success', 'Export', 'Daten wurden exportiert');
+        } catch (e) {
+            devAdmin.showToast('error', 'Fehler', 'Export fehlgeschlagen');
+        }
+    },
+
+    async clearData(type) {
+        if (!confirm(`Wirklich alle ${type === 'errors' ? 'Fehler' : 'Sicherheits-Events'} löschen?`)) return;
+
+        try {
+            const response = await fetch(`${API_BASE}/analytics/clear?type=${type}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                devAdmin.showToast('success', 'Gelöscht', 'Daten wurden gelöscht');
+                this.loadDashboard();
+            }
+        } catch (e) {
+            devAdmin.showToast('error', 'Fehler', 'Löschen fehlgeschlagen');
+        }
+    },
+
+    // Helpers
+    formatNumber(num) {
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num?.toString() || '0';
+    },
+
+    formatDuration(seconds) {
+        if (!seconds || seconds < 1) return '0s';
+        if (seconds < 60) return Math.round(seconds) + 's';
+        if (seconds < 3600) return Math.round(seconds / 60) + 'm';
+        return (seconds / 3600).toFixed(1) + 'h';
+    },
+
+    formatTime(timestamp) {
+        if (!timestamp) return '';
+        const date = new Date(timestamp);
+        return date.toLocaleString('de-DE', {
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    },
+
+    capitalizeFirst(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    },
+
+    escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+};
+
+// Make available globally
+window.analyticsUI = analyticsUI;
+
+// Auto-load analytics when logs section becomes active
+const originalShowSection = devAdmin.showSection?.bind(devAdmin);
+if (originalShowSection) {
+    devAdmin.showSection = function(section) {
+        originalShowSection(section);
+        if (section === 'logs' && !analyticsUI.data) {
+            analyticsUI.loadDashboard();
+        }
+    };
+}

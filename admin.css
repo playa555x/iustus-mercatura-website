@@ -2818,6 +2818,21 @@ body {
     opacity: 1;
 }
 
+/* Flag SVG & Emoji Styles */
+.location-card-admin .location-flag-large .flag-svg {
+    width: 100px;
+    height: 75px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+    border-radius: 4px;
+}
+
+.location-card-admin .location-flag-large .flag-emoji {
+    font-size: 72px;
+    line-height: 1;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 /* Location Content */
 .location-card-admin .location-info {
     padding: 24px;

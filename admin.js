@@ -1427,11 +1427,19 @@ class AdminPanel {
         const grid = document.getElementById('locationsGrid');
         if (!grid || !this.data.locations) return;
 
-        grid.innerHTML = this.data.locations.map(loc => `
+        grid.innerHTML = this.data.locations.map(loc => {
+            // Get flag - prioritize SVG flag path, then emoji, then default
+            const flagSvg = loc.flag && loc.flag.includes('.svg') ? loc.flag : null;
+            const flagEmoji = loc.flagEmoji || loc.flag || '🏳️';
+            const countryName = loc.countryName || loc.country || loc.name || '';
+            const locationType = loc.locationType || loc.type || '';
+            const cityName = loc.city || loc.companyName || '';
+
+            return `
             <div class="location-card-admin" data-id="${loc.id}">
                 ${loc.image ? `
                     <div class="location-image">
-                        <img src="${loc.image}" alt="${loc.city}" onerror="this.parentElement.innerHTML='<div class=\\'location-flag-large\\'>${loc.flag || ''}</div>'">
+                        <img src="${loc.image}" alt="${cityName}" onerror="this.parentElement.innerHTML='<div class=\\'location-flag-large\\'>${flagEmoji}</div>'">
                         <div class="location-image-overlay">
                             <button class="btn-change-image" onclick="event.stopPropagation(); adminPanel.changeLocationImage('${loc.id}')" title="Bild aendern">
                                 <i class="fas fa-camera"></i>
@@ -1440,14 +1448,14 @@ class AdminPanel {
                     </div>
                 ` : `
                     <div class="location-flag-large" onclick="event.stopPropagation(); adminPanel.addLocationImage('${loc.id}')" title="Bild hinzufuegen" style="cursor:pointer;">
-                        ${loc.flag || '🏳️'}
+                        ${flagSvg ? `<img src="${flagSvg}" alt="${countryName}" class="flag-svg">` : `<span class="flag-emoji">${flagEmoji}</span>`}
                         <div class="add-image-hint"><i class="fas fa-camera"></i> Bild</div>
                     </div>
                 `}
                 <div class="location-info">
-                    <h4>${loc.name || loc.country || ''}</h4>
-                    <p class="city">${loc.city || ''}</p>
-                    <span class="type-badge">${loc.type || ''}</span>
+                    <h4>${countryName}</h4>
+                    <p class="city">${cityName}</p>
+                    <span class="type-badge">${locationType}</span>
                     ${loc.address ? `<p class="address"><i class="fas fa-map-marker-alt"></i> ${loc.address}</p>` : ''}
                 </div>
                 <div class="location-actions">
@@ -1464,7 +1472,7 @@ class AdminPanel {
                     </button>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     }
 
     // Location Image Functions
