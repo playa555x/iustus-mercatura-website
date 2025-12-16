@@ -887,8 +887,8 @@
                                             <input type="text" id="mediaSearchInput" placeholder="Suchen..." onkeyup="adminPanel.filterMediaFiles()">
                                         </div>
                                         <div class="view-toggle">
-                                            <button class="view-btn active" data-view="grid"><i class="fas fa-th"></i></button>
-                                            <button class="view-btn" data-view="list"><i class="fas fa-list"></i></button>
+                                            <button class="view-btn active" data-view="grid" onclick="adminPanel.setMediaView('grid')"><i class="fas fa-th"></i></button>
+                                            <button class="view-btn" data-view="list" onclick="adminPanel.setMediaView('list')"><i class="fas fa-list"></i></button>
                                         </div>
                                     </div>
                                 </div>

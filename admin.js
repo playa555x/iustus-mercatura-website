@@ -8399,6 +8399,25 @@ class AdminPanel {
         });
     }
 
+    setMediaView(viewType) {
+        const grid = document.getElementById('mediathekGrid');
+        if (!grid) return;
+
+        // Update button states
+        document.querySelectorAll('.view-toggle .view-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.view === viewType);
+        });
+
+        // Toggle view class
+        if (viewType === 'list') {
+            grid.classList.add('list-view');
+            grid.classList.remove('grid-view');
+        } else {
+            grid.classList.add('grid-view');
+            grid.classList.remove('list-view');
+        }
+    }
+
     async loadMediathekImages() {
         const grid = document.getElementById('mediathekGrid');
         const countEl = document.getElementById('mediathekImageCount');

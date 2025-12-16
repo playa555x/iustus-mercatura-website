@@ -264,13 +264,11 @@ body {
     background: var(--warning);
 }
 
-/* Changes Tooltip */
+/* Changes Tooltip - positioned above to avoid sidebar overflow clipping */
 .changes-tooltip {
-    position: absolute;
-    left: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-left: 15px;
+    position: fixed;
+    left: 20px;
+    bottom: 80px;
     background: var(--navy-dark);
     border: 1px solid var(--gold);
     border-radius: 10px;
@@ -282,6 +280,7 @@ body {
     opacity: 0;
     visibility: hidden;
     transition: all 0.2s ease;
+    pointer-events: none;
 }
 
 .status-item.changes-status:hover .changes-tooltip {
@@ -292,21 +291,19 @@ body {
 .changes-tooltip::before {
     content: '';
     position: absolute;
-    left: -8px;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 20px;
+    bottom: -8px;
     border: 8px solid transparent;
-    border-right-color: var(--gold);
+    border-top-color: var(--gold);
 }
 
 .changes-tooltip::after {
     content: '';
     position: absolute;
-    left: -6px;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 22px;
+    bottom: -6px;
     border: 6px solid transparent;
-    border-right-color: var(--navy-dark);
+    border-top-color: var(--navy-dark);
 }
 
 .tooltip-header {
@@ -1385,6 +1382,53 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 20px;
+}
+
+/* List View */
+.mediathek-grid.list-view {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+}
+
+.mediathek-grid.list-view .mediathek-item {
+    aspect-ratio: unset !important;
+    display: flex !important;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    height: auto;
+}
+
+.mediathek-grid.list-view .mediathek-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.mediathek-grid.list-view .mediathek-item-overlay {
+    position: static;
+    background: none;
+    opacity: 1;
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mediathek-grid.list-view .mediathek-item-name {
+    position: static;
+    background: none;
+    padding: 0;
+    color: var(--navy-dark);
+    font-weight: 500;
+}
+
+.mediathek-grid.list-view .mediathek-item-actions {
+    position: static;
+    opacity: 1;
+    transform: none;
 }
 
 .mediathek-loading {
