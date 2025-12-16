@@ -5,6 +5,20 @@
  */
 
 // ============================================
+// DYNAMIC URL CONFIGURATION
+// ============================================
+const getProductionUrl = () => {
+    // Use window config if available
+    if (window.CMS_API_URL) return window.CMS_API_URL;
+    // On localhost, use localhost
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return window.location.origin;
+    }
+    // On production, use same origin
+    return window.location.origin;
+};
+
+// ============================================
 // ADMIN ERROR HANDLER
 // ============================================
 class AdminErrorHandler {
@@ -112,7 +126,7 @@ class AdminErrorHandler {
         if (errorScreen) {
             errorMessage.textContent = errorInfo.message;
             errorStack.textContent = errorInfo.stack || 'Kein Stack-Trace verfügbar';
-            serverUrl.textContent = window.CMS_API_URL || 'https://iustus-mercatura-eu.onrender.com';
+            serverUrl.textContent = getProductionUrl();
             errorScreen.style.display = 'flex';
         }
     }
@@ -246,7 +260,7 @@ class AdminErrorHandler {
      * Server-Verbindung prüfen
      */
     static async checkServerConnection() {
-        const apiUrl = window.CMS_API_URL || 'https://iustus-mercatura-eu.onrender.com';
+        const apiUrl = getProductionUrl();
 
         try {
             const controller = new AbortController();

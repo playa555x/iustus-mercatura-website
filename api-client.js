@@ -8,7 +8,7 @@
 
 const CmsApi = {
   // Konfiguration - wird beim Init gesetzt
-  baseUrl: 'http://localhost:3003',
+  baseUrl: window.location.origin,
   siteId: null,
   token: null,
 

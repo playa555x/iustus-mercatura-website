@@ -14,12 +14,15 @@ const getApiBase = () => {
 };
 const API_BASE = getApiBase();
 
+// Central website ID configuration
+const DEV_WEBSITE_ID = window.CMS_WEBSITE_ID || 'ws_iustus';
+
 class DevAdmin {
     constructor() {
         this.isAuthenticated = false;
         this.changes = 0;
         this.currentSection = 'dashboard';
-        this.currentWebsite = 'ws_iustus';
+        this.currentWebsite = DEV_WEBSITE_ID;
         this.currentPage = null;
         this.currentCollection = null;
         this.currentDbTable = null;

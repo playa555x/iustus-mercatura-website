@@ -21,9 +21,17 @@ const getApiUrl = () => {
     return window.location.origin;
 };
 
+// Get website ID from config or derive from hostname
+const getWebsiteId = () => {
+    if (window.CMS_WEBSITE_ID) return window.CMS_WEBSITE_ID;
+    // Default for this deployment
+    return 'ws_iustus';
+};
+
 const ADMIN_CONFIG = {
     API_URL: getApiUrl(),
     SITE_ID: window.CMS_SITE_ID || 'iustus-mercatura',
+    WEBSITE_ID: getWebsiteId(),
     FALLBACK_TO_LOCALSTORAGE: true,
     STORAGE_KEY: 'iustus_admin_data',
     DEBUG: window.location.hostname === 'localhost'
@@ -623,7 +631,7 @@ class AdminPanel {
 
     async parseWebsiteData() {
         try {
-            const response = await fetch('index.html');
+            const response = await fetch('/index.html');
             const html = await response.text();
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
@@ -1600,7 +1608,7 @@ class AdminPanel {
     async uploadLocationImage(file, locationId) {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('website_id', 'ws_iustus');
+        formData.append('website_id', ADMIN_CONFIG.WEBSITE_ID);
 
         try {
             const response = await fetch('/api/upload', {
@@ -7854,7 +7862,7 @@ class AdminPanel {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('media_type', mediaType);
-            formData.append('website_id', 'ws_iustus');
+            formData.append('website_id', ADMIN_CONFIG.WEBSITE_ID);
 
             try {
                 const response = await fetch('/api/upload/media', {
@@ -8140,7 +8148,7 @@ class AdminPanel {
                 formData.append('file', file);
                 formData.append('media_type', 'logos');
                 formData.append('category', category);
-                formData.append('website_id', 'ws_iustus');
+                formData.append('website_id', ADMIN_CONFIG.WEBSITE_ID);
 
                 try {
                     const response = await fetch('/api/upload/media', {

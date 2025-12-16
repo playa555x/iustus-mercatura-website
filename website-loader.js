@@ -11,7 +11,7 @@
     // ============================================
     const CONFIG = {
         // API Einstellungen
-        API_URL: window.CMS_API_URL || 'http://localhost:3003',
+        API_URL: window.CMS_API_URL || window.location.origin,
         SITE_ID: window.CMS_SITE_ID || null,
 
         // Fallback auf LocalStorage wenn API nicht erreichbar
