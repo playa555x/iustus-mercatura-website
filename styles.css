@@ -3085,6 +3085,64 @@ section {
     margin: 0;
 }
 
+/* Person info in map info box */
+.info-box-person {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(201, 162, 39, 0.3);
+}
+
+.info-box-person .person-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(201, 162, 39, 0.5);
+    flex-shrink: 0;
+}
+
+.info-box-person .person-initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-gold), #b8922e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-dark);
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.info-box-person .person-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.info-box-person .person-name {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info-box-person .person-role {
+    color: var(--accent-gold);
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Position info boxes relative to map markers */
 .map-info-box[data-location="bvi"] { left: 18%; top: 35%; }
 .map-info-box[data-location="usa"] { left: 8%; top: 15%; }

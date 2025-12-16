@@ -9,7 +9,13 @@
       "companyName": "Iustus Mercatura Holding Inc.",
       "address": "Intershore Chambers 3rd Floor, 333 Waterfront Dr. Geneva Place, Road Town, Tortola, VG 1110",
       "flag": "assets/images/flags/vg.svg",
-      "flagEmoji": "🇻🇬"
+      "flagEmoji": "🇻🇬",
+      "responsiblePerson": {
+        "name": "Dr. Gerhard Kral",
+        "role": "Group CEO & Founder",
+        "image": "/uploads/img_1765200880495_2sqckj.png",
+        "initials": "GK"
+      }
     },
     {
       "id": "loc_2",
@@ -20,7 +26,13 @@
       "companyName": "FITC Energy Group Inc. & Iustus Mercatura USA Inc.",
       "address": "31 Airpark Road, Princeton, 08540 New Jersey, USA",
       "flag": "assets/images/flags/us.svg",
-      "flagEmoji": "🇺🇸"
+      "flagEmoji": "🇺🇸",
+      "responsiblePerson": {
+        "name": "Eng. Yong Jiang",
+        "role": "COO USA",
+        "image": null,
+        "initials": "YJ"
+      }
     },
     {
       "id": "loc_3",
@@ -31,7 +43,13 @@
       "companyName": "Iustus Mercatura Brazil Ltda.",
       "address": "Suite 92, 6th Floor, Av. Dr. Cardoso de Melo 1340, Vila Olimpia, 04.548-004 São Paulo",
       "flag": "assets/images/flags/br.svg",
-      "flagEmoji": "🇧🇷"
+      "flagEmoji": "🇧🇷",
+      "responsiblePerson": {
+        "name": "Eng. Paulo Souza",
+        "role": "COO Brazil",
+        "image": "/uploads/img_1765200880824_6nbq1o.png",
+        "initials": "PS"
+      }
     },
     {
       "id": "loc_4",
@@ -42,7 +60,13 @@
       "companyName": "FITC Energy Group DXBS FZ-LLC",
       "address": "Meydan Grandstand, 6th floor, Meydan Road, Nad Al Sheba, Dubai, U.A.E.",
       "flag": "assets/images/flags/ae.svg",
-      "flagEmoji": "🇦🇪"
+      "flagEmoji": "🇦🇪",
+      "responsiblePerson": {
+        "name": "Jimmey S. Shah",
+        "role": "Head of Trade Middle East",
+        "image": "/uploads/img_1765200880484_rr4put.png",
+        "initials": "JS"
+      }
     },
     {
       "id": "loc_5",
@@ -53,7 +77,13 @@
       "companyName": "Iustus Mercatura Maritime Logistics UK Limited",
       "address": "7th Floor, Tower 42, 25 Old Broad Street, London EC2N 1HN",
       "flag": "assets/images/flags/gb.svg",
-      "flagEmoji": "🇬🇧"
+      "flagEmoji": "🇬🇧",
+      "responsiblePerson": {
+        "name": "Andreas Zsifkovits",
+        "role": "CEO UK & Maritime",
+        "image": "/uploads/img_1765200866319_fqiugd.webp",
+        "initials": "AZ"
+      }
     },
     {
       "id": "loc_6",
@@ -64,7 +94,13 @@
       "companyName": "FITC Energy Group Inc. UG & Iustus Mercatura UG Ltd.",
       "address": "2nd Floor Plot 51, 14 Ntinda Avenue, Nakawa 10005, Ntinda - Kampala",
       "flag": "assets/images/flags/ug.svg",
-      "flagEmoji": "🇺🇬"
+      "flagEmoji": "🇺🇬",
+      "responsiblePerson": {
+        "name": "Miss Resty Nankya",
+        "role": "CEO Uganda",
+        "image": "/uploads/img_1765200880814_4rcgus.png",
+        "initials": "RN"
+      }
     },
     {
       "id": "loc_7",
@@ -75,9 +111,15 @@
       "companyName": "FITC Energy Group Inc Kenya",
       "address": "2nd Floor, Kimathi House, Kenyatta Avenue, Nairobi 00100, Kenya",
       "flag": "assets/images/flags/ke.svg",
-      "flagEmoji": "🇰🇪"
+      "flagEmoji": "🇰🇪",
+      "responsiblePerson": {
+        "name": "Emmanuel Nkwanga",
+        "role": "COO East Africa",
+        "image": null,
+        "initials": "EN"
+      }
     }
   ],
-  "updatedAt": "2025-12-16T09:30:00.000Z",
+  "updatedAt": "2025-12-16T10:30:00.000Z",
   "updatedBy": "system"
 }

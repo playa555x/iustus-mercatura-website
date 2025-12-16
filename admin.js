@@ -8276,6 +8276,18 @@ class AdminPanel {
                 if (countEl) countEl.textContent = counts[folder];
             });
 
+            // Update banner counts (top header stats)
+            const imageCount = document.getElementById('mediathekImageCount');
+            const videoCount = document.getElementById('mediathekVideoCount');
+            const logoCount = document.getElementById('mediathekLogoCount');
+
+            // Calculate total images (excluding videos, documents, flags, logos)
+            const totalImages = counts.team + counts.uploads + counts.products + counts.locations;
+
+            if (imageCount) imageCount.textContent = totalImages;
+            if (videoCount) videoCount.textContent = counts.videos;
+            if (logoCount) logoCount.textContent = counts.logos + counts.flags; // Logos + Flags
+
             this._mediaFolderCounts = counts;
             this._allMediaImages = data.images;
         } catch (e) {

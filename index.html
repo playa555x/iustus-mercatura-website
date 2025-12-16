@@ -768,8 +768,8 @@
                 <div class="top-nav-left">
                     <span class="stock-ticker">
                         <span class="ticker-label">Sugar IC45:</span>
-                        <span class="ticker-value">$485.20</span>
-                        <span class="ticker-change positive">+2.3%</span>
+                        <span class="ticker-value" id="sugarPrice">$485.20</span>
+                        <span class="ticker-change positive" id="sugarChange">+2.3%</span>
                     </span>
                 </div>
                 <div class="top-nav-right">
@@ -2331,6 +2331,14 @@
                             <p class="info-company">Iustus Mercatura Holding Inc.</p>
                             <p class="info-address">Intershore Chambers 3rd Floor, 333 Waterfront Dr. Geneva Place, Road Town, Tortola, VG 1110</p>
                         </div>
+                        <div class="info-box-person">
+                            <img src="/uploads/img_1765200880495_2sqckj.png" alt="Dr. Gerhard Kral" class="person-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <span class="person-initials" style="display:none;">GK</span>
+                            <div class="person-details">
+                                <span class="person-name">Dr. Gerhard Kral</span>
+                                <span class="person-role">Group CEO &amp; Founder</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="map-info-box" data-location="usa">
                         <div class="info-box-header">
@@ -2343,6 +2351,13 @@
                         <div class="info-box-content">
                             <p class="info-company">FITC Energy Group Inc. &amp; Iustus Mercatura USA Inc.</p>
                             <p class="info-address">31 Airpark Road, Princeton, 08540 New Jersey, USA</p>
+                        </div>
+                        <div class="info-box-person">
+                            <span class="person-initials">YJ</span>
+                            <div class="person-details">
+                                <span class="person-name">Eng. Yong Jiang</span>
+                                <span class="person-role">COO USA</span>
+                            </div>
                         </div>
                     </div>
                     <div class="map-info-box" data-location="brazil">
@@ -2357,6 +2372,14 @@
                             <p class="info-company">Iustus Mercatura Brazil Ltda.</p>
                             <p class="info-address">Suite 92, 6th Floor, Av. Dr. Cardoso de Melo 1340, Vila Olimpia, 04.548-004 S&atilde;o Paulo</p>
                         </div>
+                        <div class="info-box-person">
+                            <img src="/uploads/img_1765200880824_6nbq1o.png" alt="Eng. Paulo Souza" class="person-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <span class="person-initials" style="display:none;">PS</span>
+                            <div class="person-details">
+                                <span class="person-name">Eng. Paulo Souza</span>
+                                <span class="person-role">COO Brazil</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="map-info-box" data-location="uae">
                         <div class="info-box-header">
@@ -2369,6 +2392,14 @@
                         <div class="info-box-content">
                             <p class="info-company">FITC Energy Group DXBS FZ-LLC</p>
                             <p class="info-address">Meydan Grandstand, 6th floor, Meydan Road, Nad Al Sheba, Dubai, U.A.E.</p>
+                        </div>
+                        <div class="info-box-person">
+                            <img src="/uploads/img_1765200880484_rr4put.png" alt="Jimmey S. Shah" class="person-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <span class="person-initials" style="display:none;">JS</span>
+                            <div class="person-details">
+                                <span class="person-name">Jimmey S. Shah</span>
+                                <span class="person-role">Head of Trade Middle East</span>
+                            </div>
                         </div>
                     </div>
                     <div class="map-info-box" data-location="uk">
@@ -2383,6 +2414,14 @@
                             <p class="info-company">Iustus Mercatura Maritime Logistics UK Limited</p>
                             <p class="info-address">7th Floor, Tower 42, 25 Old Broad Street, London EC2N 1HN</p>
                         </div>
+                        <div class="info-box-person">
+                            <img src="/uploads/img_1765200866319_fqiugd.webp" alt="Andreas Zsifkovits" class="person-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <span class="person-initials" style="display:none;">AZ</span>
+                            <div class="person-details">
+                                <span class="person-name">Andreas Zsifkovits</span>
+                                <span class="person-role">CEO UK &amp; Maritime</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="map-info-box" data-location="uganda">
                         <div class="info-box-header">
@@ -2396,6 +2435,14 @@
                             <p class="info-company">FITC Energy Group Inc. UG &amp; Iustus Mercatura UG Ltd.</p>
                             <p class="info-address">2nd Floor Plot 51, 14 Ntinda Avenue, Nakawa 10005, Ntinda - Kampala</p>
                         </div>
+                        <div class="info-box-person">
+                            <img src="/uploads/img_1765200880814_4rcgus.png" alt="Miss Resty Nankya" class="person-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <span class="person-initials" style="display:none;">RN</span>
+                            <div class="person-details">
+                                <span class="person-name">Miss Resty Nankya</span>
+                                <span class="person-role">CEO Uganda</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="map-info-box" data-location="kenya">
                         <div class="info-box-header">
@@ -2408,6 +2455,13 @@
                         <div class="info-box-content">
                             <p class="info-company">FITC Energy Group Inc Kenya</p>
                             <p class="info-address">2nd Floor, Kimathi House, Kenyatta Avenue, Nairobi 00100, Kenya</p>
+                        </div>
+                        <div class="info-box-person">
+                            <span class="person-initials">EN</span>
+                            <div class="person-details">
+                                <span class="person-name">Emmanuel Nkwanga</span>
+                                <span class="person-role">COO East Africa</span>
+                            </div>
                         </div>
                     </div>
                 </div>

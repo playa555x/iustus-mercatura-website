@@ -4,6 +4,75 @@
  */
 
 // ============================================
+// COMMODITY TICKER - Live Sugar IC45 Price
+// ============================================
+async function updateCommodityTicker() {
+    const priceEl = document.getElementById('sugarPrice');
+    const changeEl = document.getElementById('sugarChange');
+
+    if (!priceEl || !changeEl) return;
+
+    // Helper function to update the display
+    const updateDisplay = (price, changePercent, isPositive) => {
+        priceEl.textContent = '$' + price;
+        changeEl.textContent = (isPositive ? '+' : '') + changePercent + '%';
+        changeEl.className = 'ticker-change ' + (isPositive ? 'positive' : 'negative');
+    };
+
+    // Helper to check if we're on a dev server
+    const isDevServer = () => {
+        const hostname = window.location.hostname;
+        return hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.');
+    };
+
+    try {
+        // Always try our API first (works both in dev and production)
+        const response = await fetch('/api/commodity-price');
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.price) {
+                updateDisplay(data.price, data.change, data.direction === 'positive');
+                return;
+            }
+        }
+    } catch (e) {
+        // Server API failed, try fallback
+    }
+
+    // Fallback: Direct Yahoo Finance via CORS proxy (only for static hosting without backend)
+    try {
+        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/SB=F?interval=1d&range=2d');
+        const response = await fetch(proxyUrl);
+
+        if (response.ok) {
+            const data = await response.json();
+            const result = data.chart?.result?.[0];
+
+            if (result) {
+                const meta = result.meta;
+                const currentPrice = meta.regularMarketPrice;
+                const previousClose = meta.chartPreviousClose || meta.previousClose;
+                const change = currentPrice - previousClose;
+                const changePercent = ((change / previousClose) * 100);
+                // Convert cents/lb to $/ton
+                const pricePerTon = (currentPrice / 100) * 2204.62;
+
+                updateDisplay(pricePerTon.toFixed(2), changePercent.toFixed(2), change >= 0);
+            }
+        }
+    } catch (error) {
+        console.log('Commodity ticker update failed, keeping current values');
+    }
+}
+
+// Update ticker on load and every 5 minutes
+document.addEventListener('DOMContentLoaded', () => {
+    updateCommodityTicker();
+    setInterval(updateCommodityTicker, 5 * 60 * 1000);
+});
+
+// ============================================
 // PRELOADER
 // ============================================
 window.addEventListener('load', () => {

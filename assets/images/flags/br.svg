@@ -1,6 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 504">
+  <!-- Green background -->
   <rect fill="#009c3b" width="720" height="504"/>
+  <!-- Yellow diamond -->
   <path fill="#ffdf00" d="M360 52.9L76.7 252 360 451.1 643.3 252z"/>
+  <!-- Blue circle -->
   <circle fill="#002776" cx="360" cy="252" r="88"/>
-  <path fill="#fff" d="M264 257c0-56 80-96 192 0-112 96-192 56-192 0z"/>
+  <!-- White curved band -->
+  <path fill="#fff" d="M272 252c0 0 28-40 88-40s88 40 88 40s-28 40-88 40s-88-40-88-40z" opacity="0"/>
+  <clipPath id="bandClip">
+    <circle cx="360" cy="252" r="88"/>
+  </clipPath>
+  <g clip-path="url(#bandClip)">
+    <path fill="#fff" d="M262 235c30-20 68-30 98-30 40 0 80 15 110 40l8-20c-35-30-78-45-118-45-40 0-80 18-110 40z"/>
+  </g>
+  <!-- Stars (simplified representation) -->
+  <g fill="#fff">
+    <!-- Crux (Southern Cross) -->
+    <circle cx="390" cy="280" r="3"/>
+    <circle cx="375" cy="268" r="2.5"/>
+    <circle cx="405" cy="268" r="2.5"/>
+    <circle cx="390" cy="255" r="2.5"/>
+    <circle cx="390" cy="295" r="2"/>
+    <!-- Other stars -->
+    <circle cx="340" cy="275" r="2"/>
+    <circle cx="320" cy="260" r="2"/>
+    <circle cx="330" cy="285" r="1.5"/>
+    <circle cx="355" cy="290" r="1.5"/>
+    <circle cx="310" cy="275" r="1.5"/>
+    <circle cx="420" cy="260" r="2"/>
+    <circle cx="415" cy="280" r="1.5"/>
+    <circle cx="430" cy="270" r="1.5"/>
+    <circle cx="300" cy="265" r="1.5"/>
+    <circle cx="350" cy="265" r="1.5"/>
+    <circle cx="370" cy="295" r="1.5"/>
+    <circle cx="408" cy="288" r="1.5"/>
+    <!-- Sigma Octantis (above the band) -->
+    <circle cx="360" cy="310" r="1.5"/>
+  </g>
 </svg>

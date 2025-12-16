@@ -8027,3 +8027,173 @@ body {
         display: none !important;
     }
 }
+
+/* ==========================================
+   Type Filter Buttons - Enforced Styles
+   ========================================== */
+#section-images .toolbar-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+#section-images .type-filter-buttons {
+    display: flex !important;
+    gap: 4px !important;
+    background: #f1f3f4 !important;
+    padding: 4px !important;
+    border-radius: 10px !important;
+}
+
+#section-images button.type-filter-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 8px 14px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #6c757d !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+    font-family: inherit !important;
+    min-height: auto !important;
+    min-width: auto !important;
+}
+
+#section-images button.type-filter-btn:hover {
+    background: white !important;
+    color: #0a1628 !important;
+}
+
+#section-images button.type-filter-btn.active {
+    background: #0a1628 !important;
+    color: white !important;
+    box-shadow: 0 2px 6px rgba(10, 22, 40, 0.2) !important;
+}
+
+#section-images button.type-filter-btn i {
+    font-size: 11px !important;
+}
+
+/* ==========================================
+   Modern Toolbar Buttons for Struktur
+   ========================================== */
+#section-structure .preview-toolbar .device-btn,
+#section-structure .undo-redo-buttons .device-btn,
+#section-structure button.device-btn,
+#section-structure button#toggleDragMode {
+    width: 36px !important;
+    height: 36px !important;
+    border: none !important;
+    background: #f1f3f4 !important;
+    border-radius: 8px !important;
+    color: #6c757d !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    transition: all 0.2s ease !important;
+    min-height: auto !important;
+    min-width: auto !important;
+}
+
+#section-structure .preview-toolbar .device-btn:hover,
+#section-structure .undo-redo-buttons .device-btn:hover,
+#section-structure button.device-btn:hover,
+#section-structure button#toggleDragMode:hover {
+    background: #e2e5e8 !important;
+    color: #0a1628 !important;
+}
+
+#section-structure .preview-toolbar .device-btn.active,
+#section-structure button.device-btn.active,
+#section-structure button#toggleDragMode.active {
+    background: linear-gradient(135deg, #c9a227 0%, #dbb843 100%) !important;
+    color: #0a1628 !important;
+    box-shadow: 0 3px 10px rgba(201, 162, 39, 0.35) !important;
+}
+
+#section-structure .undo-redo-buttons .device-btn:disabled {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+    background: #f8f9fa !important;
+    color: #adb5bd !important;
+}
+
+#section-structure .undo-redo-buttons .device-btn:disabled:hover {
+    background: #f8f9fa !important;
+    color: #adb5bd !important;
+}
+
+/* Device Toggle Group */
+#section-structure .device-toggle {
+    display: flex !important;
+    gap: 4px !important;
+    background: #f1f3f4 !important;
+    padding: 4px !important;
+    border-radius: 10px !important;
+}
+
+#section-structure .device-toggle .device-btn {
+    background: transparent !important;
+}
+
+#section-structure .device-toggle .device-btn.active {
+    background: white !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08) !important;
+    color: #c9a227 !important;
+}
+
+/* Zoom Controls */
+#section-structure .preview-zoom {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    background: #f1f3f4 !important;
+    padding: 4px !important;
+    border-radius: 10px !important;
+}
+
+#section-structure .preview-zoom button {
+    width: 32px !important;
+    height: 32px !important;
+    border: none !important;
+    background: transparent !important;
+    border-radius: 6px !important;
+    color: #6c757d !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    transition: all 0.2s ease !important;
+    min-height: auto !important;
+    min-width: auto !important;
+}
+
+#section-structure .preview-zoom button:hover {
+    background: white !important;
+    color: #0a1628 !important;
+}
+
+#section-structure .preview-zoom span {
+    min-width: 50px !important;
+    text-align: center !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #0a1628 !important;
+}
+
+/* Undo/Redo Button Group */
+#section-structure .undo-redo-buttons {
+    display: flex !important;
+    gap: 4px !important;
+    margin-left: 8px !important;
+    padding-left: 12px !important;
+    border-left: 1px solid #e9ecef !important;
+}
