@@ -1821,13 +1821,7 @@ body {
     color: var(--gray-600);
 }
 
-.location-actions {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    display: flex;
-    gap: 8px;
-}
+/* Old location-actions moved to .location-card-admin .location-actions */
 
 /* ============================================
    SETTINGS
@@ -2891,11 +2885,13 @@ body {
 
 /* Location Actions */
 .location-card-admin .location-actions {
+    position: relative;
     display: flex;
     gap: 8px;
     padding: 16px 24px;
     background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.02) 100%);
     border-top: 1px solid var(--gray-100);
+    z-index: 10;
 }
 
 .location-card-admin .location-actions .card-action-btn {
@@ -2912,6 +2908,9 @@ body {
     align-items: center;
     justify-content: center;
     gap: 6px;
+    pointer-events: auto;
+    position: relative;
+    z-index: 11;
 }
 
 .location-card-admin .location-actions .card-action-btn:hover {
