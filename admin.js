@@ -1652,24 +1652,44 @@ class AdminPanel {
         const grid = document.getElementById('productsGrid');
         if (!grid || !this.data.products) return;
 
-        grid.innerHTML = this.data.products.map(product => `
+        grid.innerHTML = this.data.products.map(product => {
+            // Determine visual: use image if showImage is true and image exists, else show icon
+            const showImage = product.showImage && product.image;
+            const visualHtml = showImage
+                ? `<img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                   <div class="product-icon-fallback" style="display:none;"><i class="fas fa-box"></i></div>`
+                : `<div class="product-icon-visual"><i class="fas fa-${this.getProductIcon(product.category)}"></i></div>`;
+
+            return `
             <div class="product-card-admin" data-id="${product.id}">
-                <img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.src='assets/images/placeholder.jpg'">
+                <div class="product-visual-admin">
+                    ${visualHtml}
+                </div>
                 <div class="product-info">
-                    <span class="product-category">${product.category}</span>
+                    <span class="product-category">${product.category || 'Uncategorized'}</span>
                     <h4>${product.name}</h4>
-                    <p>${product.description}</p>
+                    <p>${product.description || ''}</p>
+                    ${product.featured ? '<span class="product-badge-admin">Flagship</span>' : ''}
                 </div>
                 <div class="product-actions">
-                    <button class="card-action-btn" onclick="adminPanel.editProduct(${product.id})">
+                    <button class="card-action-btn" onclick="adminPanel.editProduct('${product.id}')" title="Bearbeiten">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="card-action-btn delete" onclick="adminPanel.deleteProduct(${product.id})">
+                    <button class="card-action-btn delete" onclick="adminPanel.deleteProduct('${product.id}')" title="Loeschen">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
+    }
+
+    getProductIcon(category) {
+        const icons = {
+            'Sugar': 'cube',
+            'Grains': 'seedling',
+            'Other': 'box'
+        };
+        return icons[category] || 'box';
     }
 
     // ============================================

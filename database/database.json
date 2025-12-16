@@ -234,6 +234,12 @@
           "type": "image"
         },
         {
+          "key": "showImage",
+          "label": "Bild anzeigen",
+          "type": "boolean",
+          "default": false
+        },
+        {
           "key": "description",
           "label": "Beschreibung",
           "type": "textarea"
@@ -508,6 +514,8 @@
       "data": {
         "name": "Brazilian Sugar IC45",
         "category": "Sugar",
+        "image": null,
+        "showImage": false,
         "description": "White Refined Sugar - the pinnacle of sweetness. Meticulously processed for top quality and purity.",
         "specs": {
           "Polarization": "Min 99.8%",
@@ -525,6 +533,8 @@
       "data": {
         "name": "Sugar IC600/1200 VHP",
         "category": "Sugar",
+        "image": null,
+        "showImage": false,
         "description": "Very High Polarization sugar ideal for refining, available in IC600 and IC1200 grades.",
         "specs": {
           "Polarization": "Min 99.4%",
@@ -542,6 +552,8 @@
       "data": {
         "name": "Yellow Soybeans",
         "category": "Grains",
+        "image": null,
+        "showImage": false,
         "description": "Premium grade non-GMO soybeans from Brazil's finest agricultural regions.",
         "specs": {
           "Protein": "Min 36%",
@@ -559,6 +571,8 @@
       "data": {
         "name": "Yellow Corn",
         "category": "Grains",
+        "image": null,
+        "showImage": false,
         "description": "High-quality feed corn meeting international specifications for animal nutrition.",
         "specs": {
           "Moisture": "Max 14%",
