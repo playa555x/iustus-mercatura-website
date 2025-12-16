@@ -3037,8 +3037,12 @@ section {
 }
 
 .info-flag-img {
-    width: 36px;
-    height: 24px;
+    width: 28px;
+    height: 20px;
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 20px;
+    max-height: 20px;
     object-fit: cover;
     border-radius: 3px;
     border: 1px solid rgba(255, 255, 255, 0.2);
