@@ -6288,12 +6288,12 @@ body {
     border-radius: 10px;
     font-size: 11px;
     font-weight: 600;
-    color: white;
+    color: #ffffff !important;
 }
 
 .mediathek-tab:not(.active) .tab-count {
-    background: var(--navy-dark);
-    color: white;
+    background: var(--gold) !important;
+    color: var(--navy-dark) !important;
 }
 
 /* Tab Content */
