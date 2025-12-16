@@ -773,327 +773,159 @@
                     </div>
                 </div>
 
-                <!-- Media Type Tabs -->
-                <div class="mediathek-tabs-wrapper">
-                    <div class="mediathek-tabs">
-                        <button class="mediathek-tab active" data-media-type="images">
-                            <i class="fas fa-images"></i>
-                            <span>Bilder</span>
-                            <span class="tab-count" id="tabImagesCount">0</span>
-                        </button>
-                        <button class="mediathek-tab" data-media-type="videos">
-                            <i class="fas fa-video"></i>
-                            <span>Videos</span>
-                            <span class="tab-count" id="tabVideosCount">0</span>
-                        </button>
-                        <button class="mediathek-tab" data-media-type="logos">
-                            <i class="fas fa-copyright"></i>
-                            <span>Logos</span>
-                            <span class="tab-count" id="tabLogosCount">0</span>
-                        </button>
-                        <button class="mediathek-tab" data-media-type="documents">
-                            <i class="fas fa-file-alt"></i>
-                            <span>Dokumente</span>
-                            <span class="tab-count" id="tabDocsCount">0</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Images Tab Content -->
-                <div class="mediathek-tab-content active" id="media-tab-images">
-                    <div class="mediathek-layout-with-folders">
-                        <!-- Folder Sidebar -->
-                        <div class="mediathek-folder-sidebar">
-                            <div class="folder-sidebar-header">
-                                <h4><i class="fas fa-folder-tree"></i> Ordner</h4>
-                                <button class="btn-create-folder" onclick="adminPanel.createMediaFolder()" title="Neuen Ordner erstellen">
-                                    <i class="fas fa-folder-plus"></i>
-                                </button>
-                            </div>
-                            <div class="folder-list" id="mediaFolderList">
-                                <div class="folder-item active" data-folder="all" onclick="adminPanel.selectMediaFolder('all')">
-                                    <i class="fas fa-home"></i>
-                                    <span>Alle Dateien</span>
-                                    <span class="folder-count" id="folderCountAll">0</span>
-                                </div>
-                                <div class="folder-item" data-folder="uploads" onclick="adminPanel.selectMediaFolder('uploads')">
-                                    <i class="fas fa-upload"></i>
-                                    <span>Uploads</span>
-                                    <span class="folder-count" id="folderCountUploads">0</span>
-                                </div>
-                                <div class="folder-item" data-folder="flags" onclick="adminPanel.selectMediaFolder('flags')">
-                                    <i class="fas fa-flag"></i>
-                                    <span>Flaggen</span>
-                                    <span class="folder-count" id="folderCountFlags">0</span>
-                                </div>
-                                <div class="folder-item" data-folder="team" onclick="adminPanel.selectMediaFolder('team')">
-                                    <i class="fas fa-users"></i>
-                                    <span>Mitarbeiter</span>
-                                    <span class="folder-count" id="folderCountTeam">0</span>
-                                </div>
-                                <div class="folder-item" data-folder="products" onclick="adminPanel.selectMediaFolder('products')">
-                                    <i class="fas fa-boxes"></i>
-                                    <span>Produkte</span>
-                                    <span class="folder-count" id="folderCountProducts">0</span>
-                                </div>
-                                <div class="folder-item" data-folder="locations" onclick="adminPanel.selectMediaFolder('locations')">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>Standorte</span>
-                                    <span class="folder-count" id="folderCountLocations">0</span>
-                                </div>
-                                <!-- Custom folders will be added here -->
-                                <div id="customFoldersList"></div>
-                            </div>
-                        </div>
-
-                        <!-- Main Content Area -->
-                        <div class="mediathek-main-content">
-                            <!-- Upload Zone - Images -->
-                            <div class="mediathek-upload-container">
-                                <div class="mediathek-upload-zone" id="mediathekUploadZone" data-type="images">
-                                    <div class="upload-icon-wrapper">
-                                        <i class="fas fa-cloud-upload-alt"></i>
-                                    </div>
-                                    <h3>Bilder hochladen</h3>
-                                    <p>Ziehen Sie Dateien hierher oder klicken Sie zum Auswaehlen</p>
-                                    <div class="upload-folder-select">
-                                        <label>Zielordner:</label>
-                                        <select id="uploadTargetFolder">
-                                            <option value="uploads">Uploads</option>
-                                            <option value="team">Mitarbeiter</option>
-                                            <option value="products">Produkte</option>
-                                            <option value="locations">Standorte</option>
-                                            <option value="flags">Flaggen</option>
-                                        </select>
-                                    </div>
-                                    <input type="file" id="mediathekUpload" accept="image/*" multiple>
-                                    <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('mediathekUpload').click()">
-                                        <i class="fas fa-folder-open"></i> Dateien auswaehlen
-                                    </button>
-                                    <span class="upload-hint">PNG, JPG, WEBP, GIF, SVG bis 10MB</span>
-                                </div>
-                            </div>
-
-                            <!-- Image Grid -->
-                            <div class="mediathek-section">
-                                <div class="mediathek-toolbar">
-                                    <div class="toolbar-left">
-                                        <h3><i class="fas fa-images"></i> <span id="currentFolderName">Alle Bilder</span></h3>
-                                        <span class="breadcrumb" id="folderBreadcrumb"></span>
-                                    </div>
-                                    <div class="toolbar-right">
-                                        <div class="search-box">
-                                            <i class="fas fa-search"></i>
-                                            <input type="text" id="mediaSearchInput" placeholder="Suchen..." onkeyup="adminPanel.filterMediaFiles()">
-                                        </div>
-                                        <div class="view-toggle">
-                                            <button class="view-btn active" data-view="grid" onclick="adminPanel.setMediaView('grid')"><i class="fas fa-th"></i></button>
-                                            <button class="view-btn" data-view="list" onclick="adminPanel.setMediaView('list')"><i class="fas fa-list"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mediathek-grid" id="mediathekGrid">
-                                    <div class="mediathek-loading">
-                                        <i class="fas fa-spinner fa-spin"></i>
-                                        <p>Bilder werden geladen...</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Videos Tab Content -->
-                <div class="mediathek-tab-content" id="media-tab-videos">
-                    <!-- Upload Zone - Videos -->
-                    <div class="mediathek-upload-container">
-                        <div class="mediathek-upload-zone" id="videoUploadZone" data-type="videos">
-                            <div class="upload-icon-wrapper video">
-                                <i class="fas fa-film"></i>
-                            </div>
-                            <h3>Videos hochladen</h3>
-                            <p>Ziehen Sie Videodateien hierher oder klicken Sie zum Auswaehlen</p>
-                            <input type="file" id="videoUpload" accept="video/*" multiple>
-                            <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('videoUpload').click()">
-                                <i class="fas fa-folder-open"></i> Videos auswaehlen
+                <!-- Unified Mediathek Layout -->
+                <div class="mediathek-layout-with-folders">
+                    <!-- Folder Sidebar -->
+                    <div class="mediathek-folder-sidebar">
+                        <div class="folder-sidebar-header">
+                            <h4><i class="fas fa-folder-tree"></i> Ordner</h4>
+                            <button class="btn-create-folder" onclick="adminPanel.createMediaFolder()" title="Neuen Ordner erstellen">
+                                <i class="fas fa-folder-plus"></i>
                             </button>
-                            <span class="upload-hint">MP4, WEBM, MOV bis 100MB</span>
                         </div>
-                    </div>
-
-                    <!-- Video Grid -->
-                    <div class="mediathek-section">
-                        <div class="mediathek-toolbar">
-                            <div class="toolbar-left">
-                                <h3><i class="fas fa-video"></i> Alle Videos</h3>
+                        <div class="folder-list" id="mediaFolderList">
+                            <div class="folder-item active" data-folder="all" onclick="adminPanel.selectMediaFolder('all')">
+                                <i class="fas fa-home"></i>
+                                <span>Alle Dateien</span>
+                                <span class="folder-count" id="folderCountAll">0</span>
                             </div>
-                            <div class="toolbar-right">
-                                <div class="view-toggle">
-                                    <button class="view-btn active" data-view="grid"><i class="fas fa-th"></i></button>
-                                    <button class="view-btn" data-view="list"><i class="fas fa-list"></i></button>
-                                </div>
+                            <div class="folder-item" data-folder="uploads" onclick="adminPanel.selectMediaFolder('uploads')">
+                                <i class="fas fa-upload"></i>
+                                <span>Uploads</span>
+                                <span class="folder-count" id="folderCountUploads">0</span>
                             </div>
-                        </div>
-                        <div class="mediathek-grid videos-grid" id="videosGrid">
-                            <div class="mediathek-empty">
-                                <i class="fas fa-video"></i>
-                                <h3>Keine Videos vorhanden</h3>
-                                <p>Lade dein erstes Video hoch!</p>
+                            <div class="folder-item" data-folder="team" onclick="adminPanel.selectMediaFolder('team')">
+                                <i class="fas fa-users"></i>
+                                <span>Mitarbeiter</span>
+                                <span class="folder-count" id="folderCountTeam">0</span>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- YouTube/Vimeo Embed -->
-                    <div class="mediathek-section">
-                        <div class="mediathek-toolbar">
-                            <div class="toolbar-left">
-                                <h3><i class="fab fa-youtube"></i> Video URLs einbetten</h3>
+                            <div class="folder-item" data-folder="products" onclick="adminPanel.selectMediaFolder('products')">
+                                <i class="fas fa-boxes"></i>
+                                <span>Produkte</span>
+                                <span class="folder-count" id="folderCountProducts">0</span>
                             </div>
-                        </div>
-                        <div class="video-embed-form">
-                            <div class="form-group">
-                                <label>Video URL (YouTube, Vimeo)</label>
-                                <div class="input-with-btn">
-                                    <input type="url" id="videoEmbedUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
-                                    <button class="btn-primary" onclick="adminPanel.addVideoEmbed()">
-                                        <i class="fas fa-plus"></i> Hinzufuegen
-                                    </button>
-                                </div>
+                            <div class="folder-item" data-folder="locations" onclick="adminPanel.selectMediaFolder('locations')">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Standorte</span>
+                                <span class="folder-count" id="folderCountLocations">0</span>
                             </div>
-                            <div class="embedded-videos-list" id="embeddedVideosList">
-                                <!-- Embedded videos will be listed here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Logos Tab Content -->
-                <div class="mediathek-tab-content" id="media-tab-logos">
-                    <!-- Upload Zone - Logos -->
-                    <div class="mediathek-upload-container">
-                        <div class="mediathek-upload-zone" id="logoUploadZone" data-type="logos">
-                            <div class="upload-icon-wrapper logo">
+                            <div class="folder-item" data-folder="logos" onclick="adminPanel.selectMediaFolder('logos')">
                                 <i class="fas fa-certificate"></i>
+                                <span>Logos</span>
+                                <span class="folder-count" id="folderCountLogos">0</span>
                             </div>
-                            <h3>Logos hochladen</h3>
-                            <p>Partner-Logos, Zertifikate, Badges</p>
-                            <input type="file" id="logoUpload" accept="image/*,.svg" multiple>
-                            <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('logoUpload').click()">
-                                <i class="fas fa-folder-open"></i> Logos auswaehlen
-                            </button>
-                            <span class="upload-hint">PNG, SVG, JPG (transparent empfohlen)</span>
-                        </div>
-                    </div>
-
-                    <!-- Logo Categories -->
-                    <div class="logo-categories">
-                        <!-- Partner Logos -->
-                        <div class="logo-category-panel">
-                            <div class="category-header">
-                                <div class="category-icon partners">
-                                    <i class="fas fa-handshake"></i>
-                                </div>
-                                <div class="category-info">
-                                    <h3>Partner & Kunden</h3>
-                                    <span class="category-subtitle">Unternehmenslogos</span>
-                                </div>
-                                <button class="btn-add-small" onclick="adminPanel.addLogoToCategory('partners')">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                            <div class="folder-item" data-folder="flags" onclick="adminPanel.selectMediaFolder('flags')">
+                                <i class="fas fa-flag"></i>
+                                <span>Flaggen</span>
+                                <span class="folder-count" id="folderCountFlags">0</span>
                             </div>
-                            <div class="logos-grid" id="partnerLogosGrid">
-                                <div class="logo-placeholder" onclick="adminPanel.addLogoToCategory('partners')">
-                                    <i class="fas fa-plus"></i>
-                                    <span>Logo hinzufuegen</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Certification Logos -->
-                        <div class="logo-category-panel">
-                            <div class="category-header">
-                                <div class="category-icon certifications">
-                                    <i class="fas fa-award"></i>
-                                </div>
-                                <div class="category-info">
-                                    <h3>Zertifizierungen</h3>
-                                    <span class="category-subtitle">ISO, Qualitaetssiegel</span>
-                                </div>
-                                <button class="btn-add-small" onclick="adminPanel.addLogoToCategory('certifications')">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                            <div class="logos-grid" id="certLogosGrid">
-                                <div class="logo-placeholder" onclick="adminPanel.addLogoToCategory('certifications')">
-                                    <i class="fas fa-plus"></i>
-                                    <span>Logo hinzufuegen</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Flags -->
-                        <div class="logo-category-panel">
-                            <div class="category-header">
-                                <div class="category-icon flags">
-                                    <i class="fas fa-flag"></i>
-                                </div>
-                                <div class="category-info">
-                                    <h3>Flaggen & Laender</h3>
-                                    <span class="category-subtitle">Laenderflaggen</span>
-                                </div>
-                                <button class="btn-add-small" onclick="adminPanel.addLogoToCategory('flags')">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                            <div class="logos-grid flags-grid" id="flagsGrid">
-                                <div class="logo-placeholder" onclick="adminPanel.addLogoToCategory('flags')">
-                                    <i class="fas fa-plus"></i>
-                                    <span>Flagge hinzufuegen</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Documents Tab Content -->
-                <div class="mediathek-tab-content" id="media-tab-documents">
-                    <!-- Upload Zone - Documents -->
-                    <div class="mediathek-upload-container">
-                        <div class="mediathek-upload-zone" id="docUploadZone" data-type="documents">
-                            <div class="upload-icon-wrapper document">
-                                <i class="fas fa-file-pdf"></i>
-                            </div>
-                            <h3>Dokumente hochladen</h3>
-                            <p>PDFs, Praesentationen, Datenblaetter</p>
-                            <input type="file" id="docUpload" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" multiple>
-                            <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('docUpload').click()">
-                                <i class="fas fa-folder-open"></i> Dokumente auswaehlen
-                            </button>
-                            <span class="upload-hint">PDF, DOC, XLS, PPT bis 25MB</span>
-                        </div>
-                    </div>
-
-                    <!-- Documents List -->
-                    <div class="mediathek-section">
-                        <div class="mediathek-toolbar">
-                            <div class="toolbar-left">
-                                <h3><i class="fas fa-file-alt"></i> Alle Dokumente</h3>
-                            </div>
-                            <div class="toolbar-right">
-                                <select class="form-input" id="docFilterType" onchange="adminPanel.filterDocuments()">
-                                    <option value="all">Alle Typen</option>
-                                    <option value="pdf">PDF</option>
-                                    <option value="doc">Word</option>
-                                    <option value="xls">Excel</option>
-                                    <option value="ppt">PowerPoint</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="documents-list" id="documentsList">
-                            <div class="mediathek-empty">
+                            <div class="folder-item" data-folder="documents" onclick="adminPanel.selectMediaFolder('documents')">
                                 <i class="fas fa-file-alt"></i>
-                                <h3>Keine Dokumente vorhanden</h3>
-                                <p>Lade dein erstes Dokument hoch!</p>
+                                <span>Dokumente</span>
+                                <span class="folder-count" id="folderCountDocuments">0</span>
+                            </div>
+                            <div class="folder-item" data-folder="videos" onclick="adminPanel.selectMediaFolder('videos')">
+                                <i class="fas fa-video"></i>
+                                <span>Videos</span>
+                                <span class="folder-count" id="folderCountVideos">0</span>
+                            </div>
+                            <!-- Custom folders will be added here -->
+                            <div id="customFoldersList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content Area -->
+                    <div class="mediathek-main-content">
+                        <!-- Upload Zone -->
+                        <div class="mediathek-upload-container">
+                            <div class="mediathek-upload-zone" id="mediathekUploadZone">
+                                <div class="upload-icon-wrapper">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <h3>Dateien hochladen</h3>
+                                <p>Ziehen Sie Dateien hierher oder klicken Sie zum Auswaehlen</p>
+                                <div class="upload-folder-select">
+                                    <label>Zielordner:</label>
+                                    <select id="uploadTargetFolder">
+                                        <option value="uploads">Uploads</option>
+                                        <option value="team">Mitarbeiter</option>
+                                        <option value="products">Produkte</option>
+                                        <option value="locations">Standorte</option>
+                                        <option value="logos">Logos</option>
+                                        <option value="flags">Flaggen</option>
+                                        <option value="documents">Dokumente</option>
+                                        <option value="videos">Videos</option>
+                                    </select>
+                                </div>
+                                <input type="file" id="mediathekUpload" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.svg" multiple>
+                                <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('mediathekUpload').click()">
+                                    <i class="fas fa-folder-open"></i> Dateien auswaehlen
+                                </button>
+                                <span class="upload-hint">Bilder, Videos, PDFs, Dokumente bis 100MB</span>
+                            </div>
+                        </div>
+
+                        <!-- Media Grid -->
+                        <div class="mediathek-section">
+                            <div class="mediathek-toolbar">
+                                <div class="toolbar-left">
+                                    <h3><i class="fas fa-folder-open"></i> <span id="currentFolderName">Alle Dateien</span></h3>
+                                    <span class="breadcrumb" id="folderBreadcrumb"></span>
+                                </div>
+                                <div class="toolbar-right">
+                                    <!-- Dateityp Filter -->
+                                    <div class="type-filter-buttons">
+                                        <button class="type-filter-btn active" data-type="all" onclick="adminPanel.filterByType('all')">
+                                            <i class="fas fa-asterisk"></i> Alle
+                                        </button>
+                                        <button class="type-filter-btn" data-type="images" onclick="adminPanel.filterByType('images')">
+                                            <i class="fas fa-image"></i> Bilder
+                                        </button>
+                                        <button class="type-filter-btn" data-type="videos" onclick="adminPanel.filterByType('videos')">
+                                            <i class="fas fa-video"></i> Videos
+                                        </button>
+                                        <button class="type-filter-btn" data-type="documents" onclick="adminPanel.filterByType('documents')">
+                                            <i class="fas fa-file-alt"></i> Dokumente
+                                        </button>
+                                    </div>
+                                    <div class="search-box">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" id="mediaSearchInput" placeholder="Suchen..." onkeyup="adminPanel.filterMediaFiles()">
+                                    </div>
+                                    <div class="view-toggle">
+                                        <button class="view-btn active" data-view="grid" onclick="adminPanel.setMediaView('grid')"><i class="fas fa-th"></i></button>
+                                        <button class="view-btn" data-view="list" onclick="adminPanel.setMediaView('list')"><i class="fas fa-list"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mediathek-grid" id="mediathekGrid">
+                                <div class="mediathek-loading">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <p>Dateien werden geladen...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- YouTube/Vimeo Embed Section (nur bei Videos-Ordner sichtbar) -->
+                        <div class="mediathek-section video-embed-section" id="videoEmbedSection" style="display: none;">
+                            <div class="mediathek-toolbar">
+                                <div class="toolbar-left">
+                                    <h3><i class="fab fa-youtube"></i> Video URLs einbetten</h3>
+                                </div>
+                            </div>
+                            <div class="video-embed-form">
+                                <div class="form-group">
+                                    <label>Video URL (YouTube, Vimeo)</label>
+                                    <div class="input-with-btn">
+                                        <input type="url" id="videoEmbedUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
+                                        <button class="btn-primary" onclick="adminPanel.addVideoEmbed()">
+                                            <i class="fas fa-plus"></i> Hinzufuegen
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="embedded-videos-list" id="embeddedVideosList">
+                                    <!-- Embedded videos will be listed here -->
+                                </div>
                             </div>
                         </div>
                     </div>

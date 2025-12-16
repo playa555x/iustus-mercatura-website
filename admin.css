@@ -5787,6 +5787,46 @@ body {
     color: var(--gold);
 }
 
+/* Dateityp Filter Buttons */
+.type-filter-buttons {
+    display: flex;
+    gap: 4px;
+    background: var(--gray-100);
+    padding: 4px;
+    border-radius: 8px;
+    margin-right: 12px;
+}
+
+.type-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.type-filter-btn:hover {
+    background: var(--white);
+    color: var(--navy-dark);
+}
+
+.type-filter-btn.active {
+    background: var(--navy-dark);
+    color: var(--white);
+}
+
+.type-filter-btn i {
+    font-size: 11px;
+}
+
 .view-toggle {
     display: flex;
     gap: 4px;

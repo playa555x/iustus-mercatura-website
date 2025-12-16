@@ -8251,10 +8251,13 @@ class AdminPanel {
             const counts = {
                 all: data.images.length,
                 uploads: 0,
-                flags: 0,
                 team: 0,
                 products: 0,
-                locations: 0
+                locations: 0,
+                logos: 0,
+                flags: 0,
+                documents: 0,
+                videos: 0
             };
 
             data.images.forEach(img => {
@@ -8266,20 +8269,12 @@ class AdminPanel {
                 }
             });
 
-            // Update count displays
-            const countAll = document.getElementById('folderCountAll');
-            const countUploads = document.getElementById('folderCountUploads');
-            const countFlags = document.getElementById('folderCountFlags');
-            const countTeam = document.getElementById('folderCountTeam');
-            const countProducts = document.getElementById('folderCountProducts');
-            const countLocations = document.getElementById('folderCountLocations');
-
-            if (countAll) countAll.textContent = counts.all;
-            if (countUploads) countUploads.textContent = counts.uploads;
-            if (countFlags) countFlags.textContent = counts.flags;
-            if (countTeam) countTeam.textContent = counts.team;
-            if (countProducts) countProducts.textContent = counts.products;
-            if (countLocations) countLocations.textContent = counts.locations;
+            // Update count displays for all folders
+            Object.keys(counts).forEach(folder => {
+                const folderName = folder.charAt(0).toUpperCase() + folder.slice(1);
+                const countEl = document.getElementById('folderCount' + folderName);
+                if (countEl) countEl.textContent = counts[folder];
+            });
 
             this._mediaFolderCounts = counts;
             this._allMediaImages = data.images;
@@ -8295,12 +8290,23 @@ class AdminPanel {
         const path = img.url || '';
         const filename = (img.filename || '').toLowerCase();
         const originalName = (img.original_name || '').toLowerCase();
+        const ext = filename.split('.').pop();
+
+        // File type detection for documents and videos
+        const docExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+        const videoExtensions = ['mp4', 'webm', 'mov', 'avi', 'mkv'];
+
+        if (docExtensions.includes(ext)) return 'documents';
+        if (videoExtensions.includes(ext)) return 'videos';
 
         // Path-based detection
         if (path.includes('/flags/')) return 'flags';
         if (path.includes('/team/')) return 'team';
         if (path.includes('/products/')) return 'products';
         if (path.includes('/locations/')) return 'locations';
+        if (path.includes('/logos/')) return 'logos';
+        if (path.includes('/documents/')) return 'documents';
+        if (path.includes('/videos/')) return 'videos';
 
         // Check original_name for team member detection
         if (originalName && originalName !== filename) {
@@ -8321,7 +8327,24 @@ class AdminPanel {
             return 'flags';
         }
 
+        // Logo detection
+        if (filename.includes('logo') || filename.includes('certificate') || filename.includes('badge')) {
+            return 'logos';
+        }
+
         return 'uploads';
+    }
+
+    getFileType(filename) {
+        const ext = (filename || '').split('.').pop().toLowerCase();
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'ico', 'bmp'];
+        const videoExtensions = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'flv'];
+        const docExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
+
+        if (imageExtensions.includes(ext)) return 'images';
+        if (videoExtensions.includes(ext)) return 'videos';
+        if (docExtensions.includes(ext)) return 'documents';
+        return 'images';
     }
 
     selectMediaFolder(folder) {
@@ -8334,18 +8357,53 @@ class AdminPanel {
 
         // Update folder name display
         const folderNames = {
-            all: 'Alle Bilder',
+            all: 'Alle Dateien',
             uploads: 'Uploads',
-            flags: 'Flaggen',
             team: 'Mitarbeiter',
             products: 'Produkte',
-            locations: 'Standorte'
+            locations: 'Standorte',
+            logos: 'Logos',
+            flags: 'Flaggen',
+            documents: 'Dokumente',
+            videos: 'Videos'
         };
         const nameEl = document.getElementById('currentFolderName');
         if (nameEl) nameEl.textContent = folderNames[folder] || folder;
 
-        // Reload images filtered by folder
+        // Show/hide video embed section
+        const videoEmbedSection = document.getElementById('videoEmbedSection');
+        if (videoEmbedSection) {
+            videoEmbedSection.style.display = folder === 'videos' ? 'block' : 'none';
+        }
+
+        // Auto-select upload target folder
+        const uploadSelect = document.getElementById('uploadTargetFolder');
+        if (uploadSelect && folder !== 'all' && uploadSelect.querySelector(`option[value="${folder}"]`)) {
+            uploadSelect.value = folder;
+        }
+
+        // Reload files filtered by folder
         this.loadMediathekImages();
+    }
+
+    filterByType(type) {
+        this._currentMediaType = type;
+
+        // Update active state on filter buttons
+        document.querySelectorAll('.type-filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.type === type);
+        });
+
+        // Filter currently displayed items
+        const items = document.querySelectorAll('.mediathek-item');
+        items.forEach(item => {
+            const itemType = item.dataset.filetype || 'images';
+            if (type === 'all') {
+                item.style.display = '';
+            } else {
+                item.style.display = itemType === type ? '' : 'none';
+            }
+        });
     }
 
     createMediaFolder() {
