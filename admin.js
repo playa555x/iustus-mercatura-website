@@ -7635,7 +7635,9 @@ class AdminPanel {
 
         // Click to upload - prevent default click handling
         uploadZone.addEventListener('click', (e) => {
-            if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
+            // Don't trigger upload when clicking on form elements
+            const ignoredTags = ['BUTTON', 'INPUT', 'SELECT', 'OPTION', 'LABEL'];
+            if (!ignoredTags.includes(e.target.tagName) && !e.target.closest('select') && !e.target.closest('.upload-folder-select')) {
                 uploadInput.click();
             }
         });
