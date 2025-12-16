@@ -8209,6 +8209,188 @@ class AdminPanel {
         return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
     }
 
+    // ========================================
+    // MEDIA FOLDER MANAGEMENT
+    // ========================================
+
+    _currentMediaFolder = 'all';
+    _customFolders = [];
+    _mediaFolderCounts = {};
+
+    async initMediaFolders() {
+        // Load custom folders from localStorage
+        try {
+            const saved = localStorage.getItem('media_custom_folders');
+            if (saved) {
+                this._customFolders = JSON.parse(saved);
+                this.renderCustomFolders();
+            }
+        } catch (e) {}
+
+        // Update folder counts
+        await this.updateFolderCounts();
+    }
+
+    async updateFolderCounts() {
+        try {
+            const response = await fetch('/api/images');
+            const data = await response.json();
+
+            if (!data.images) return;
+
+            const counts = {
+                all: data.images.length,
+                uploads: 0,
+                flags: 0,
+                team: 0,
+                products: 0,
+                locations: 0
+            };
+
+            data.images.forEach(img => {
+                const path = img.url || '';
+                if (path.includes('/flags/')) counts.flags++;
+                else if (path.includes('/team/')) counts.team++;
+                else if (path.includes('/products/')) counts.products++;
+                else if (path.includes('/locations/')) counts.locations++;
+                else counts.uploads++;
+            });
+
+            // Update count displays
+            const countAll = document.getElementById('folderCountAll');
+            const countUploads = document.getElementById('folderCountUploads');
+            const countFlags = document.getElementById('folderCountFlags');
+            const countTeam = document.getElementById('folderCountTeam');
+            const countProducts = document.getElementById('folderCountProducts');
+            const countLocations = document.getElementById('folderCountLocations');
+
+            if (countAll) countAll.textContent = counts.all;
+            if (countUploads) countUploads.textContent = counts.uploads;
+            if (countFlags) countFlags.textContent = counts.flags;
+            if (countTeam) countTeam.textContent = counts.team;
+            if (countProducts) countProducts.textContent = counts.products;
+            if (countLocations) countLocations.textContent = counts.locations;
+
+            this._mediaFolderCounts = counts;
+            this._allMediaImages = data.images;
+        } catch (e) {
+            console.error('Error updating folder counts:', e);
+        }
+    }
+
+    selectMediaFolder(folder) {
+        this._currentMediaFolder = folder;
+
+        // Update active state
+        document.querySelectorAll('.folder-item').forEach(el => {
+            el.classList.toggle('active', el.dataset.folder === folder);
+        });
+
+        // Update folder name display
+        const folderNames = {
+            all: 'Alle Bilder',
+            uploads: 'Uploads',
+            flags: 'Flaggen',
+            team: 'Mitarbeiter',
+            products: 'Produkte',
+            locations: 'Standorte'
+        };
+        const nameEl = document.getElementById('currentFolderName');
+        if (nameEl) nameEl.textContent = folderNames[folder] || folder;
+
+        // Reload images filtered by folder
+        this.loadMediathekImages();
+    }
+
+    createMediaFolder() {
+        this.openModal('Neuen Ordner erstellen', `
+            <div class="form-group">
+                <label>Ordnername</label>
+                <input type="text" class="form-input" id="newFolderName" placeholder="z.B. Marketing, Events..." required>
+            </div>
+            <div class="form-group">
+                <label>Icon (optional)</label>
+                <select class="form-input" id="newFolderIcon">
+                    <option value="fa-folder">Standard</option>
+                    <option value="fa-image">Bild</option>
+                    <option value="fa-camera">Kamera</option>
+                    <option value="fa-building">Gebaeude</option>
+                    <option value="fa-globe">Welt</option>
+                    <option value="fa-star">Stern</option>
+                    <option value="fa-heart">Herz</option>
+                    <option value="fa-briefcase">Business</option>
+                </select>
+            </div>
+        `, () => {
+            const name = document.getElementById('newFolderName').value.trim();
+            const icon = document.getElementById('newFolderIcon').value;
+
+            if (!name) {
+                this.showToast('error', 'Fehler', 'Bitte Ordnername eingeben');
+                return;
+            }
+
+            const folderId = 'custom_' + Date.now();
+            this._customFolders.push({ id: folderId, name, icon });
+
+            // Save to localStorage
+            localStorage.setItem('media_custom_folders', JSON.stringify(this._customFolders));
+
+            // Add to upload select
+            const select = document.getElementById('uploadTargetFolder');
+            if (select) {
+                const opt = document.createElement('option');
+                opt.value = folderId;
+                opt.textContent = name;
+                select.appendChild(opt);
+            }
+
+            this.renderCustomFolders();
+            this.showToast('success', 'Erstellt', 'Ordner "' + name + '" wurde erstellt');
+        });
+    }
+
+    renderCustomFolders() {
+        const container = document.getElementById('customFoldersList');
+        if (!container) return;
+
+        container.innerHTML = this._customFolders.map(folder => `
+            <div class="folder-item custom-folder" data-folder="${folder.id}" onclick="adminPanel.selectMediaFolder('${folder.id}')">
+                <i class="fas ${folder.icon || 'fa-folder'}"></i>
+                <span>${folder.name}</span>
+                <span class="folder-count">0</span>
+                <button class="folder-delete" onclick="event.stopPropagation(); adminPanel.deleteMediaFolder('${folder.id}')" title="Ordner loeschen">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    deleteMediaFolder(folderId) {
+        if (!confirm('Ordner wirklich loeschen? Die Dateien werden nicht geloescht.')) return;
+
+        this._customFolders = this._customFolders.filter(f => f.id !== folderId);
+        localStorage.setItem('media_custom_folders', JSON.stringify(this._customFolders));
+
+        this.renderCustomFolders();
+
+        if (this._currentMediaFolder === folderId) {
+            this.selectMediaFolder('all');
+        }
+
+        this.showToast('success', 'Geloescht', 'Ordner wurde entfernt');
+    }
+
+    filterMediaFiles() {
+        const search = document.getElementById('mediaSearchInput')?.value?.toLowerCase() || '';
+        const items = document.querySelectorAll('.mediathek-item');
+
+        items.forEach(item => {
+            const filename = item.dataset.filename?.toLowerCase() || '';
+            item.style.display = filename.includes(search) ? '' : 'none';
+        });
+    }
+
     async loadMediathekImages() {
         const grid = document.getElementById('mediathekGrid');
         const countEl = document.getElementById('mediathekImageCount');
