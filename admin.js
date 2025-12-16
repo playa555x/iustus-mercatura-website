@@ -1439,9 +1439,9 @@ class AdminPanel {
                         </div>
                     </div>
                 ` : `
-                    <div class="location-flag-large" onclick="adminPanel.addLocationImage(${loc.id})" title="Bild hinzufuegen" style="cursor:pointer;">
-                        ${loc.flag || ''}
-                        <div class="add-image-hint"><i class="fas fa-plus"></i></div>
+                    <div class="location-flag-large" onclick="event.stopPropagation(); adminPanel.addLocationImage(${loc.id})" title="Bild hinzufuegen" style="cursor:pointer;">
+                        ${loc.flag || '🏳️'}
+                        <div class="add-image-hint"><i class="fas fa-camera"></i> Bild</div>
                     </div>
                 `}
                 <div class="location-info">
@@ -1451,16 +1451,16 @@ class AdminPanel {
                     ${loc.address ? `<p class="address"><i class="fas fa-map-marker-alt"></i> ${loc.address}</p>` : ''}
                 </div>
                 <div class="location-actions">
-                    <button class="card-action-btn" onclick="adminPanel.editLocation(${loc.id})" title="Bearbeiten">
-                        <i class="fas fa-edit"></i>
+                    <button class="card-action-btn" onclick="event.stopPropagation(); adminPanel.editLocation(${loc.id})" title="Bearbeiten">
+                        <i class="fas fa-edit"></i> Bearbeiten
                     </button>
                     ${loc.image ? `
-                        <button class="card-action-btn" onclick="adminPanel.removeLocationImage(${loc.id})" title="Bild entfernen">
+                        <button class="card-action-btn" onclick="event.stopPropagation(); adminPanel.removeLocationImage(${loc.id})" title="Bild entfernen">
                             <i class="fas fa-image"></i>
                         </button>
                     ` : ''}
-                    <button class="card-action-btn delete" onclick="adminPanel.deleteLocation(${loc.id})" title="Loeschen">
-                        <i class="fas fa-trash"></i>
+                    <button class="card-action-btn delete" onclick="event.stopPropagation(); adminPanel.deleteLocation(${loc.id})" title="Loeschen">
+                        <i class="fas fa-trash"></i> Loeschen
                     </button>
                 </div>
             </div>

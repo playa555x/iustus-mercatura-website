@@ -2791,24 +2791,27 @@ body {
     position: absolute;
     inset: 0;
     background: radial-gradient(circle at center, rgba(201, 162, 39, 0.1) 0%, transparent 70%);
+    pointer-events: none;
 }
 
 .location-card-admin .location-flag-large .add-image-hint {
     position: absolute;
     bottom: 12px;
     right: 12px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.95);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
     color: var(--navy-dark);
     opacity: 0;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
 }
 
 .location-card-admin:hover .location-flag-large .add-image-hint {
