@@ -5340,6 +5340,10 @@ body {
     background: linear-gradient(135deg, #8b6914 0%, #a07a1a 50%, #c9a227 100%);
 }
 
+.images-banner .stat-num {
+    color: var(--navy-dark) !important;
+}
+
 .cards-banner {
     background: linear-gradient(135deg, #1e4d6b 0%, #2a6f7f 50%, #3d9e9e 100%);
 }
