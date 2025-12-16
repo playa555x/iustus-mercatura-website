@@ -867,7 +867,7 @@
                                         </select>
                                     </div>
                                     <input type="file" id="mediathekUpload" accept="image/*" multiple>
-                                    <button class="upload-btn" onclick="document.getElementById('mediathekUpload').click()">
+                                    <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('mediathekUpload').click()">
                                         <i class="fas fa-folder-open"></i> Dateien auswaehlen
                                     </button>
                                     <span class="upload-hint">PNG, JPG, WEBP, GIF, SVG bis 10MB</span>
@@ -914,7 +914,7 @@
                             <h3>Videos hochladen</h3>
                             <p>Ziehen Sie Videodateien hierher oder klicken Sie zum Auswaehlen</p>
                             <input type="file" id="videoUpload" accept="video/*" multiple>
-                            <button class="upload-btn" onclick="document.getElementById('videoUpload').click()">
+                            <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('videoUpload').click()">
                                 <i class="fas fa-folder-open"></i> Videos auswaehlen
                             </button>
                             <span class="upload-hint">MP4, WEBM, MOV bis 100MB</span>
@@ -978,7 +978,7 @@
                             <h3>Logos hochladen</h3>
                             <p>Partner-Logos, Zertifikate, Badges</p>
                             <input type="file" id="logoUpload" accept="image/*,.svg" multiple>
-                            <button class="upload-btn" onclick="document.getElementById('logoUpload').click()">
+                            <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('logoUpload').click()">
                                 <i class="fas fa-folder-open"></i> Logos auswaehlen
                             </button>
                             <span class="upload-hint">PNG, SVG, JPG (transparent empfohlen)</span>
@@ -1066,7 +1066,7 @@
                             <h3>Dokumente hochladen</h3>
                             <p>PDFs, Praesentationen, Datenblaetter</p>
                             <input type="file" id="docUpload" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" multiple>
-                            <button class="upload-btn" onclick="document.getElementById('docUpload').click()">
+                            <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('docUpload').click()">
                                 <i class="fas fa-folder-open"></i> Dokumente auswaehlen
                             </button>
                             <span class="upload-hint">PDF, DOC, XLS, PPT bis 25MB</span>
