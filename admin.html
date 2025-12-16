@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="admin.css?v=20241216">
 </head>
 <body>
     <!-- Error Screen - Wird bei schweren Fehlern angezeigt -->
@@ -296,7 +296,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="stat-info">
-                            <span class="stat-value" id="teamCount">11</span>
+                            <span class="stat-value" id="teamCount">-</span>
                             <span class="stat-label">Team Mitglieder</span>
                         </div>
                         <div class="stat-trend up">
@@ -308,7 +308,7 @@
                             <i class="fas fa-globe-americas"></i>
                         </div>
                         <div class="stat-info">
-                            <span class="stat-value" id="locationCount">7</span>
+                            <span class="stat-value" id="locationCount">-</span>
                             <span class="stat-label">Standorte weltweit</span>
                         </div>
                         <div class="stat-trend up">
@@ -332,7 +332,7 @@
                             <i class="fas fa-th-large"></i>
                         </div>
                         <div class="stat-info">
-                            <span class="stat-value" id="cardsCount">10</span>
+                            <span class="stat-value" id="cardsCount">-</span>
                             <span class="stat-label">Features & Cards</span>
                         </div>
                         <div class="stat-trend up">
@@ -388,8 +388,8 @@
                                 <span class="status-value" id="lastSavedDashboard">--</span>
                             </div>
                             <div class="status-row">
-                                <span class="status-name"><i class="fas fa-clock"></i> Uptime</span>
-                                <span class="status-value good">99.9%</span>
+                                <span class="status-name"><i class="fas fa-clock"></i> Server Uptime</span>
+                                <span class="status-value good" id="serverUptime">--</span>
                             </div>
                         </div>
                     </div>
@@ -455,7 +455,7 @@
                     </div>
                     <div class="banner-stats">
                         <div class="banner-stat">
-                            <span class="stat-num">7</span>
+                            <span class="stat-num" id="totalSectionsCount">-</span>
                             <span class="stat-text">Sektionen</span>
                         </div>
                     </div>
@@ -997,7 +997,7 @@
                     </div>
                     <div class="banner-stats">
                         <div class="banner-stat">
-                            <span class="stat-num" id="totalTeamCount">11</span>
+                            <span class="stat-num" id="totalTeamCount">-</span>
                             <span class="stat-text">Mitglieder</span>
                         </div>
                     </div>
@@ -1079,11 +1079,11 @@
                     </div>
                     <div class="banner-stats">
                         <div class="banner-stat">
-                            <span class="stat-num" id="totalLocationsCount">7</span>
+                            <span class="stat-num" id="totalLocationsCount">-</span>
                             <span class="stat-text">Standorte</span>
                         </div>
                         <div class="banner-stat">
-                            <span class="stat-num">5</span>
+                            <span class="stat-num" id="totalContinentsCount">-</span>
                             <span class="stat-text">Kontinente</span>
                         </div>
                     </div>
@@ -1800,9 +1800,9 @@
 
     <!-- CMS API Client -->
     <script src="api-client.js"></script>
-    <script src="sync-bridge.js"></script>
-    <script src="admin-error-handler.js"></script>
-    <script src="live-sync-client.js"></script>
-    <script src="admin.js"></script>
+    <script src="sync-bridge.js?v=20241216"></script>
+    <script src="admin-error-handler.js?v=20241216"></script>
+    <script src="live-sync-client.js?v=20241216"></script>
+    <script src="admin.js?v=20241216"></script>
 </body>
 </html>

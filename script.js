@@ -589,13 +589,16 @@ function initAnimations() {
         ease: 'power3.out'
     });
 
-    gsap.from('.hero-content .tagline', {
-        opacity: 0,
-        y: 50,
-        duration: 1,
-        delay: 0.3,
-        ease: 'power3.out'
-    });
+    // Animate hero description if it exists
+    if (document.querySelector('.hero-content .hero-description')) {
+        gsap.from('.hero-content .hero-description', {
+            opacity: 0,
+            y: 50,
+            duration: 1,
+            delay: 0.3,
+            ease: 'power3.out'
+        });
+    }
 
     gsap.from('.hero-content .hero-buttons', {
         opacity: 0,

@@ -130,6 +130,9 @@ class AdminPanel {
         // Initialize Live Sync
         this.initLiveSync();
 
+        // Initialize session timer
+        this.initSessionTimer();
+
         // Auto-save reminder
         window.addEventListener('beforeunload', (e) => {
             if (this.changes > 0) {
@@ -1798,10 +1801,138 @@ class AdminPanel {
             if (el) el.textContent = value;
         };
 
-        setCount('contentCount', Object.keys(this.data.content || {}).length);
-        setCount('teamCount', (this.data.team?.leadership?.length || 0) + (this.data.team?.ceo?.length || 0) + (this.data.team?.cooRegional?.length || 0));
-        setCount('locationCount', this.data.locations?.length || 0);
-        setCount('productCount', this.data.products?.length || 0);
+        // Team counts
+        const teamTotal = (this.data.team?.leadership?.length || 0) +
+                         (this.data.team?.ceo?.length || 0) +
+                         (this.data.team?.cooRegional?.length || 0);
+
+        // Location counts
+        const locationTotal = this.data.locations?.length || 0;
+
+        // Content sections count (count unique section keys in content)
+        const contentKeys = Object.keys(this.data.content || {});
+        const contentSections = contentKeys.length > 0 ? contentKeys.length : 7;
+
+        // Calculate unique continents from locations
+        const continentMap = {
+            'VG': 'North America', 'US': 'North America',
+            'BR': 'South America',
+            'GB': 'Europe',
+            'AE': 'Asia',
+            'UG': 'Africa', 'KE': 'Africa'
+        };
+        const continents = new Set();
+        (this.data.locations || []).forEach(loc => {
+            const code = loc.countryCode || loc.flag?.match(/([A-Z]{2})/)?.[1];
+            if (code && continentMap[code]) continents.add(continentMap[code]);
+        });
+
+        // Dashboard stats (cards will be updated separately)
+        setCount('teamCount', teamTotal);
+        setCount('locationCount', locationTotal);
+        setCount('contentCount', contentSections);
+
+        // Section banner stats
+        setCount('totalTeamCount', teamTotal);
+        setCount('totalLocationsCount', locationTotal);
+        setCount('totalContinentsCount', continents.size || 5);
+        setCount('totalSectionsCount', contentSections);
+
+        // Structure stats
+        if (window.SyncBridge) {
+            const structure = SyncBridge.getStructure();
+            const activeSections = structure?.sections?.filter(s => s.enabled !== false)?.length || 0;
+            setCount('activeSectionsCount', activeSections);
+        }
+
+        // Update cards count from API
+        this.updateCardsCount();
+
+        // Image count
+        this.updateImageCount();
+    }
+
+    async updateCardsCount() {
+        const setCount = (id, value) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+        };
+
+        try {
+            const response = await fetch('/api/cards');
+            if (response.ok) {
+                const data = await response.json();
+                const featuresCount = data.features?.length || 0;
+                const valuesCount = data.values?.length || 0;
+                const sustainabilityCount = data.sustainability?.length || 0;
+                const cardsTotal = featuresCount + valuesCount + sustainabilityCount;
+
+                setCount('cardsCount', cardsTotal);
+                setCount('totalCardsCount', cardsTotal);
+                setCount('featuresCount', featuresCount);
+                setCount('valuesCount', valuesCount);
+                setCount('sustainabilityCount', sustainabilityCount);
+            }
+        } catch (e) {
+            console.log('Could not fetch cards count');
+        }
+    }
+
+    async updateImageCount() {
+        try {
+            const response = await fetch('/api/images');
+            if (response.ok) {
+                const data = await response.json();
+                const images = data.images || [];
+                const videos = data.videos || [];
+                const logos = images.filter(img => img.folder === 'logos' || img.folder === 'flags');
+                const docs = data.documents || [];
+
+                const setCount = (id, value) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = value;
+                };
+
+                setCount('imageCount', images.length);
+                setCount('mediathekImageCount', images.filter(i => !['logos', 'flags'].includes(i.folder)).length);
+                setCount('mediathekVideoCount', videos.length);
+                setCount('mediathekLogoCount', logos.length);
+                setCount('mediathekDocCount', docs.length);
+            }
+        } catch (e) {
+            console.log('Could not fetch image count');
+        }
+    }
+
+    initSessionTimer() {
+        this.updateServerUptime();
+        setInterval(() => this.updateServerUptime(), 30000); // Update every 30 seconds
+    }
+
+    async updateServerUptime() {
+        const el = document.getElementById('serverUptime');
+        if (!el) return;
+
+        try {
+            const response = await fetch('/api/health');
+            if (response.ok) {
+                const data = await response.json();
+                const seconds = Math.floor(data.uptime || 0);
+                const minutes = Math.floor(seconds / 60);
+                const hours = Math.floor(minutes / 60);
+                const days = Math.floor(hours / 24);
+
+                if (days > 0) {
+                    el.textContent = `${days}d ${hours % 24}h`;
+                } else if (hours > 0) {
+                    el.textContent = `${hours}h ${minutes % 60}m`;
+                } else {
+                    el.textContent = `${minutes}m`;
+                }
+            }
+        } catch (e) {
+            el.textContent = '--';
+        }
     }
 
     // ============================================

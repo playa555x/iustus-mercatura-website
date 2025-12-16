@@ -221,7 +221,10 @@ class AdminErrorHandler {
             }
         }
 
-        console.log('[AdminErrorHandler] Connection status:', status);
+        // Only log when status changes to reduce console spam
+        if (previousStatus !== status) {
+            console.log('[AdminErrorHandler] Connection status:', status);
+        }
     }
 
     /**

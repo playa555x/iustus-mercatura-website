@@ -2994,8 +2994,7 @@ section {
     border: 1px solid rgba(201, 162, 39, 0.5);
     border-radius: 12px;
     padding: 16px;
-    min-width: 280px;
-    max-width: 320px;
+    width: 280px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px) scale(0.95);
@@ -3003,6 +3002,7 @@ section {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(201, 162, 39, 0.2);
     pointer-events: auto;
     z-index: 101;
+    overflow: hidden;
 }
 
 .map-info-box.active {
@@ -3025,7 +3025,7 @@ section {
 .info-box-header {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 12px;
     padding-bottom: 12px;
     border-bottom: 1px solid rgba(201, 162, 39, 0.2);
@@ -3034,6 +3034,16 @@ section {
 .info-flag {
     font-size: 32px;
     line-height: 1;
+}
+
+.info-flag-img {
+    width: 36px;
+    height: 24px;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
 }
 
 .info-flag.country-code {
@@ -3050,19 +3060,31 @@ section {
     letter-spacing: 0.5px;
 }
 
+.info-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
 .info-title h4 {
     color: #fff;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    margin: 0 0 4px 0;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .info-type {
     color: var(--accent-gold);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .info-box-content {
