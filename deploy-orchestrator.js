@@ -35,7 +35,93 @@ const DeployOrchestrator = {
         this.createUI();
         this.bindEvents();
         this.log('info', 'Deploy Orchestrator initialized');
+
+        // Auto-verify credentials on load
+        setTimeout(() => this.autoVerifyCredentials(), 500);
         return this;
+    },
+
+    async autoVerifyCredentials() {
+        this.log('info', 'Prüfe API-Verbindungen...');
+
+        // Verify all credentials that exist
+        if (this.credentials.github?.token) {
+            await this.verifyGitHubSilent();
+        }
+        if (this.credentials.netlify?.token) {
+            await this.verifyNetlifySilent();
+        }
+        if (this.credentials.render?.apiKey) {
+            await this.verifyRenderSilent();
+        }
+    },
+
+    async verifyGitHubSilent() {
+        try {
+            const response = await fetch('https://api.github.com/user', {
+                headers: {
+                    'Authorization': `Bearer ${this.credentials.github.token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            if (response.ok) {
+                const user = await response.json();
+                this.credentials.github.username = user.login;
+                this.updateCredentialStatus('github', 'success', `Verbunden: ${user.login}`);
+                this.updateStatusCard('github', true, user.login);
+                this.log('success', `GitHub: Verbunden als ${user.login}`);
+            } else {
+                this.updateCredentialStatus('github', 'error', 'Token ungültig');
+                this.updateStatusCard('github', false, 'Token ungültig');
+            }
+        } catch (e) {
+            this.updateCredentialStatus('github', 'error', 'Verbindungsfehler');
+        }
+    },
+
+    async verifyNetlifySilent() {
+        try {
+            const response = await fetch('https://api.netlify.com/api/v1/user', {
+                headers: { 'Authorization': `Bearer ${this.credentials.netlify.token}` }
+            });
+            if (response.ok) {
+                const user = await response.json();
+                this.credentials.netlify.email = user.email;
+                this.updateCredentialStatus('netlify', 'success', `Verbunden: ${user.email}`);
+                this.updateStatusCard('netlify', true, user.email);
+                this.log('success', `Netlify: Verbunden als ${user.email}`);
+            } else {
+                this.updateCredentialStatus('netlify', 'error', 'Token ungültig');
+                this.updateStatusCard('netlify', false, 'Token ungültig');
+            }
+        } catch (e) {
+            this.updateCredentialStatus('netlify', 'error', 'Verbindungsfehler');
+        }
+    },
+
+    async verifyRenderSilent() {
+        try {
+            const response = await fetch('https://api.render.com/v1/owners', {
+                headers: {
+                    'Authorization': `Bearer ${this.credentials.render.apiKey}`,
+                    'Accept': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const owners = await response.json();
+                const owner = owners[0]?.owner;
+                this.credentials.render.ownerId = owner?.id;
+                this.credentials.render.ownerName = owner?.name || owner?.email;
+                this.updateCredentialStatus('render', 'success', `Verbunden: ${owner?.name || owner?.email}`);
+                this.updateStatusCard('render', true, `${owner?.name || owner?.email} (Frankfurt EU)`);
+                this.log('success', `Render: Verbunden als ${owner?.name || owner?.email}`);
+            } else {
+                this.updateCredentialStatus('render', 'error', 'API Key ungültig');
+                this.updateStatusCard('render', false, 'API Key ungültig');
+            }
+        } catch (e) {
+            this.updateCredentialStatus('render', 'error', 'Verbindungsfehler');
+        }
     },
 
     async loadConfig() {
@@ -253,6 +339,31 @@ const DeployOrchestrator = {
                 </div>
             </div>
 
+            <!-- Deploy Target Selection -->
+            <div class="deploy-target-section">
+                <h3><i class="fas fa-bullseye"></i> Deploy-Ziel auswählen</h3>
+                <div class="deploy-target-options">
+                    <label class="deploy-target-option">
+                        <input type="radio" name="deploy-target" value="netlify" checked>
+                        <div class="target-card">
+                            <i class="fas fa-cloud"></i>
+                            <span class="target-name">Netlify</span>
+                            <span class="target-desc">Statische Seiten ohne Server</span>
+                            <span class="target-badge">Schnell & Kostenlos</span>
+                        </div>
+                    </label>
+                    <label class="deploy-target-option">
+                        <input type="radio" name="deploy-target" value="render">
+                        <div class="target-card">
+                            <i class="fas fa-cube"></i>
+                            <span class="target-name">Render (Frankfurt)</span>
+                            <span class="target-desc">Mit Server & Datenbank</span>
+                            <span class="target-badge eu">DSGVO-konform</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
             <!-- Deploy Pipeline -->
             <div class="deploy-pipeline-section">
                 <h3><i class="fas fa-stream"></i> Deployment Pipeline</h3>
@@ -261,7 +372,7 @@ const DeployOrchestrator = {
                         <div class="step-icon"><i class="fas fa-cog"></i></div>
                         <div class="step-info">
                             <span class="step-name">Vorbereitung</span>
-                            <span class="step-desc">Dateien prüfen & vorbereiten</span>
+                            <span class="step-desc">Dateien prüfen</span>
                         </div>
                         <div class="step-status"></div>
                     </div>
@@ -269,35 +380,17 @@ const DeployOrchestrator = {
                     <div class="pipeline-step" data-step="git-commit">
                         <div class="step-icon"><i class="fab fa-github"></i></div>
                         <div class="step-info">
-                            <span class="step-name">Git Commit</span>
-                            <span class="step-desc">Änderungen committen</span>
+                            <span class="step-name">Git Commit & Push</span>
+                            <span class="step-desc">Zu GitHub hochladen</span>
                         </div>
                         <div class="step-status"></div>
                     </div>
                     <div class="pipeline-connector"></div>
-                    <div class="pipeline-step" data-step="git-push">
-                        <div class="step-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="pipeline-step" data-step="deploy">
+                        <div class="step-icon"><i class="fas fa-rocket"></i></div>
                         <div class="step-info">
-                            <span class="step-name">Git Push</span>
-                            <span class="step-desc">Zu GitHub pushen</span>
-                        </div>
-                        <div class="step-status"></div>
-                    </div>
-                    <div class="pipeline-connector"></div>
-                    <div class="pipeline-step" data-step="netlify-deploy">
-                        <div class="step-icon"><i class="fas fa-server"></i></div>
-                        <div class="step-info">
-                            <span class="step-name">Netlify Deploy</span>
-                            <span class="step-desc">Auf Netlify deployen</span>
-                        </div>
-                        <div class="step-status"></div>
-                    </div>
-                    <div class="pipeline-connector"></div>
-                    <div class="pipeline-step" data-step="render-deploy">
-                        <div class="step-icon"><i class="fas fa-cube"></i></div>
-                        <div class="step-info">
-                            <span class="step-name">Render Deploy</span>
-                            <span class="step-desc">Auf Render deployen (Frankfurt)</span>
+                            <span class="step-name">Deploy</span>
+                            <span class="step-desc" id="deploy-target-desc">Auf Zielplattform deployen</span>
                         </div>
                         <div class="step-status"></div>
                     </div>

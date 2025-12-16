@@ -2083,23 +2083,249 @@
                     </div>
                 </section>
 
-                <!-- Logs Section -->
+                <!-- Analytics & Logs Section -->
                 <section class="content-section" id="section-logs">
-                    <div class="logs-panel">
-                        <div class="logs-header">
-                            <h3>Server Logs</h3>
-                            <div class="logs-actions">
-                                <input type="date" id="logDate" onchange="devAdmin.loadLogs()">
-                                <button class="btn-secondary" onclick="devAdmin.loadLogs()">
+                    <!-- Analytics Tabs -->
+                    <div class="analytics-tabs">
+                        <button class="analytics-tab active" data-tab="overview" onclick="analyticsUI.switchTab('overview')">
+                            <i class="fas fa-chart-line"></i> Übersicht
+                        </button>
+                        <button class="analytics-tab" data-tab="visitors" onclick="analyticsUI.switchTab('visitors')">
+                            <i class="fas fa-users"></i> Besucher
+                        </button>
+                        <button class="analytics-tab" data-tab="errors" onclick="analyticsUI.switchTab('errors')">
+                            <i class="fas fa-exclamation-triangle"></i> Fehler
+                            <span class="tab-badge" id="errorBadge">0</span>
+                        </button>
+                        <button class="analytics-tab" data-tab="security" onclick="analyticsUI.switchTab('security')">
+                            <i class="fas fa-shield-alt"></i> Sicherheit
+                            <span class="tab-badge" id="securityBadge">0</span>
+                        </button>
+                        <button class="analytics-tab" data-tab="logs" onclick="analyticsUI.switchTab('logs')">
+                            <i class="fas fa-terminal"></i> Server Logs
+                        </button>
+                    </div>
+
+                    <!-- Analytics Overview Tab -->
+                    <div class="analytics-content active" id="tab-overview">
+                        <div class="analytics-toolbar">
+                            <div class="toolbar-left">
+                                <select id="analyticsRange" onchange="analyticsUI.loadDashboard()">
+                                    <option value="7">Letzte 7 Tage</option>
+                                    <option value="14">Letzte 14 Tage</option>
+                                    <option value="30">Letzte 30 Tage</option>
+                                    <option value="90">Letzte 90 Tage</option>
+                                </select>
+                            </div>
+                            <div class="toolbar-right">
+                                <button class="btn-secondary" onclick="analyticsUI.loadDashboard()">
                                     <i class="fas fa-sync"></i> Aktualisieren
                                 </button>
-                                <button class="btn-secondary" onclick="devAdmin.clearLogs()">
-                                    <i class="fas fa-trash"></i> Loeschen
+                                <button class="btn-secondary" onclick="analyticsUI.exportData('stats', 'json')">
+                                    <i class="fas fa-download"></i> Export
                                 </button>
                             </div>
                         </div>
-                        <div class="logs-content" id="logsContent">
-                            <pre id="logOutput">Lade Logs...</pre>
+
+                        <!-- Stats Cards -->
+                        <div class="analytics-stats">
+                            <div class="analytics-stat-card">
+                                <div class="stat-icon blue"><i class="fas fa-eye"></i></div>
+                                <div class="stat-data">
+                                    <span class="stat-number" id="statTotalVisits">0</span>
+                                    <span class="stat-label">Besuche</span>
+                                </div>
+                            </div>
+                            <div class="analytics-stat-card">
+                                <div class="stat-icon green"><i class="fas fa-file-alt"></i></div>
+                                <div class="stat-data">
+                                    <span class="stat-number" id="statPageViews">0</span>
+                                    <span class="stat-label">Seitenaufrufe</span>
+                                </div>
+                            </div>
+                            <div class="analytics-stat-card">
+                                <div class="stat-icon purple"><i class="fas fa-user-check"></i></div>
+                                <div class="stat-data">
+                                    <span class="stat-number" id="statUniqueVisitors">0</span>
+                                    <span class="stat-label">Unique Visitors</span>
+                                </div>
+                            </div>
+                            <div class="analytics-stat-card">
+                                <div class="stat-icon gold"><i class="fas fa-clock"></i></div>
+                                <div class="stat-data">
+                                    <span class="stat-number" id="statAvgDuration">0s</span>
+                                    <span class="stat-label">Ø Sitzungsdauer</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Row -->
+                        <div class="analytics-charts">
+                            <div class="analytics-chart-card">
+                                <h4><i class="fas fa-chart-bar"></i> Traffic nach Stunden</h4>
+                                <div class="chart-container" id="hourlyChart"></div>
+                            </div>
+                            <div class="analytics-chart-card">
+                                <h4><i class="fas fa-desktop"></i> Geräte</h4>
+                                <div class="chart-container" id="deviceChart"></div>
+                            </div>
+                        </div>
+
+                        <!-- Top Pages & Referrers -->
+                        <div class="analytics-tables">
+                            <div class="analytics-table-card">
+                                <h4><i class="fas fa-file"></i> Top Seiten</h4>
+                                <div class="table-content" id="topPagesTable">
+                                    <div class="table-empty">Keine Daten verfügbar</div>
+                                </div>
+                            </div>
+                            <div class="analytics-table-card">
+                                <h4><i class="fas fa-external-link-alt"></i> Referrer</h4>
+                                <div class="table-content" id="referrersTable">
+                                    <div class="table-empty">Keine Daten verfügbar</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DSGVO Info -->
+                        <div class="gdpr-notice">
+                            <i class="fas fa-info-circle"></i>
+                            <span>DSGVO-konform: Keine IP-Adressen oder personenbezogene Daten werden gespeichert. Daten werden automatisch nach 90 Tagen gelöscht.</span>
+                        </div>
+                    </div>
+
+                    <!-- Visitors Tab -->
+                    <div class="analytics-content" id="tab-visitors">
+                        <div class="analytics-toolbar">
+                            <div class="toolbar-left">
+                                <h4>Besucher-Statistiken (anonymisiert)</h4>
+                            </div>
+                        </div>
+
+                        <div class="analytics-charts">
+                            <div class="analytics-chart-card wide">
+                                <h4><i class="fas fa-chart-line"></i> Tägliche Besuche</h4>
+                                <div class="chart-container" id="dailyVisitsChart"></div>
+                            </div>
+                        </div>
+
+                        <div class="analytics-tables">
+                            <div class="analytics-table-card">
+                                <h4><i class="fas fa-globe"></i> Browser</h4>
+                                <div class="table-content" id="browserTable"></div>
+                            </div>
+                            <div class="analytics-table-card">
+                                <h4><i class="fas fa-mobile-alt"></i> Geräte Details</h4>
+                                <div class="table-content" id="deviceDetailTable"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Errors Tab -->
+                    <div class="analytics-content" id="tab-errors">
+                        <div class="analytics-toolbar">
+                            <div class="toolbar-left">
+                                <select id="errorTypeFilter" onchange="analyticsUI.filterErrors()">
+                                    <option value="all">Alle Typen</option>
+                                    <option value="TypeError">TypeError</option>
+                                    <option value="ReferenceError">ReferenceError</option>
+                                    <option value="NetworkError">NetworkError</option>
+                                    <option value="SyntaxError">SyntaxError</option>
+                                    <option value="404">404</option>
+                                    <option value="500">500</option>
+                                </select>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="hideResolved" onchange="analyticsUI.filterErrors()">
+                                    Gelöste ausblenden
+                                </label>
+                            </div>
+                            <div class="toolbar-right">
+                                <button class="btn-secondary" onclick="analyticsUI.exportData('errors', 'csv')">
+                                    <i class="fas fa-download"></i> Export CSV
+                                </button>
+                                <button class="btn-danger" onclick="analyticsUI.clearData('errors')">
+                                    <i class="fas fa-trash"></i> Alle löschen
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Error Stats -->
+                        <div class="error-stats">
+                            <div class="error-stat" id="errorStatsByType"></div>
+                        </div>
+
+                        <!-- Error List -->
+                        <div class="error-list" id="errorList">
+                            <div class="table-empty">Keine Fehler gefunden</div>
+                        </div>
+                    </div>
+
+                    <!-- Security Tab -->
+                    <div class="analytics-content" id="tab-security">
+                        <div class="analytics-toolbar">
+                            <div class="toolbar-left">
+                                <select id="severityFilter" onchange="analyticsUI.filterSecurity()">
+                                    <option value="all">Alle Severity</option>
+                                    <option value="critical">Critical</option>
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </div>
+                            <div class="toolbar-right">
+                                <button class="btn-secondary" onclick="analyticsUI.exportData('security', 'csv')">
+                                    <i class="fas fa-download"></i> Export CSV
+                                </button>
+                                <button class="btn-danger" onclick="analyticsUI.clearData('security')">
+                                    <i class="fas fa-trash"></i> Alle löschen
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Security Stats -->
+                        <div class="security-stats">
+                            <div class="security-stat critical">
+                                <span class="security-count" id="secCritical">0</span>
+                                <span class="security-label">Critical</span>
+                            </div>
+                            <div class="security-stat high">
+                                <span class="security-count" id="secHigh">0</span>
+                                <span class="security-label">High</span>
+                            </div>
+                            <div class="security-stat medium">
+                                <span class="security-count" id="secMedium">0</span>
+                                <span class="security-label">Medium</span>
+                            </div>
+                            <div class="security-stat low">
+                                <span class="security-count" id="secLow">0</span>
+                                <span class="security-label">Low</span>
+                            </div>
+                        </div>
+
+                        <!-- Security Events List -->
+                        <div class="security-list" id="securityList">
+                            <div class="table-empty">Keine Sicherheits-Events gefunden</div>
+                        </div>
+                    </div>
+
+                    <!-- Server Logs Tab -->
+                    <div class="analytics-content" id="tab-logs">
+                        <div class="logs-panel">
+                            <div class="logs-header">
+                                <h3>Server Logs</h3>
+                                <div class="logs-actions">
+                                    <input type="date" id="logDate" onchange="devAdmin.loadLogs()">
+                                    <button class="btn-secondary" onclick="devAdmin.loadLogs()">
+                                        <i class="fas fa-sync"></i> Aktualisieren
+                                    </button>
+                                    <button class="btn-secondary" onclick="devAdmin.clearLogs()">
+                                        <i class="fas fa-trash"></i> Löschen
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="logs-content" id="logsContent">
+                                <pre id="logOutput">Lade Logs...</pre>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -2164,6 +2390,7 @@
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleDevSidebar()"></div>
 
     <script src="dev-admin.js"></script>
+    <script src="server-analytics.js"></script>
     <!-- Local credentials (not in Git) - loads before orchestrator -->
     <script src="credentials.local.js" onerror="console.log('No local credentials file')"></script>
     <script src="deploy-orchestrator.js"></script>

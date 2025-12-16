@@ -843,4 +843,109 @@
     .checks-grid {
         grid-template-columns: 1fr;
     }
+
+    .deploy-target-options {
+        flex-direction: column;
+    }
+}
+
+/* ==========================================
+   DEPLOY TARGET SELECTION
+   ========================================== */
+.deploy-target-section {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.deploy-target-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0a1628;
+    margin: 0 0 16px 0;
+}
+
+.deploy-target-section h3 i {
+    color: #c9a227;
+}
+
+.deploy-target-options {
+    display: flex;
+    gap: 16px;
+}
+
+.deploy-target-option {
+    flex: 1;
+    cursor: pointer;
+}
+
+.deploy-target-option input[type="radio"] {
+    display: none;
+}
+
+.target-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.target-card i {
+    font-size: 32px;
+    color: #6c757d;
+    transition: color 0.3s;
+}
+
+.target-card .target-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0a1628;
+}
+
+.target-card .target-desc {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.target-card .target-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    background: #e9ecef;
+    color: #495057;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.target-card .target-badge.eu {
+    background: linear-gradient(135deg, #c9a227 0%, #dfb84f 100%);
+    color: #0a1628;
+}
+
+.deploy-target-option input[type="radio"]:checked + .target-card {
+    border-color: #c9a227;
+    background: linear-gradient(135deg, #fffcf0 0%, #ffffff 100%);
+    box-shadow: 0 4px 12px rgba(201, 162, 39, 0.2);
+}
+
+.deploy-target-option input[type="radio"]:checked + .target-card i {
+    color: #c9a227;
+}
+
+.deploy-target-option:hover .target-card {
+    border-color: #adb5bd;
+    transform: translateY(-2px);
 }
