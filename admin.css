@@ -6332,22 +6332,22 @@ body {
 }
 
 .mediathek-tab .tab-count {
-    background: rgba(255,255,255,0.3);
+    background: var(--gray-200);
     padding: 2px 8px;
     border-radius: 10px;
     font-size: 11px;
     font-weight: 600;
-    color: var(--navy-dark) !important;
+    color: var(--navy-dark);
 }
 
 .mediathek-tab.active .tab-count {
-    background: rgba(255,255,255,0.9) !important;
+    background: var(--gold) !important;
     color: var(--navy-dark) !important;
 }
 
 .mediathek-tab:not(.active) .tab-count {
-    background: var(--gray-200) !important;
-    color: var(--navy-dark) !important;
+    background: var(--gray-200);
+    color: var(--navy-dark);
 }
 
 /* Tab Content */
