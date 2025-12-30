@@ -465,12 +465,12 @@ function updateConnection(type: ConnectionStatus['type'], status: ConnectionStat
     }
 }
 
-// MIME types
+// MIME types - UTF-8 charset for text files to prevent encoding issues
 const MIME_TYPES: Record<string, string> = {
-    ".html": "text/html",
-    ".css": "text/css",
-    ".js": "application/javascript",
-    ".json": "application/json",
+    ".html": "text/html; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".js": "application/javascript; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
@@ -1426,6 +1426,81 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
             }
         }
 
+        // DELETE /api/images/:filename - Delete image by filename
+        if (pathname.startsWith("/api/images/") && req.method === "DELETE") {
+            try {
+                const filename = pathname.split('/').pop();
+                if (!filename) {
+                    return new Response(JSON.stringify({ error: "No filename provided" }), {
+                        status: 400,
+                        headers: jsonHeaders
+                    });
+                }
+
+                // Find media item in database by filename
+                const mediaIndex = db.media.findIndex(m => m.filename === filename);
+
+                if (mediaIndex === -1) {
+                    return new Response(JSON.stringify({ error: "Image not found in database" }), {
+                        status: 404,
+                        headers: jsonHeaders
+                    });
+                }
+
+                const mediaItem = db.media[mediaIndex];
+
+                // Delete physical file from uploads directory
+                const filePath = join(UPLOADS_DIR, filename);
+                if (existsSync(filePath)) {
+                    try {
+                        await Bun.write(filePath, ''); // Empty the file (Bun doesn't have unlink)
+                        log("INFO", `Image file emptied: ${filename}`);
+                    } catch (e) {
+                        log("ERROR", `Failed to delete file: ${e}`);
+                    }
+                }
+
+                // Remove from database
+                db.media.splice(mediaIndex, 1);
+                await saveDatabase();
+
+                // Remove from imageAssignments in data.json
+                const imageUrl = mediaItem.url;
+                try {
+                    const dataFile = join(BASE_DIR, "data.json");
+                    if (existsSync(dataFile)) {
+                        const dataContent = await readFile(dataFile, "utf-8");
+                        const dataJson = JSON.parse(dataContent);
+
+                        if (dataJson.imageAssignments && dataJson.imageAssignments[imageUrl]) {
+                            delete dataJson.imageAssignments[imageUrl];
+                            await writeFile(dataFile, JSON.stringify(dataJson, null, 2), "utf-8");
+                            log("INFO", `Image assignment removed for: ${imageUrl}`);
+                        }
+                    }
+                } catch (e) {
+                    log("ERROR", `Failed to remove image assignment: ${e}`);
+                    // Don't fail the whole operation if assignment removal fails
+                }
+
+                // Broadcast sync to all connected clients
+                broadcastSync({
+                    type: 'media_deleted',
+                    data: { filename, id: mediaItem.id, url: imageUrl }
+                });
+
+                log("INFO", `Image deleted: ${filename}`);
+                return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
+
+            } catch (e) {
+                log("ERROR", `Failed to delete image: ${e}`);
+                return new Response(JSON.stringify({ error: "Delete failed" }), {
+                    status: 500,
+                    headers: jsonHeaders
+                });
+            }
+        }
+
         // POST /api/upload
         if (pathname === "/api/upload" && req.method === "POST") {
             const formData = await req.formData();
@@ -1462,6 +1537,51 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
             await saveDatabase();
 
             log("INFO", `Image uploaded: ${filename}`);
+            return new Response(JSON.stringify({ success: true, media: mediaItem }), { headers: jsonHeaders });
+        }
+
+        // POST /api/upload-image - Upload image (alias for /api/upload with 'image' param)
+        if (pathname === "/api/upload-image" && req.method === "POST") {
+            const formData = await req.formData();
+            const imageFile = formData.get("image") as File; // Note: admin.js uses 'image' not 'file'
+            const websiteId = formData.get("website_id") as string || "ws_iustus";
+
+            if (!imageFile) {
+                return new Response(JSON.stringify({ error: "No file provided" }), {
+                    status: 400,
+                    headers: jsonHeaders,
+                });
+            }
+
+            const ext = imageFile.name.split('.').pop() || 'png';
+            const timestamp = Date.now();
+            const randomId = Math.random().toString(36).substring(2, 8);
+            const filename = `img_${timestamp}_${randomId}.${ext}`;
+            const filePath = join(UPLOADS_DIR, filename);
+
+            const arrayBuffer = await imageFile.arrayBuffer();
+            await writeFile(filePath, Buffer.from(arrayBuffer));
+
+            const mediaItem: MediaItem = {
+                id: `med_${timestamp}`,
+                website_id: websiteId,
+                filename: filename,
+                original_name: imageFile.name,
+                url: `/uploads/${filename}`,
+                type: imageFile.type,
+                size: imageFile.size,
+                uploaded: new Date().toISOString()
+            };
+            db.media.push(mediaItem);
+            await saveDatabase();
+
+            // Broadcast sync to all connected clients
+            broadcastSync({
+                type: 'media_uploaded',
+                data: mediaItem
+            });
+
+            log("INFO", `Image uploaded via /api/upload-image: ${filename}`);
             return new Response(JSON.stringify({ success: true, media: mediaItem }), { headers: jsonHeaders });
         }
 
@@ -3684,6 +3804,80 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
         }
 
         // ==========================================
+        // MICROSOFT 365 / GRAPH API EMAIL
+        // ==========================================
+
+        // POST /api/email/microsoft/test - Test Microsoft Graph API connection
+        if (pathname === "/api/email/microsoft/test" && req.method === "POST") {
+            try {
+                const body = await req.json();
+                const { tenantId, clientId, clientSecret, senderEmail } = body;
+
+                if (!tenantId || !clientId || !clientSecret || !senderEmail) {
+                    return new Response(JSON.stringify({
+                        success: false,
+                        error: "Alle Felder sind erforderlich: Tenant ID, Client ID, Client Secret, Absender-E-Mail"
+                    }), { status: 400, headers: jsonHeaders });
+                }
+
+                const config: GraphConfig = { tenantId, clientId, clientSecret, senderEmail };
+                const result = await testGraphConnection(config);
+
+                return new Response(JSON.stringify(result), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({
+                    success: false,
+                    error: String(e)
+                }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // POST /api/email/microsoft/send - Send email via Microsoft Graph API
+        if (pathname === "/api/email/microsoft/send" && req.method === "POST") {
+            try {
+                const body = await req.json();
+                const { to, subject, text, html } = body;
+
+                if (!to || !subject) {
+                    return new Response(JSON.stringify({
+                        success: false,
+                        error: "Empfänger und Betreff sind erforderlich"
+                    }), { status: 400, headers: jsonHeaders });
+                }
+
+                // Load Microsoft 365 settings
+                let settings: any = {};
+                if (existsSync(settingsFile)) {
+                    const data = await readFile(settingsFile, 'utf-8');
+                    settings = JSON.parse(data);
+                }
+
+                const ms365 = settings.email?.microsoft365;
+                if (!ms365?.tenantId || !ms365?.clientId || !ms365?.clientSecret || !ms365?.senderEmail) {
+                    return new Response(JSON.stringify({
+                        success: false,
+                        error: "Microsoft 365 nicht konfiguriert. Bitte Einstellungen vervollständigen."
+                    }), { status: 400, headers: jsonHeaders });
+                }
+
+                const config: GraphConfig = {
+                    tenantId: ms365.tenantId,
+                    clientId: ms365.clientId,
+                    clientSecret: ms365.clientSecret,
+                    senderEmail: ms365.senderEmail
+                };
+
+                const result = await sendEmailViaGraph(config, to, subject, text, html);
+                return new Response(JSON.stringify(result), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({
+                    success: false,
+                    error: String(e)
+                }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // ==========================================
         // ADMIN USER MANAGEMENT
         // ==========================================
 
@@ -3976,7 +4170,150 @@ function hashPassword(password: string): string {
     return crypto.createHash('sha256').update(password + 'iustus_salt_2024').digest('hex');
 }
 
-// SMTP Email Functions
+// ==========================================
+// MICROSOFT GRAPH API EMAIL FUNCTIONS
+// ==========================================
+
+interface GraphConfig {
+    tenantId: string;
+    clientId: string;
+    clientSecret: string;
+    senderEmail: string;
+}
+
+// Get OAuth2 Access Token from Microsoft
+async function getMicrosoftAccessToken(config: GraphConfig): Promise<{ success: boolean; token?: string; error?: string }> {
+    try {
+        const tokenUrl = `https://login.microsoftonline.com/${config.tenantId}/oauth2/v2.0/token`;
+
+        const params = new URLSearchParams({
+            client_id: config.clientId,
+            client_secret: config.clientSecret,
+            scope: 'https://graph.microsoft.com/.default',
+            grant_type: 'client_credentials'
+        });
+
+        const response = await fetch(tokenUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params.toString()
+        });
+
+        const data = await response.json() as any;
+
+        if (data.access_token) {
+            return { success: true, token: data.access_token };
+        } else {
+            return {
+                success: false,
+                error: data.error_description || data.error || 'Token request failed'
+            };
+        }
+    } catch (e) {
+        return { success: false, error: `Token error: ${String(e)}` };
+    }
+}
+
+// Test Microsoft Graph API Connection
+async function testGraphConnection(config: GraphConfig): Promise<{ success: boolean; error?: string; details?: any }> {
+    try {
+        // Step 1: Get access token
+        const tokenResult = await getMicrosoftAccessToken(config);
+        if (!tokenResult.success || !tokenResult.token) {
+            return { success: false, error: tokenResult.error || 'Failed to get access token' };
+        }
+
+        // Step 2: Verify sender mailbox exists and we have permission
+        const userUrl = `https://graph.microsoft.com/v1.0/users/${config.senderEmail}`;
+        const userResponse = await fetch(userUrl, {
+            headers: {
+                'Authorization': `Bearer ${tokenResult.token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (userResponse.status === 200) {
+            const userData = await userResponse.json() as any;
+            return {
+                success: true,
+                details: {
+                    displayName: userData.displayName,
+                    mail: userData.mail,
+                    userPrincipalName: userData.userPrincipalName
+                }
+            };
+        } else if (userResponse.status === 404) {
+            return { success: false, error: `Benutzer '${config.senderEmail}' nicht gefunden` };
+        } else if (userResponse.status === 403) {
+            return { success: false, error: 'Keine Berechtigung. Bitte Mail.Send Permission in Azure AD hinzufügen.' };
+        } else {
+            const errorData = await userResponse.json() as any;
+            return { success: false, error: errorData.error?.message || `HTTP ${userResponse.status}` };
+        }
+    } catch (e) {
+        return { success: false, error: `Verbindungsfehler: ${String(e)}` };
+    }
+}
+
+// Send Email via Microsoft Graph API
+async function sendEmailViaGraph(config: GraphConfig, to: string, subject: string, text?: string, html?: string): Promise<{ success: boolean; error?: string; messageId?: string }> {
+    try {
+        // Step 1: Get access token
+        const tokenResult = await getMicrosoftAccessToken(config);
+        if (!tokenResult.success || !tokenResult.token) {
+            return { success: false, error: tokenResult.error || 'Failed to get access token' };
+        }
+
+        // Step 2: Build email message
+        const message = {
+            message: {
+                subject: subject,
+                body: {
+                    contentType: html ? 'HTML' : 'Text',
+                    content: html || text || ''
+                },
+                toRecipients: [
+                    {
+                        emailAddress: {
+                            address: to
+                        }
+                    }
+                ]
+            },
+            saveToSentItems: true
+        };
+
+        // Step 3: Send email
+        const sendUrl = `https://graph.microsoft.com/v1.0/users/${config.senderEmail}/sendMail`;
+        const sendResponse = await fetch(sendUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${tokenResult.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(message)
+        });
+
+        if (sendResponse.status === 202 || sendResponse.status === 200) {
+            return { success: true, messageId: `graph_${Date.now()}` };
+        } else {
+            const errorData = await sendResponse.json() as any;
+            return {
+                success: false,
+                error: errorData.error?.message || `Senden fehlgeschlagen (HTTP ${sendResponse.status})`
+            };
+        }
+    } catch (e) {
+        return { success: false, error: `Sendefehler: ${String(e)}` };
+    }
+}
+
+// ==========================================
+// SMTP EMAIL FUNCTIONS (Legacy)
+// ==========================================
+
 async function testSMTPConnection(host: string, port: number, secure: boolean, user: string, password: string, from: string): Promise<{ success: boolean; error?: string }> {
     try {
         // Basic connection test using TCP socket
