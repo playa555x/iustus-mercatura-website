@@ -1437,8 +1437,8 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     });
                 }
 
-                // Find media item in database by filename
-                const mediaIndex = db.media.findIndex(m => m.filename === filename);
+                // Find media item in database by filename (from url field)
+                const mediaIndex = db.media.findIndex(m => m.url === `/uploads/${filename}`);
 
                 if (mediaIndex === -1) {
                     return new Response(JSON.stringify({ error: "Image not found in database" }), {
