@@ -511,7 +511,7 @@ class AdminPanel {
         this.showToast('info', 'Teste...', 'SMTP-Verbindung wird getestet...');
 
         try {
-            const response = await fetch('/api/email/test-connection', {
+            const response = await fetch('/api/settings/test-smtp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -548,7 +548,7 @@ class AdminPanel {
         this.showToast('info', 'Sende...', 'Test-E-Mail wird gesendet...');
 
         try {
-            const response = await fetch('/api/email/send', {
+            const response = await fetch('/api/settings/send-email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -558,6 +558,97 @@ class AdminPanel {
                         <h2>Test E-Mail erfolgreich!</h2>
                         <p>Diese E-Mail wurde vom Iustus Mercatura Admin Panel gesendet.</p>
                         <p>Wenn Sie diese E-Mail erhalten, ist Ihre SMTP-Konfiguration korrekt.</p>
+                        <hr>
+                        <p style="color: #666; font-size: 12px;">Gesendet am: ${new Date().toLocaleString('de-DE')}</p>
+                    `
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                this.showToast('success', 'E-Mail gesendet', `Test-E-Mail wurde an ${to} gesendet.`);
+            } else {
+                this.showToast('error', 'Senden fehlgeschlagen', result.error || 'E-Mail konnte nicht gesendet werden.');
+            }
+        } catch (error) {
+            this.showToast('error', 'Fehler', 'E-Mail senden fehlgeschlagen: ' + error.message);
+        }
+    }
+
+    // Test Microsoft 365 Connection
+    async testMicrosoft365Connection() {
+        const tenantId = this.data.settings.ms365TenantId;
+        const clientId = this.data.settings.ms365ClientId;
+        const clientSecret = this.data.settings.ms365ClientSecret;
+        const senderEmail = this.data.settings.ms365SenderEmail;
+
+        if (!tenantId || !clientId || !clientSecret || !senderEmail) {
+            this.showToast('warning', 'Fehlende Daten', 'Bitte füllen Sie alle Microsoft 365 Felder aus.');
+            return;
+        }
+
+        this.showToast('info', 'Teste...', 'Microsoft 365 Verbindung wird getestet...');
+
+        try {
+            const response = await fetch('/api/email/microsoft/test', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    tenantId,
+                    clientId,
+                    clientSecret,
+                    senderEmail
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                const details = result.details;
+                this.showToast('success', 'Verbindung OK',
+                    `Microsoft 365 verbunden! Benutzer: ${details.displayName || details.mail}`);
+            } else {
+                this.showToast('error', 'Verbindung fehlgeschlagen', result.error || 'Microsoft 365 Verbindung konnte nicht hergestellt werden.');
+            }
+        } catch (error) {
+            this.showToast('error', 'Fehler', 'Verbindungstest fehlgeschlagen: ' + error.message);
+        }
+    }
+
+    // Send Test Email via Microsoft 365
+    async sendMicrosoft365TestEmail() {
+        const to = this.data.settings.contactEmail || this.data.settings.ms365SenderEmail;
+
+        if (!to) {
+            this.showToast('warning', 'Keine E-Mail', 'Bitte geben Sie eine Kontakt-E-Mail oder Absender-E-Mail an.');
+            return;
+        }
+
+        // Check if Microsoft 365 is configured
+        const tenantId = this.data.settings.ms365TenantId;
+        const clientId = this.data.settings.ms365ClientId;
+        const clientSecret = this.data.settings.ms365ClientSecret;
+        const senderEmail = this.data.settings.ms365SenderEmail;
+
+        if (!tenantId || !clientId || !clientSecret || !senderEmail) {
+            this.showToast('warning', 'Nicht konfiguriert', 'Bitte konfigurieren Sie zuerst Microsoft 365.');
+            return;
+        }
+
+        this.showToast('info', 'Sende...', 'Test-E-Mail wird über Microsoft 365 gesendet...');
+
+        try {
+            const response = await fetch('/api/email/microsoft/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    to,
+                    subject: 'Test E-Mail - Iustus Mercatura Admin (Microsoft 365)',
+                    html: `
+                        <h2>Test E-Mail erfolgreich!</h2>
+                        <p>Diese E-Mail wurde über <strong>Microsoft Graph API</strong> vom Iustus Mercatura Admin Panel gesendet.</p>
+                        <p>Wenn Sie diese E-Mail erhalten, ist Ihre Microsoft 365 Konfiguration korrekt.</p>
                         <hr>
                         <p style="color: #666; font-size: 12px;">Gesendet am: ${new Date().toLocaleString('de-DE')}</p>
                     `
@@ -1728,6 +1819,52 @@ class AdminPanel {
 
         this.liveSync.on('notification', (notification) => {
             this.showToast(`Update von ${notification.source}`, 'info');
+        });
+
+        this.liveSync.on('media_deleted', (data) => {
+            this.log(`Media deleted: ${data.filename}`);
+
+            // Remove from DOM
+            const imageUrl = data.url;
+            const imageElement = document.querySelector(`.mediathek-item[data-url="${imageUrl}"]`);
+
+            if (imageElement) {
+                // Remove with animation
+                imageElement.style.transition = 'opacity 0.3s, transform 0.3s';
+                imageElement.style.opacity = '0';
+                imageElement.style.transform = 'scale(0.8)';
+
+                setTimeout(() => {
+                    imageElement.remove();
+
+                    // Update count
+                    const grid = document.getElementById('mediathekGrid');
+                    const countEl = document.getElementById('mediathekImageCount');
+                    if (countEl && grid) {
+                        const remainingImages = grid.querySelectorAll('.mediathek-item').length;
+                        countEl.textContent = remainingImages;
+
+                        // If no images left, show empty state
+                        if (remainingImages === 0) {
+                            grid.innerHTML = `
+                                <div class="mediathek-empty">
+                                    <i class="fas fa-images"></i>
+                                    <h3>Keine Bilder vorhanden</h3>
+                                    <p>Lade dein erstes Bild hoch!</p>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    // Remove from selection if selected
+                    if (this._selectedMediathekImages && this._selectedMediathekImages.has(imageUrl)) {
+                        this._selectedMediathekImages.delete(imageUrl);
+                        this.updateMediathekToolbar();
+                    }
+                }, 300);
+            }
+
+            this.showToast(`Bild "${data.filename}" wurde gelöscht`, 'success');
         });
 
         // Connect

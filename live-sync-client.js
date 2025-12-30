@@ -152,6 +152,11 @@ class LiveSyncClient {
                 this.emit('full_sync', data);
                 break;
 
+            case 'media_deleted':
+                console.log(`[LiveSync] Media deleted: ${data.data?.filename}`);
+                this.emit('media_deleted', data.data);
+                break;
+
             default:
                 console.log(`[LiveSync] Unknown message type: ${type}`, data);
         }
