@@ -4,7 +4,7 @@
  */
 
 import { serve, file } from "bun";
-import { mkdir, writeFile, readFile, readdir, stat, copyFile } from "fs/promises";
+import { mkdir, writeFile, readFile, readdir, stat, copyFile, unlink } from "fs/promises";
 import { join, extname } from "path";
 import { existsSync, readdirSync } from "fs";
 
@@ -1453,8 +1453,8 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                 const filePath = join(UPLOADS_DIR, filename);
                 if (existsSync(filePath)) {
                     try {
-                        await Bun.write(filePath, ''); // Empty the file (Bun doesn't have unlink)
-                        log("INFO", `Image file emptied: ${filename}`);
+                        await unlink(filePath);
+                        log("INFO", `Image file deleted: ${filename}`);
                     } catch (e) {
                         log("ERROR", `Failed to delete file: ${e}`);
                     }

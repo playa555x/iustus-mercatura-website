@@ -1569,6 +1569,76 @@
                     </div>
                 </div>
 
+                <!-- Microsoft 365 / Azure AD Email Settings -->
+                <div class="settings-group">
+                    <h3><i class="fab fa-microsoft"></i> Microsoft 365 E-Mail (OAuth2)</h3>
+                    <p class="settings-description">
+                        Verwenden Sie Microsoft Graph API für sicheren E-Mail-Versand mit 2FA-Unterstützung.
+                        <a href="https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank" style="color: var(--accent-gold);">
+                            <i class="fas fa-external-link-alt"></i> Azure Portal öffnen
+                        </a>
+                    </p>
+
+                    <div class="email-provider-toggle" style="margin-bottom: 20px;">
+                        <label class="toggle-label">
+                            <span>E-Mail Provider:</span>
+                            <select class="form-input" data-setting="emailProvider" style="width: auto; display: inline-block; margin-left: 10px;">
+                                <option value="smtp">SMTP (Standard)</option>
+                                <option value="microsoft365">Microsoft 365 (OAuth2)</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="ms365-settings">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-building"></i> Tenant ID</label>
+                                <input type="text" class="form-input" data-setting="ms365TenantId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                                <small class="form-hint">Azure AD Verzeichnis-ID (Directory ID)</small>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-id-card"></i> Client ID</label>
+                                <input type="text" class="form-input" data-setting="ms365ClientId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                                <small class="form-hint">Anwendungs-ID (Application ID)</small>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-key"></i> Client Secret</label>
+                                <input type="password" class="form-input" data-setting="ms365ClientSecret" placeholder="••••••••">
+                                <small class="form-hint">Geheimer Clientschlüssel (erstellen in Azure Portal)</small>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-envelope"></i> Absender E-Mail</label>
+                                <input type="email" class="form-input" data-setting="ms365SenderEmail" placeholder="noreply@ihre-domain.com">
+                                <small class="form-hint">Microsoft 365 Postfach für den Versand</small>
+                            </div>
+                        </div>
+                        <div class="settings-actions" style="margin-top: 15px;">
+                            <button class="btn btn-secondary" onclick="adminPanel.testMicrosoft365Connection()">
+                                <i class="fab fa-microsoft"></i> Verbindung testen
+                            </button>
+                            <button class="btn btn-secondary" onclick="adminPanel.sendMicrosoft365TestEmail()">
+                                <i class="fas fa-paper-plane"></i> Test-E-Mail senden
+                            </button>
+                        </div>
+
+                        <div class="setup-guide" style="margin-top: 20px; padding: 15px; background: rgba(212, 175, 55, 0.1); border-radius: 8px; border-left: 3px solid var(--accent-gold);">
+                            <h4 style="margin: 0 0 10px 0; color: var(--accent-gold);"><i class="fas fa-info-circle"></i> Einrichtung in Azure AD</h4>
+                            <ol style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.8;">
+                                <li>Gehen Sie zu <strong>Azure Portal</strong> → <strong>App-Registrierungen</strong></li>
+                                <li>Klicken Sie auf <strong>"Neue Registrierung"</strong></li>
+                                <li>Name eingeben (z.B. "Website E-Mail")</li>
+                                <li>Nach Erstellung: <strong>API-Berechtigungen</strong> → <strong>Berechtigung hinzufügen</strong></li>
+                                <li>Wählen Sie <strong>Microsoft Graph</strong> → <strong>Anwendungsberechtigungen</strong></li>
+                                <li>Suchen und aktivieren Sie: <strong>Mail.Send</strong></li>
+                                <li>Klicken Sie auf <strong>"Administratorzustimmung erteilen"</strong></li>
+                                <li>Gehen Sie zu <strong>Zertifikate & Geheimnisse</strong> → <strong>Neuer geheimer Clientschlüssel</strong></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Social Media -->
                 <div class="settings-group">
                     <h3><i class="fas fa-share-alt"></i> Social Media Links</h3>
