@@ -303,10 +303,11 @@ const UPLOADS_DIR = IS_RENDER ? join(PERSISTENT_DIR, "uploads") : join(BASE_DIR,
 const DB_DIR = IS_RENDER ? join(PERSISTENT_DIR, "database") : join(BASE_DIR, "database");
 const TEMPLATES_DIR = join(BASE_DIR, "templates");
 const LOGS_DIR = IS_RENDER ? join(PERSISTENT_DIR, "logs") : join(BASE_DIR, "logs");
-const TEAM_IMAGES_DIR = join(BASE_DIR, "assets", "images", "team");
+// Team images: persistent on Render, local in assets folder otherwise
+const TEAM_IMAGES_DIR = IS_RENDER ? join(PERSISTENT_DIR, "images", "team") : join(BASE_DIR, "assets", "images", "team");
 
 // Ensure directories exist
-for (const dir of [UPLOADS_DIR, DB_DIR, TEMPLATES_DIR, LOGS_DIR]) {
+for (const dir of [UPLOADS_DIR, DB_DIR, TEMPLATES_DIR, LOGS_DIR, TEAM_IMAGES_DIR]) {
     if (!existsSync(dir)) {
         await mkdir(dir, { recursive: true });
     }
@@ -316,6 +317,7 @@ for (const dir of [UPLOADS_DIR, DB_DIR, TEMPLATES_DIR, LOGS_DIR]) {
 log("INFO", `[Storage] Running on ${IS_RENDER ? "Render" : "Local"}`);
 log("INFO", `[Storage] Database: ${DB_DIR}`);
 log("INFO", `[Storage] Uploads: ${UPLOADS_DIR}`);
+log("INFO", `[Storage] Team Images: ${TEAM_IMAGES_DIR}`);
 
 // Database Tables (JSON-based for local dev)
 interface DBTables {
@@ -1691,10 +1693,9 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     allImages = [...allImages, ...flagImages];
                 }
 
-                // 3. Get team images from assets/images/team
-                const teamDir = join(import.meta.dir, 'assets', 'images', 'team');
-                if (existsSync(teamDir)) {
-                    const teamFiles = readdirSync(teamDir);
+                // 3. Get team images from persistent storage (TEAM_IMAGES_DIR)
+                if (existsSync(TEAM_IMAGES_DIR)) {
+                    const teamFiles = readdirSync(TEAM_IMAGES_DIR);
                     const teamImages = teamFiles
                         .filter(f => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f))
                         .map(filename => {
@@ -1742,8 +1743,8 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     });
                 }
 
-                // Check if it's a team image (from assets/images/team/)
-                const teamFilePath = join(BASE_DIR, 'assets', 'images', 'team', filename);
+                // Check if it's a team image (from TEAM_IMAGES_DIR - persistent storage)
+                const teamFilePath = join(TEAM_IMAGES_DIR, filename);
                 if (existsSync(teamFilePath)) {
                     // Delete team image file
                     try {
@@ -5465,7 +5466,14 @@ async function serveStatic(pathname: string, headers: Record<string, string>): P
         pathname = "/dev-admin/index.html";
     }
 
-    const filePath = join(BASE_DIR, pathname);
+    // Serve team images from persistent storage on Render
+    let filePath: string;
+    if (pathname.startsWith("/assets/images/team/")) {
+        const filename = pathname.replace("/assets/images/team/", "");
+        filePath = join(TEAM_IMAGES_DIR, filename);
+    } else {
+        filePath = join(BASE_DIR, pathname);
+    }
 
     try {
         const bunFile = file(filePath);
