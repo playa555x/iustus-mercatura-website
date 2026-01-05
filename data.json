@@ -77,14 +77,14 @@
         "name": "LLM Christian Thomas",
         "role": "Group Chairman & acting CCO",
         "description": "Group Chairman and acting Chief Compliance Officer serving as chief steward of the company's vision and ethical mandate 'Just Trade'. He provides long-term strategic guidance and governance overseeing major initiatives.",
-        "image": "assets/images/team/Christian Thomas.png"
+        "image": "assets/images/team/Christian-Thomas.png"
       },
       {
         "id": 3,
         "name": "Lic. jur. Martin Bohler",
         "role": "Co-Founder & CRO",
         "description": "Legal expertise combined with strategic vision. Co-founded the company and drives risk management and corporate governance.",
-        "image": "assets/images/team/Martin Bohler.png"
+        "image": "assets/images/team/Martin-Bohler.png"
       }
     ],
     "ceo": [
@@ -93,21 +93,21 @@
         "name": "Andreas Zsifkovits",
         "role": "CEO Maritime Logistics UK",
         "description": "CEO of Iustus Mercatura Maritime Logistics UK Limited, leads global shipping and freight operations. He ensures the cost-efficient, reliable movement of commodities, translating the 'Just Trade' mandate into operational excellence.",
-        "image": "assets/images/team/Andreas Z..webp"
+        "image": "assets/images/team/Andreas-Z.webp"
       },
       {
         "id": 2,
         "name": "Miss Resty Nankya",
         "role": "CEO Uganda",
         "description": "CEO of Iustus Mercatura Uganda Limited, leads the dedicated African team with passion. She spearheads the transformative Uganda Refinery Project 2026, driving local value creation and securing long-term regional growth.",
-        "image": "assets/images/team/Nankya Resty.png"
+        "image": "assets/images/team/Nankya-Resty.png"
       },
       {
         "id": 3,
         "name": "Stephanie Shi",
         "role": "CEO Asia",
         "description": "Leads Asian market strategy and expansion. Deep expertise in cross-cultural business development and regional trade networks.",
-        "image": "assets/images/team/Stephanie Shi.jpeg"
+        "image": "assets/images/team/Stephanie-Shi.jpeg"
       }
     ],
     "cooRegional": [
@@ -116,21 +116,21 @@
         "name": "Eng. Yong Jiang",
         "role": "COO USA",
         "description": "COO of Iustus Mercatura USA Inc., leveraging 30+ years of experience in the Asian commodities market. He ensures operational excellence, establishing resilient Brazil-to-Asia supply chains.",
-        "image": "assets/images/team/Yong Jiang.jpeg"
+        "image": "assets/images/team/Yong-Jiang.jpeg"
       },
       {
         "id": 2,
         "name": "Paulo R. de Souza",
         "role": "COO Brazil",
         "description": "COO of Iustus Mercatura Brasil Ltda., strategic leader leveraging 30 years of hands-on expertise in the Brazilian sugar trade. He ensures robust operational control and keeps close contact to local Suppliers and Farmers.",
-        "image": "assets/images/team/Paolo Sousa.png"
+        "image": "assets/images/team/Paolo-Sousa.png"
       },
       {
         "id": 3,
         "name": "Capt. Eng. Patrick Duggie",
         "role": "COO Maritime Logistics UK",
         "description": "COO of Maritime Logistics UK, drives operational excellence. He uses his expertise to guarantee the secure, cost-efficient delivery of global commodities, upholding the 'Just Trade' principles.",
-        "image": "assets/images/team/Patrick Duggie.jpeg"
+        "image": "assets/images/team/Patrick-Duggie.jpeg"
       },
       {
         "id": 4,
@@ -151,7 +151,7 @@
         "name": "Marianna Tavares",
         "role": "Head of Legal (External)",
         "description": "External legal counsel providing expert guidance on international trade law, compliance, and corporate governance.",
-        "image": "assets/images/team/Marianna Tavares.jpeg"
+        "image": "assets/images/team/Marianna-Tavares.jpeg"
       }
     ]
   },
@@ -186,7 +186,7 @@
       "responsiblePerson": {
         "name": "LLM Christian Thomas",
         "role": "Group Chairman & acting CCO",
-        "image": "assets/images/team/Christian Thomas.png",
+        "image": "assets/images/team/Christian-Thomas.png",
         "initials": "CT"
       }
     },
@@ -203,7 +203,7 @@
       "responsiblePerson": {
         "name": "Eng. Paulo Souza",
         "role": "COO Brazil",
-        "image": "assets/images/team/Paolo Sousa.png",
+        "image": "assets/images/team/Paolo-Sousa.png",
         "initials": "PS"
       }
     },
@@ -237,7 +237,7 @@
       "responsiblePerson": {
         "name": "Andreas Zsifkovits",
         "role": "CEO UK & Maritime",
-        "image": "assets/images/team/Andreas Z..webp",
+        "image": "assets/images/team/Andreas-Z.webp",
         "initials": "AZ"
       }
     },
@@ -254,7 +254,7 @@
       "responsiblePerson": {
         "name": "Miss Resty Nankya",
         "role": "CEO Uganda",
-        "image": "assets/images/team/Nankya Resty.png",
+        "image": "assets/images/team/Nankya-Resty.png",
         "initials": "RN"
       }
     },
@@ -271,7 +271,7 @@
       "responsiblePerson": {
         "name": "Miss Resty Nankya",
         "role": "CEO Uganda",
-        "image": "assets/images/team/Nankya Resty.png",
+        "image": "assets/images/team/Nankya-Resty.png",
         "initials": "RN"
       }
     },
@@ -288,7 +288,7 @@
       "responsiblePerson": {
         "name": "LLM Christian Thomas",
         "role": "Group Chairman & acting CCO",
-        "image": "assets/images/team/Christian Thomas.png",
+        "image": "assets/images/team/Christian-Thomas.png",
         "initials": "CT"
       }
     },
@@ -305,7 +305,7 @@
       "responsiblePerson": {
         "name": "LLM Christian Thomas",
         "role": "Group Chairman & acting CCO",
-        "image": "assets/images/team/Christian Thomas.png",
+        "image": "assets/images/team/Christian-Thomas.png",
         "initials": "CT"
       }
     }
