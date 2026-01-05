@@ -2460,6 +2460,153 @@ class AdminPanel {
         }, 4000);
     }
 
+    // Custom Confirm Dialog - schönes Design, positioniert beim Element
+    showConfirmDialog(options) {
+        return new Promise((resolve) => {
+            const { title, message, confirmText = 'Löschen', cancelText = 'Abbrechen', targetElement, type = 'danger' } = options;
+
+            // Berechne Position basierend auf targetElement
+            let topPosition = '50%';
+            let transform = 'translate(-50%, -50%)';
+
+            if (targetElement) {
+                const rect = targetElement.getBoundingClientRect();
+                const dialogHeight = 200; // Geschätzte Höhe
+                let top = rect.top + (rect.height / 2);
+
+                // Stelle sicher, dass der Dialog im Viewport bleibt
+                if (top - dialogHeight/2 < 20) top = dialogHeight/2 + 20;
+                if (top + dialogHeight/2 > window.innerHeight - 20) top = window.innerHeight - dialogHeight/2 - 20;
+
+                topPosition = top + 'px';
+                transform = 'translate(-50%, -50%)';
+            }
+
+            const overlay = document.createElement('div');
+            overlay.className = 'confirm-dialog-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: rgba(10, 22, 40, 0.85);
+                backdrop-filter: blur(4px);
+                z-index: 10001;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.2s ease;
+            `;
+
+            const dialog = document.createElement('div');
+            dialog.className = 'confirm-dialog';
+            dialog.style.cssText = `
+                position: fixed;
+                left: 50%;
+                top: ${topPosition};
+                transform: ${transform};
+                background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                border-radius: 16px;
+                padding: 28px 32px;
+                min-width: 340px;
+                max-width: 420px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(201, 162, 39, 0.2);
+                z-index: 10002;
+                animation: slideIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            `;
+
+            const iconColor = type === 'danger' ? '#dc3545' : 'var(--gold)';
+            const confirmBg = type === 'danger' ? '#dc3545' : 'var(--gold)';
+            const confirmColor = type === 'danger' ? '#fff' : 'var(--navy-dark)';
+
+            dialog.innerHTML = `
+                <style>
+                    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                    @keyframes slideIn { from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+                    .confirm-dialog-btn { transition: all 0.2s ease; }
+                    .confirm-dialog-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+                    .confirm-dialog-btn:active { transform: translateY(0); }
+                    .confirm-dialog-btn:focus { outline: 3px solid var(--gold); outline-offset: 2px; }
+                </style>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 56px; height: 56px; border-radius: 50%; background: ${iconColor}15; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                        <i class="fas fa-trash" style="font-size: 24px; color: ${iconColor};"></i>
+                    </div>
+                    <h3 style="margin: 0 0 8px; font-size: 20px; font-weight: 600; color: var(--navy-dark);">${title}</h3>
+                    <p style="margin: 0; color: #6c757d; font-size: 14px; line-height: 1.5;">${message}</p>
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button class="confirm-dialog-btn cancel-btn" style="
+                        padding: 12px 24px;
+                        border: 2px solid #dee2e6;
+                        background: #fff;
+                        color: #495057;
+                        border-radius: 10px;
+                        font-size: 15px;
+                        font-weight: 600;
+                        cursor: pointer;
+                    ">${cancelText}</button>
+                    <button class="confirm-dialog-btn confirm-btn" style="
+                        padding: 12px 24px;
+                        border: none;
+                        background: ${confirmBg};
+                        color: ${confirmColor};
+                        border-radius: 10px;
+                        font-size: 15px;
+                        font-weight: 600;
+                        cursor: pointer;
+                    ">${confirmText}</button>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+            document.body.appendChild(dialog);
+
+            const confirmBtn = dialog.querySelector('.confirm-btn');
+            const cancelBtn = dialog.querySelector('.cancel-btn');
+
+            // Fokus auf Löschen-Button setzen
+            setTimeout(() => confirmBtn.focus(), 50);
+
+            const cleanup = () => {
+                overlay.style.opacity = '0';
+                dialog.style.opacity = '0';
+                dialog.style.transform = 'translate(-50%, -50%) scale(0.9)';
+                setTimeout(() => {
+                    overlay.remove();
+                    dialog.remove();
+                }, 200);
+            };
+
+            confirmBtn.addEventListener('click', () => {
+                cleanup();
+                resolve(true);
+            });
+
+            cancelBtn.addEventListener('click', () => {
+                cleanup();
+                resolve(false);
+            });
+
+            overlay.addEventListener('click', () => {
+                cleanup();
+                resolve(false);
+            });
+
+            // ESC zum Abbrechen, Enter zum Bestätigen
+            const handleKeydown = (e) => {
+                if (e.key === 'Escape') {
+                    cleanup();
+                    resolve(false);
+                    document.removeEventListener('keydown', handleKeydown);
+                } else if (e.key === 'Enter') {
+                    cleanup();
+                    resolve(true);
+                    document.removeEventListener('keydown', handleKeydown);
+                }
+            };
+            document.addEventListener('keydown', handleKeydown);
+        });
+    }
+
     // Spezieller Toast mit Rückgängig-Button
     showUndoToast(message, undoCallback) {
         const container = document.getElementById('toastContainer');
@@ -9134,8 +9281,20 @@ class AdminPanel {
         });
     }
 
-    async deleteMediathekImage(filename) {
-        if (!confirm(`Bild "${filename}" wirklich löschen?`)) return;
+    async deleteMediathekImage(filename, event) {
+        // Finde das Bild-Element für die Positionierung
+        const item = document.querySelector(`.mediathek-item[data-filename="${filename}"]`);
+
+        const confirmed = await this.showConfirmDialog({
+            title: 'Bild löschen?',
+            message: `"${filename}" wird unwiderruflich gelöscht.`,
+            confirmText: 'Löschen',
+            cancelText: 'Abbrechen',
+            targetElement: item,
+            type: 'danger'
+        });
+
+        if (!confirmed) return;
 
         try {
             const response = await fetch(`/api/images/${filename}`, {
@@ -9147,7 +9306,6 @@ class AdminPanel {
             if (result.success) {
                 this.showToast('success', 'Gelöscht', 'Bild wurde gelöscht');
                 // Entferne Bild lokal aus DOM statt komplett neu zu laden
-                const item = document.querySelector(`.mediathek-item[data-filename="${filename}"]`);
                 if (item) {
                     item.style.transition = 'opacity 0.3s, transform 0.3s';
                     item.style.opacity = '0';
