@@ -1074,6 +1074,8 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
         if (pathname === "/api/db" && req.method === "POST") {
             try {
                 const body = await req.json();
+                log("INFO", `[API] POST /api/db - Received ${Object.keys(body).length} keys`);
+
                 // Update in-memory database
                 if (body.websites) db.websites = body.websites;
                 if (body.pages) db.pages = body.pages;
@@ -1084,13 +1086,15 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                 if (body.settings) db.settings = body.settings;
 
                 // Save to file
+                log("INFO", `[API] Saving database to ${DB_PATH}`);
                 await Bun.write(DB_PATH, JSON.stringify(db, null, 2));
-                log("INFO", "[API] Database saved via POST /api/db");
+                log("INFO", "[API] Database saved successfully via POST /api/db");
 
                 return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
-            } catch (error) {
-                log("ERROR", `[API] Failed to save database: ${error}`);
-                return new Response(JSON.stringify({ error: "Failed to save database" }), { status: 500, headers: jsonHeaders });
+            } catch (error: any) {
+                const errorMessage = error?.message || String(error);
+                log("ERROR", `[API] Failed to save database: ${errorMessage}`);
+                return new Response(JSON.stringify({ error: "Failed to save database", details: errorMessage }), { status: 500, headers: jsonHeaders });
             }
         }
 

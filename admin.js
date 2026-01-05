@@ -10094,7 +10094,8 @@ class AdminPanel {
                 console.log(`[Team Image] Database saved successfully`);
                 return true;
             } else {
-                console.error('[Team Image] Failed to save database');
+                const errorData = await saveResponse.json().catch(() => ({}));
+                console.error('[Team Image] Failed to save database:', saveResponse.status, errorData);
                 return false;
             }
         } catch (error) {
