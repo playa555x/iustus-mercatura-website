@@ -1466,10 +1466,77 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                         await unlink(teamFilePath);
                         log("INFO", `Team image deleted: ${filename}`);
 
+                        const imageUrl = `/assets/images/team/${filename}`;
+
+                        // Remove from data.json (team members)
+                        try {
+                            const dataFile = join(BASE_DIR, "data.json");
+                            if (existsSync(dataFile)) {
+                                const dataContent = await readFile(dataFile, "utf-8");
+                                const dataJson = JSON.parse(dataContent);
+
+                                // Remove from team members
+                                if (dataJson.team) {
+                                    dataJson.team = dataJson.team.filter((member: any) => member.image !== imageUrl);
+                                }
+
+                                // Remove from imageAssignments
+                                if (dataJson.imageAssignments && dataJson.imageAssignments[imageUrl]) {
+                                    delete dataJson.imageAssignments[imageUrl];
+                                }
+
+                                await writeFile(dataFile, JSON.stringify(dataJson, null, 2), "utf-8");
+                                log("INFO", `Removed image references from data.json: ${imageUrl}`);
+                            }
+                        } catch (e) {
+                            log("ERROR", `Failed to update data.json: ${e}`);
+                        }
+
+                        // Remove from database/database.json (team members)
+                        try {
+                            const dbFile = join(BASE_DIR, "database", "database.json");
+                            if (existsSync(dbFile)) {
+                                const dbContent = await readFile(dbFile, "utf-8");
+                                const dbJson = JSON.parse(dbContent);
+
+                                // Remove from team_members
+                                if (dbJson.team_members) {
+                                    dbJson.team_members = dbJson.team_members.filter((member: any) =>
+                                        member.data?.image !== imageUrl
+                                    );
+                                }
+
+                                await writeFile(dbFile, JSON.stringify(dbJson, null, 2), "utf-8");
+                                log("INFO", `Removed image references from database.json: ${imageUrl}`);
+                            }
+                        } catch (e) {
+                            log("ERROR", `Failed to update database.json: ${e}`);
+                        }
+
+                        // Remove from index.html (team cards)
+                        try {
+                            const indexFile = join(BASE_DIR, "index.html");
+                            if (existsSync(indexFile)) {
+                                let indexContent = await readFile(indexFile, "utf-8");
+
+                                // Remove team card containing this image
+                                const teamCardRegex = new RegExp(
+                                    `<div class="team-card"[^>]*>[\\s\\S]*?${filename.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s\\S]*?<\\/div>\\s*<\\/div>\\s*<\\/div>`,
+                                    'g'
+                                );
+                                indexContent = indexContent.replace(teamCardRegex, '');
+
+                                await writeFile(indexFile, indexContent, "utf-8");
+                                log("INFO", `Removed team card from index.html for: ${filename}`);
+                            }
+                        } catch (e) {
+                            log("ERROR", `Failed to update index.html: ${e}`);
+                        }
+
                         // Broadcast sync to all connected clients
                         broadcastSync({
                             type: 'media_deleted',
-                            data: { filename, url: `/assets/images/team/${filename}` }
+                            data: { filename, url: imageUrl }
                         });
 
                         return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
