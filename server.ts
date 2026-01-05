@@ -1533,6 +1533,30 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                             log("ERROR", `Failed to update index.html: ${e}`);
                         }
 
+                        // Remove from locations.json (responsible person images)
+                        try {
+                            const locationsFile = join(BASE_DIR, "database", "locations.json");
+                            if (existsSync(locationsFile)) {
+                                const locContent = await readFile(locationsFile, "utf-8");
+                                const locJson = JSON.parse(locContent);
+
+                                // Remove image reference from locations
+                                if (locJson.locations) {
+                                    locJson.locations = locJson.locations.map((loc: any) => {
+                                        if (loc.responsiblePerson?.image === imageUrl) {
+                                            loc.responsiblePerson.image = '';
+                                        }
+                                        return loc;
+                                    });
+                                }
+
+                                await writeFile(locationsFile, JSON.stringify(locJson, null, 2), "utf-8");
+                                log("INFO", `Removed image references from locations.json: ${imageUrl}`);
+                            }
+                        } catch (e) {
+                            log("ERROR", `Failed to update locations.json: ${e}`);
+                        }
+
                         // Broadcast sync to all connected clients
                         broadcastSync({
                             type: 'media_deleted',
