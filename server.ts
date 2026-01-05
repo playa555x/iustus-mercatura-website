@@ -1458,11 +1458,46 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     });
                 }
 
+                // Check if it's a team image (from assets/images/team/)
+                const teamFilePath = join(BASE_DIR, 'assets', 'images', 'team', filename);
+                if (existsSync(teamFilePath)) {
+                    // Delete team image file
+                    try {
+                        await unlink(teamFilePath);
+                        log("INFO", `Team image deleted: ${filename}`);
+
+                        // Broadcast sync to all connected clients
+                        broadcastSync({
+                            type: 'media_deleted',
+                            data: { filename, url: `/assets/images/team/${filename}` }
+                        });
+
+                        return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
+                    } catch (e) {
+                        log("ERROR", `Failed to delete team image: ${e}`);
+                        return new Response(JSON.stringify({ error: "Delete failed" }), {
+                            status: 500,
+                            headers: jsonHeaders
+                        });
+                    }
+                }
+
                 // Find media item in database by filename (from url field)
                 const mediaIndex = db.media.findIndex(m => m.url === `/uploads/${filename}`);
 
                 if (mediaIndex === -1) {
-                    return new Response(JSON.stringify({ error: "Image not found in database" }), {
+                    // Also check if file exists in uploads folder without db entry
+                    const uploadsFilePath = join(UPLOADS_DIR, filename);
+                    if (existsSync(uploadsFilePath)) {
+                        try {
+                            await unlink(uploadsFilePath);
+                            log("INFO", `Orphan upload file deleted: ${filename}`);
+                            return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
+                        } catch (e) {
+                            log("ERROR", `Failed to delete orphan file: ${e}`);
+                        }
+                    }
+                    return new Response(JSON.stringify({ error: "Image not found" }), {
                         status: 404,
                         headers: jsonHeaders
                     });
