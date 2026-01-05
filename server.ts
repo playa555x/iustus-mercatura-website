@@ -1407,7 +1407,28 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     allImages = [...allImages, ...flagImages];
                 }
 
-                // 3. Get logo from assets/images
+                // 3. Get team images from assets/images/team
+                const teamDir = join(import.meta.dir, 'assets', 'images', 'team');
+                if (existsSync(teamDir)) {
+                    const teamFiles = readdirSync(teamDir);
+                    const teamImages = teamFiles
+                        .filter(f => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f))
+                        .map(filename => {
+                            // Convert filename to readable name (e.g., "Christian-Thomas.png" -> "Christian Thomas")
+                            const nameWithoutExt = filename.replace(/\.(jpg|jpeg|png|gif|webp|svg)$/i, '');
+                            const readableName = nameWithoutExt.replace(/-/g, ' ');
+                            return {
+                                filename,
+                                url: `/assets/images/team/${filename}`,
+                                type: `image/${filename.split('.').pop()?.toLowerCase() || 'png'}`,
+                                original_name: readableName,
+                                folder: 'team'
+                            };
+                        });
+                    allImages = [...allImages, ...teamImages];
+                }
+
+                // 4. Get logo from assets/images
                 const logoPath = join(import.meta.dir, 'assets', 'images', 'logo.jpg');
                 if (existsSync(logoPath)) {
                     allImages.push({
