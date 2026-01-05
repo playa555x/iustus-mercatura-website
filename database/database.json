@@ -350,9 +350,9 @@
         "name": "Dr. Gerhard Kral",
         "role": "Group CEO & Founder",
         "category": "Global Leadership",
-        "image": "/uploads/img_1765200880495_2sqckj.png",
+        "image": "assets/images/team/Kral.png",
         "initials": "GK",
-        "description": "Established the company's global strategy based on the 'Just Trade' philosophy. Visionary leader driving sustainable commodity trading worldwide.",
+        "description": "Visionary Chief Executive Officer who established the company's global strategy on the foundational philosophy of 'Just Trade'. Under his direction, the company is driving strategic vertical integration through initiatives like Project Iustus Agricultura Brazil SA and the Uganda Refinery Project 2026.",
         "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
       },
       "order": 0
@@ -363,11 +363,11 @@
       "website_id": "ws_iustus",
       "data": {
         "name": "LLM Christian Thomas",
-        "role": "Group Chairman & Co-Owner",
+        "role": "Group Chairman & acting CCO",
         "category": "Global Leadership",
-        "image": "/uploads/img_1765200880464_xzfd2f.png",
+        "image": "assets/images/team/Christian Thomas.png",
         "initials": "CT",
-        "description": "Chief steward of vision and ethical mandate. Provides strategic guidance ensuring governance excellence and stakeholder alignment.",
+        "description": "Group Chairman and acting Chief Compliance Officer serving as chief steward of the company's vision and ethical mandate 'Just Trade'. He provides long-term strategic guidance and governance overseeing major initiatives including Project Iustus Agricultura Brazil SA and the Uganda Refinery Project 2026.",
         "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
       },
       "order": 1
@@ -380,7 +380,7 @@
         "name": "Lic. jur. Martin Bohler",
         "role": "Co-Founder & CRO",
         "category": "Global Leadership",
-        "image": "/uploads/img_1765200880554_1zw12k.png",
+        "image": "assets/images/team/Martin Bohler.png",
         "initials": "MB",
         "description": "Legal expertise combined with strategic vision. Co-founded the company and drives risk management and corporate governance.",
         "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
@@ -393,11 +393,11 @@
       "website_id": "ws_iustus",
       "data": {
         "name": "Andreas Zsifkovits",
-        "role": "CEO UK & Maritime",
+        "role": "CEO Maritime Logistics UK",
         "category": "CEO",
-        "image": "/uploads/img_1765200866319_fqiugd.webp",
+        "image": "assets/images/team/Andreas Z..webp",
         "initials": "AZ",
-        "description": "Leads global shipping and freight operations from London. Specialized in maritime logistics and international trade routes.",
+        "description": "CEO of Iustus Mercatura Maritime Logistics UK Limited, leads global shipping and freight operations. He ensures the cost-efficient, reliable movement of commodities, translating the 'Just Trade' mandate into operational excellence.",
         "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
       },
       "order": 3
@@ -410,9 +410,9 @@
         "name": "Miss Resty Nankya",
         "role": "CEO Uganda",
         "category": "CEO",
-        "image": "/uploads/img_1765200880814_4rcgus.png",
+        "image": "assets/images/team/Nankya Resty.png",
         "initials": "RN",
-        "description": "Spearheads the Uganda Refinery Project 2026. Driving sustainable agricultural development across East Africa.",
+        "description": "CEO of Iustus Mercatura Uganda Limited, leads the dedicated African team with passion. She spearheads the transformative Uganda Refinery Project 2026, driving local value creation and securing long-term regional growth.",
         "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
       },
       "order": 4
@@ -425,7 +425,7 @@
         "name": "Stephanie Shi",
         "role": "CEO Asia",
         "category": "CEO",
-        "image": null,
+        "image": "assets/images/team/Stephanie Shi.jpeg",
         "initials": "SS",
         "description": "Leads Asian market strategy and expansion. Deep expertise in cross-cultural business development and regional trade networks.",
         "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
@@ -440,9 +440,9 @@
         "name": "Eng. Yong Jiang",
         "role": "COO USA",
         "category": "COO & Regional Heads",
-        "image": null,
+        "image": "assets/images/team/Yong Jiang.jpeg",
         "initials": "YJ",
-        "description": "30+ years experience in commodities market. Expert in cross-border trade operations and strategic market development.",
+        "description": "COO of Iustus Mercatura USA Inc., leveraging 30+ years of experience in the Asian commodities market. He ensures operational excellence, establishing resilient Brazil-to-Asia supply chains and upholding the 'Just Trade' mandate.",
         "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
       },
       "order": 6
@@ -452,12 +452,12 @@
       "collection_id": "col_team",
       "website_id": "ws_iustus",
       "data": {
-        "name": "Eng. Paulo Souza",
+        "name": "Paulo R. de Souza",
         "role": "COO Brazil",
         "category": "COO & Regional Heads",
-        "image": "/uploads/img_1765200880824_6nbq1o.png",
+        "image": "assets/images/team/Paolo Sousa.png",
         "initials": "PS",
-        "description": "30 years expertise in Brazilian sugar trade. Deep knowledge of South American agricultural markets and refinery operations.",
+        "description": "COO of Iustus Mercatura Brasil Ltda., strategic leader leveraging 30 years of hands-on expertise in the Brazilian sugar trade. He ensures robust operational control and keeps close contact to local Suppliers and Farmers, strictly following the mantra of ethical, self-sufficient sourcing at the origin.",
         "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
       },
       "order": 7
@@ -467,12 +467,12 @@
       "collection_id": "col_team",
       "website_id": "ws_iustus",
       "data": {
-        "name": "Patrick Duggie",
-        "role": "COO UK",
+        "name": "Capt. Eng. Patrick Duggie",
+        "role": "COO Maritime Logistics UK",
         "category": "COO & Regional Heads",
-        "image": null,
+        "image": "assets/images/team/Patrick Duggie.jpeg",
         "initials": "PD",
-        "description": "Oversees UK operations and European market expansion. Expertise in commodity trading regulations and strategic partnerships.",
+        "description": "COO of Maritime Logistics UK, drives operational excellence. He uses his expertise to guarantee the secure, cost-efficient delivery of global commodities, upholding the 'Just Trade' principles.",
         "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
       },
       "order": 8
@@ -482,30 +482,45 @@
       "collection_id": "col_team",
       "website_id": "ws_iustus",
       "data": {
-        "name": "Emmanuel Nkwanga",
-        "role": "COO East Africa",
-        "category": "COO & Regional Heads",
-        "image": null,
-        "initials": "EN",
-        "description": "Leads operational excellence across East African markets. Expert in regional supply chain management and local partnerships.",
-        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
-      },
-      "order": 9
-    },
-    {
-      "id": "team_11",
-      "collection_id": "col_team",
-      "website_id": "ws_iustus",
-      "data": {
         "name": "Jimmey S. Shah",
-        "role": "Head of Trade Middle East",
+        "role": "Sales Director Middle East/Asia & CCO FITC Energy",
         "category": "COO & Regional Heads",
-        "image": "/uploads/img_1765200880484_rr4put.png",
+        "image": "assets/images/team/Jimmy.png",
         "initials": "JS",
-        "description": "Drives Middle Eastern trade operations and market development. Expert in regional commodity markets and strategic trade relationships.",
+        "description": "Sales Director Middle East/Asia (Dubai), drives sales and growth across crucial regional markets. He is also the CCO for FITC Energy Group DXB LLC, leading the company's energy-related business operations.",
         "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
       },
       "order": 10
+    },
+    {
+      "id": "team_12",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Mozafor Rahman",
+        "role": "COO Bangladesh",
+        "category": "COO & Regional Heads",
+        "image": "assets/images/team/Mozafor.png",
+        "initials": "MR",
+        "description": "COO of Iustus Mercatura Bangladesh, leads regional operations and market development in South Asia. Expert in local supply chain management and trade partnerships.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 11
+    },
+    {
+      "id": "team_13",
+      "collection_id": "col_team",
+      "website_id": "ws_iustus",
+      "data": {
+        "name": "Marianna Tavares",
+        "role": "Head of Legal (External)",
+        "category": "COO & Regional Heads",
+        "image": "assets/images/team/Marianna Tavares.jpeg",
+        "initials": "MT",
+        "description": "External legal counsel providing expert guidance on international trade law, compliance, and corporate governance.",
+        "linkedin": "https://www.linkedin.com/company/iustus-mercatura"
+      },
+      "order": 12
     },
     {
       "id": "product_1",
@@ -710,6 +725,42 @@
       "order": 6
     },
     {
+      "id": "location_8",
+      "collection_id": "col_locations",
+      "website_id": "ws_iustus",
+      "data": {
+        "country": "United States",
+        "city": "Austin, Texas",
+        "type": "Regional Office",
+        "company": "Iustus Mercatura (TX) Inc.",
+        "address": "5900 Balcones Drive Suite 100, Austin, 78731 TX, USA",
+        "countryCode": "US",
+        "coordinates": {
+          "x": 120,
+          "y": 175
+        }
+      },
+      "order": 7
+    },
+    {
+      "id": "location_9",
+      "collection_id": "col_locations",
+      "website_id": "ws_iustus",
+      "data": {
+        "country": "United States",
+        "city": "Miami, Florida",
+        "type": "Regional Office",
+        "company": "Iustus Mercatura (FL) Inc.",
+        "address": "25 Biscayne Blvd. Suite 2450, Miami, 33131 FL, USA",
+        "countryCode": "US",
+        "coordinates": {
+          "x": 175,
+          "y": 210
+        }
+      },
+      "order": 8
+    },
+    {
       "id": "project_1",
       "collection_id": "col_projects",
       "website_id": "ws_iustus",
@@ -763,80 +814,7 @@
       "order": 2
     }
   ],
-  "media": [
-    {
-      "id": "media_1",
-      "website_id": "ws_iustus",
-      "url": "/uploads/img_1765200866319_fqiugd.webp",
-      "original_name": "Andreas Zsifkovits",
-      "type": "image/webp",
-      "size": 45000,
-      "uploaded": "2025-12-08T10:00:00.000Z"
-    },
-    {
-      "id": "media_2",
-      "website_id": "ws_iustus",
-      "url": "/uploads/img_1765200880464_xzfd2f.png",
-      "original_name": "LLM Christian Thomas",
-      "type": "image/png",
-      "size": 52000,
-      "uploaded": "2025-12-08T10:01:00.000Z"
-    },
-    {
-      "id": "media_3",
-      "website_id": "ws_iustus",
-      "url": "/uploads/img_1765200880484_rr4put.png",
-      "original_name": "Jimmey S. Shah",
-      "type": "image/png",
-      "size": 48000,
-      "uploaded": "2025-12-08T10:02:00.000Z"
-    },
-    {
-      "id": "media_4",
-      "website_id": "ws_iustus",
-      "url": "/uploads/img_1765200880495_2sqckj.png",
-      "original_name": "Dr. Gerhard Kral",
-      "type": "image/png",
-      "size": 51000,
-      "uploaded": "2025-12-08T10:03:00.000Z"
-    },
-    {
-      "id": "media_5",
-      "website_id": "ws_iustus",
-      "url": "/uploads/img_1765200880554_1zw12k.png",
-      "original_name": "Lic. jur. Martin Bohler",
-      "type": "image/png",
-      "size": 49000,
-      "uploaded": "2025-12-08T10:04:00.000Z"
-    },
-    {
-      "id": "media_6",
-      "website_id": "ws_iustus",
-      "url": "/uploads/img_1765200880656_m7a3pu.png",
-      "original_name": "Team Member",
-      "type": "image/png",
-      "size": 47000,
-      "uploaded": "2025-12-08T10:05:00.000Z"
-    },
-    {
-      "id": "media_7",
-      "website_id": "ws_iustus",
-      "url": "/uploads/img_1765200880814_4rcgus.png",
-      "original_name": "Miss Resty Nankya",
-      "type": "image/png",
-      "size": 53000,
-      "uploaded": "2025-12-08T10:06:00.000Z"
-    },
-    {
-      "id": "media_8",
-      "website_id": "ws_iustus",
-      "url": "/uploads/img_1765200880824_6nbq1o.png",
-      "original_name": "Eng. Paulo Souza",
-      "type": "image/png",
-      "size": 50000,
-      "uploaded": "2025-12-08T10:07:00.000Z"
-    }
-  ],
+  "media": [],
   "settings": [
     {
       "id": "set_1",

@@ -1,12 +1,12 @@
 {
   "content": {
     "hero": {
-      "label": "◆\n                        Global Commodity Trading",
-      "titleLine1": "Connecting",
-      "titleLine2": "Farmers to Consumers",
-      "titleLine3": "Worldwide",
+      "label": "&#9670;",
+      "titleLine1": "",
+      "titleLine2": "",
+      "titleLine3": "",
       "description": "Iustus Mercatura - Latin for \"Just Trade\" - delivers essential food commodities with integrity, transparency, and a commitment to sustainable global commerce.",
-      "button1": "Discover Our Story\n                            →",
+      "button1": "",
       "button2": "",
       "stat1Value": "",
       "stat1Suffix": "",
@@ -34,20 +34,20 @@
       "cardDesc": ""
     },
     "ceo": {
-      "sectionLabel": "",
+      "sectionLabel": "CEO Message",
       "title": "",
-      "name": "",
-      "role": "",
+      "name": "Dr. Gerhard Kral",
+      "role": "Group CEO & Founder",
       "quote": "\"We have not only positioned the Holding Company as a strategic management holding, but also moved away from purely trading in food commodities towards establishing the complete supply chain - from the field to the end customer.\"",
       "message": ""
     },
     "products": {
-      "sectionLabel": "",
-      "title": "",
+      "sectionLabel": "Our Products",
+      "title": "Premium Brazilian Commodities",
       "description": ""
     },
     "services": {
-      "sectionLabel": "",
+      "sectionLabel": "Our Services",
       "title": "",
       "description": ""
     },
@@ -60,19 +60,305 @@
     },
     "footer": {
       "tagline": "Connecting farmers to consumers to deliver essential food, feed and fuel to the world.",
-      "copyright": ""
+      "copyright": "© 2025 Iustus Mercatura Holding Inc. All rights reserved."
     }
   },
   "team": {
-    "leadership": [],
-    "ceo": [],
-    "cooRegional": []
+    "leadership": [
+      {
+        "id": 1,
+        "name": "Dr. Gerhard Kral",
+        "role": "Group CEO & Founder",
+        "description": "Visionary Chief Executive Officer who established the company's global strategy on the foundational philosophy of 'Just Trade'. Under his direction, the company is driving strategic vertical integration through initiatives like Project Iustus Agricultura Brazil SA and the Uganda Refinery Project 2026.",
+        "image": "assets/images/team/Kral.png"
+      },
+      {
+        "id": 2,
+        "name": "LLM Christian Thomas",
+        "role": "Group Chairman & acting CCO",
+        "description": "Group Chairman and acting Chief Compliance Officer serving as chief steward of the company's vision and ethical mandate 'Just Trade'. He provides long-term strategic guidance and governance overseeing major initiatives.",
+        "image": "assets/images/team/Christian Thomas.png"
+      },
+      {
+        "id": 3,
+        "name": "Lic. jur. Martin Bohler",
+        "role": "Co-Founder & CRO",
+        "description": "Legal expertise combined with strategic vision. Co-founded the company and drives risk management and corporate governance.",
+        "image": "assets/images/team/Martin Bohler.png"
+      }
+    ],
+    "ceo": [
+      {
+        "id": 1,
+        "name": "Andreas Zsifkovits",
+        "role": "CEO Maritime Logistics UK",
+        "description": "CEO of Iustus Mercatura Maritime Logistics UK Limited, leads global shipping and freight operations. He ensures the cost-efficient, reliable movement of commodities, translating the 'Just Trade' mandate into operational excellence.",
+        "image": "assets/images/team/Andreas Z..webp"
+      },
+      {
+        "id": 2,
+        "name": "Miss Resty Nankya",
+        "role": "CEO Uganda",
+        "description": "CEO of Iustus Mercatura Uganda Limited, leads the dedicated African team with passion. She spearheads the transformative Uganda Refinery Project 2026, driving local value creation and securing long-term regional growth.",
+        "image": "assets/images/team/Nankya Resty.png"
+      },
+      {
+        "id": 3,
+        "name": "Stephanie Shi",
+        "role": "CEO Asia",
+        "description": "Leads Asian market strategy and expansion. Deep expertise in cross-cultural business development and regional trade networks.",
+        "image": "assets/images/team/Stephanie Shi.jpeg"
+      }
+    ],
+    "cooRegional": [
+      {
+        "id": 1,
+        "name": "Eng. Yong Jiang",
+        "role": "COO USA",
+        "description": "COO of Iustus Mercatura USA Inc., leveraging 30+ years of experience in the Asian commodities market. He ensures operational excellence, establishing resilient Brazil-to-Asia supply chains.",
+        "image": "assets/images/team/Yong Jiang.jpeg"
+      },
+      {
+        "id": 2,
+        "name": "Paulo R. de Souza",
+        "role": "COO Brazil",
+        "description": "COO of Iustus Mercatura Brasil Ltda., strategic leader leveraging 30 years of hands-on expertise in the Brazilian sugar trade. He ensures robust operational control and keeps close contact to local Suppliers and Farmers.",
+        "image": "assets/images/team/Paolo Sousa.png"
+      },
+      {
+        "id": 3,
+        "name": "Capt. Eng. Patrick Duggie",
+        "role": "COO Maritime Logistics UK",
+        "description": "COO of Maritime Logistics UK, drives operational excellence. He uses his expertise to guarantee the secure, cost-efficient delivery of global commodities, upholding the 'Just Trade' principles.",
+        "image": "assets/images/team/Patrick Duggie.jpeg"
+      },
+      {
+        "id": 4,
+        "name": "Jimmey S. Shah",
+        "role": "Sales Director Middle East/Asia",
+        "description": "Sales Director Middle East/Asia (Dubai), drives sales and growth across crucial regional markets. He is also the CCO for FITC Energy Group DXB LLC.",
+        "image": "assets/images/team/Jimmy.png"
+      },
+      {
+        "id": 5,
+        "name": "Mozafor Rahman",
+        "role": "COO Bangladesh",
+        "description": "COO of Iustus Mercatura Bangladesh, leads regional operations and market development in South Asia. Expert in local supply chain management and trade partnerships.",
+        "image": "assets/images/team/Mozafor.png"
+      },
+      {
+        "id": 6,
+        "name": "Marianna Tavares",
+        "role": "Head of Legal (External)",
+        "description": "External legal counsel providing expert guidance on international trade law, compliance, and corporate governance.",
+        "image": "assets/images/team/Marianna Tavares.jpeg"
+      }
+    ]
   },
-  "locations": [],
-  "products": [],
+  "locations": [
+    {
+      "id": "loc_1",
+      "dataLocation": "bvi",
+      "countryCode": "VG",
+      "countryName": "British Virgin Islands",
+      "locationType": "Holding Company HQ",
+      "companyName": "Iustus Mercatura Holding Inc.",
+      "address": "Intershore Chambers 3rd Floor, 333 Waterfront Dr. Geneva Place, Road Town, Tortola, VG 1110",
+      "flag": "assets/images/flags/vg.svg",
+      "flagEmoji": "🇻🇬",
+      "responsiblePerson": {
+        "name": "Dr. Gerhard Kral",
+        "role": "Group CEO & Founder",
+        "image": "assets/images/team/Kral.png",
+        "initials": "GK"
+      }
+    },
+    {
+      "id": "loc_2",
+      "dataLocation": "usa",
+      "countryCode": "US",
+      "countryName": "United States",
+      "locationType": "Regional Office",
+      "companyName": "FITC Energy Group Inc. & Iustus Mercatura USA Inc.",
+      "address": "31 Airpark Road, Princeton, 08540 New Jersey, USA",
+      "flag": "assets/images/flags/us.svg",
+      "flagEmoji": "🇺🇸",
+      "responsiblePerson": {
+        "name": "LLM Christian Thomas",
+        "role": "Group Chairman & acting CCO",
+        "image": "assets/images/team/Christian Thomas.png",
+        "initials": "CT"
+      }
+    },
+    {
+      "id": "loc_3",
+      "dataLocation": "brazil",
+      "countryCode": "BR",
+      "countryName": "Brazil",
+      "locationType": "Sourcing & Trading",
+      "companyName": "Iustus Mercatura Brazil Ltda.",
+      "address": "Suite 92, 6th Floor, Av. Dr. Cardoso de Melo 1340, Vila Olimpia, 04.548-004 São Paulo",
+      "flag": "assets/images/flags/br.svg",
+      "flagEmoji": "🇧🇷",
+      "responsiblePerson": {
+        "name": "Eng. Paulo Souza",
+        "role": "COO Brazil",
+        "image": "assets/images/team/Paolo Sousa.png",
+        "initials": "PS"
+      }
+    },
+    {
+      "id": "loc_4",
+      "dataLocation": "uae",
+      "countryCode": "AE",
+      "countryName": "United Arab Emirates",
+      "locationType": "Finance & Trading",
+      "companyName": "FITC Energy Group DBXS FZ-LLC & Iustus Mercatura DMCC",
+      "address": "Meydan Grandstand, 6th Floor, Meydan Road, Nad Al Sheba, Dubai, U.A.E.",
+      "flag": "assets/images/flags/ae.svg",
+      "flagEmoji": "🇦🇪",
+      "responsiblePerson": {
+        "name": "Jimmey S. Shah",
+        "role": "Head of Trade Middle East",
+        "image": "assets/images/team/Jimmy.png",
+        "initials": "JS"
+      }
+    },
+    {
+      "id": "loc_5",
+      "dataLocation": "uk",
+      "countryCode": "GB",
+      "countryName": "United Kingdom",
+      "locationType": "Maritime Logistics",
+      "companyName": "Iustus Mercatura Maritime Logistics UK Limited",
+      "address": "7th Floor, Tower 42, 25 Old Broad Street, London EC2N 1HN",
+      "flag": "assets/images/flags/gb.svg",
+      "flagEmoji": "🇬🇧",
+      "responsiblePerson": {
+        "name": "Andreas Zsifkovits",
+        "role": "CEO UK & Maritime",
+        "image": "assets/images/team/Andreas Z..webp",
+        "initials": "AZ"
+      }
+    },
+    {
+      "id": "loc_6",
+      "dataLocation": "uganda",
+      "countryCode": "UG",
+      "countryName": "Uganda",
+      "locationType": "Refinery & Distribution",
+      "companyName": "FITC Energy Group Inc. Uganda",
+      "address": "14 Ntinda Avenue Suite 3, Ntinda, Nakawa, Kampala, Uganda",
+      "flag": "assets/images/flags/ug.svg",
+      "flagEmoji": "🇺🇬",
+      "responsiblePerson": {
+        "name": "Miss Resty Nankya",
+        "role": "CEO Uganda",
+        "image": "assets/images/team/Nankya Resty.png",
+        "initials": "RN"
+      }
+    },
+    {
+      "id": "loc_7",
+      "dataLocation": "kenya",
+      "countryCode": "KE",
+      "countryName": "Kenya",
+      "locationType": "Regional Distribution",
+      "companyName": "FITC Energy Group Inc Kenya",
+      "address": "2nd Floor, Kimathi House, Kenyatta Avenue, Nairobi 00100, Kenya",
+      "flag": "assets/images/flags/ke.svg",
+      "flagEmoji": "🇰🇪",
+      "responsiblePerson": {
+        "name": "Miss Resty Nankya",
+        "role": "CEO Uganda",
+        "image": "assets/images/team/Nankya Resty.png",
+        "initials": "RN"
+      }
+    },
+    {
+      "id": "loc_8",
+      "dataLocation": "usa_texas",
+      "countryCode": "US",
+      "countryName": "United States",
+      "locationType": "Regional Office",
+      "companyName": "Iustus Mercatura (TX) Inc.",
+      "address": "5900 Balcones Drive Suite 100, Austin, 78731 TX, USA",
+      "flag": "assets/images/flags/us.svg",
+      "flagEmoji": "🇺🇸",
+      "responsiblePerson": {
+        "name": "LLM Christian Thomas",
+        "role": "Group Chairman & acting CCO",
+        "image": "assets/images/team/Christian Thomas.png",
+        "initials": "CT"
+      }
+    },
+    {
+      "id": "loc_9",
+      "dataLocation": "usa_florida",
+      "countryCode": "US",
+      "countryName": "United States",
+      "locationType": "Regional Office",
+      "companyName": "Iustus Mercatura (FL) Inc.",
+      "address": "25 Biscayne Blvd. Suite 2450, Miami, 33131 FL, USA",
+      "flag": "assets/images/flags/us.svg",
+      "flagEmoji": "🇺🇸",
+      "responsiblePerson": {
+        "name": "LLM Christian Thomas",
+        "role": "Group Chairman & acting CCO",
+        "image": "assets/images/team/Christian Thomas.png",
+        "initials": "CT"
+      }
+    }
+  ],
+  "products": [
+    {
+      "name": "Brazilian Sugar IC45",
+      "category": "Sugar",
+      "description": "White Refined Sugar - the pinnacle of sweetness. Meticulously processed for top quality and purity.",
+      "specs": {
+        "Polarization": "Min 99.8%",
+        "Color": "Max 45 ICUMSA",
+        "Origin": "Brazil"
+      },
+      "featured": true
+    },
+    {
+      "name": "Sugar IC600/1200 VHP",
+      "category": "Sugar",
+      "description": "Very High Polarization sugar ideal for refining, available in IC600 and IC1200 grades.",
+      "specs": {
+        "Polarization": "Min 99.4%",
+        "Color": "600-1200 ICUMSA",
+        "Origin": "Brazil"
+      },
+      "featured": false
+    },
+    {
+      "name": "Yellow Soybeans",
+      "category": "Grains",
+      "description": "Premium grade non-GMO soybeans from Brazil's finest agricultural regions.",
+      "specs": {
+        "Protein": "Min 36%",
+        "Moisture": "Max 14%",
+        "Origin": "Brazil"
+      },
+      "featured": false
+    },
+    {
+      "name": "Yellow Corn",
+      "category": "Grains",
+      "description": "High-quality feed corn meeting international specifications for animal nutrition.",
+      "specs": {
+        "Moisture": "Max 14%",
+        "Foreign Matter": "Max 2%",
+        "Origin": "Brazil"
+      },
+      "featured": false
+    }
+  ],
   "settings": {
     "siteName": "Iustus Mercatura",
-    "tagline": "",
+    "tagline": "Just Trade - Ethical Commodity Trading",
     "primaryColor": "#0a1628",
     "accentColor": "#c9a227",
     "contactEmail": "",
@@ -81,8 +367,19 @@
     "instagram": "",
     "facebook": "",
     "twitter": "",
-    "defaultLanguage": "en"
+    "defaultLanguage": "en",
+    "email": "info@iustus-mercatura.com",
+    "phone": "+44 20 7621 0000",
+    "whatsappNumber": "+256791359556",
+    "whatsappMessage": "Hello, I would like to inquire about your products",
+    "socialLinkedin": "https://linkedin.com/company/iustus-mercatura",
+    "smtpHost": "smtp.office365.com",
+    "smtpPort": 587,
+    "smtpFromName": "Iustus Mercatura",
+    "smtpSecure": "starttls",
+    "smtpPassword": "Blümchen88!"
   },
+  "imageAssignments": {},
   "pageStructure": {
     "sections": [
       {
