@@ -8879,14 +8879,14 @@ class AdminPanel {
                 return { ...img, assignment };
             });
 
-            // Einheitliches Grid - alle Bilder zusammen
+            // Einheitliches Grid - alle Bilder zusammen (links nach rechts)
             const html = `
-                <div class="mediathek-unified-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:16px;">
+                <div class="mediathek-unified-grid" style="display:flex; flex-wrap:wrap; gap:16px;">
                     ${imagesWithAssignment.map(img => `
                         <div class="mediathek-item ${img.assignment ? 'assigned' : ''} ${this._selectedMediathekImages.has(img.url) ? 'selected' : ''}"
                              data-url="${img.url}" data-filename="${img.filename}"
                              onclick="adminPanel.toggleMediathekSelect('${img.url}', event)"
-                             style="${img.assignment ? 'border:2px solid #28a745;' : ''}">
+                             style="width:200px; flex-shrink:0; ${img.assignment ? 'border:2px solid #28a745;' : ''}">
                             <div class="mediathek-checkbox ${this._selectedMediathekImages.has(img.url) ? 'checked' : ''}">
                                 <i class="fas fa-check"></i>
                             </div>
