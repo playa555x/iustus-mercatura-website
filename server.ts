@@ -1961,7 +1961,7 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
             log("INFO", `Team image uploaded: ${filename} to ${TEAM_IMAGES_DIR}`);
 
             // Broadcast to sync clients
-            broadcastToSyncClients({
+            broadcastSync({
                 type: 'media_uploaded',
                 data: { filename, folder: 'team', url: `/assets/images/team/${filename}` }
             });
