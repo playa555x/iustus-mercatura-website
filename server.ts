@@ -1777,25 +1777,31 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                             log("ERROR", `Failed to update data.json: ${e}`);
                         }
 
-                        // Remove from database/database.json (team members)
+                        // Remove image reference from team members in database
                         try {
-                            const dbFile = join(BASE_DIR, "database", "database.json");
-                            if (existsSync(dbFile)) {
-                                const dbContent = await readFile(dbFile, "utf-8");
-                                const dbJson = JSON.parse(dbContent);
+                            const imagePathVariants = [
+                                imageUrl,
+                                imageUrl.substring(1), // without leading slash
+                                `assets/images/team/${filename}` // relative path
+                            ];
 
-                                // Remove from team_members
-                                if (dbJson.team_members) {
-                                    dbJson.team_members = dbJson.team_members.filter((member: any) =>
-                                        member.data?.image !== imageUrl
-                                    );
+                            let updated = false;
+                            for (const item of db.items) {
+                                if (item.collection_id === 'col_team' && item.data?.image) {
+                                    if (imagePathVariants.includes(item.data.image)) {
+                                        item.data.image = null;
+                                        updated = true;
+                                        log("INFO", `Cleared image for team member: ${item.data.name}`);
+                                    }
                                 }
+                            }
 
-                                await writeFile(dbFile, JSON.stringify(dbJson, null, 2), "utf-8");
-                                log("INFO", `Removed image references from database.json: ${imageUrl}`);
+                            if (updated) {
+                                await saveDatabase();
+                                log("INFO", `Database saved after clearing image references`);
                             }
                         } catch (e) {
-                            log("ERROR", `Failed to update database.json: ${e}`);
+                            log("ERROR", `Failed to update database: ${e}`);
                         }
 
                         // Remove from index.html (team cards)
