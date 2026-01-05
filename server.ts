@@ -64,6 +64,106 @@ async function saveSyncState() {
     await writeFile(SYNC_STATE_FILE, JSON.stringify(syncState, null, 2));
 }
 
+// ==========================================
+// GIT AUTO-SYNC FOR CONTENT CHANGES
+// ==========================================
+let gitSyncPending = false;
+let gitSyncTimeout: ReturnType<typeof setTimeout> | null = null;
+
+// Debounced Git sync - waits 5 seconds after last change before syncing
+async function scheduleGitSync(description: string) {
+    // Only run on production (Render)
+    if (!process.env.RENDER) {
+        log("DEBUG", "[GitSync] Skipped - not on Render");
+        return;
+    }
+
+    gitSyncPending = true;
+
+    // Clear existing timeout
+    if (gitSyncTimeout) {
+        clearTimeout(gitSyncTimeout);
+    }
+
+    // Wait 5 seconds after last change before syncing
+    gitSyncTimeout = setTimeout(async () => {
+        if (!gitSyncPending) return;
+        gitSyncPending = false;
+
+        try {
+            log("INFO", `[GitSync] Starting content sync: ${description}`);
+
+            const { spawn } = await import('child_process');
+            const BASE_DIR = import.meta.dir;
+
+            // Only sync content files, not code
+            const contentPaths = [
+                'uploads/',
+                'assets/images/team/',
+                'database/database.json',
+                'database/locations.json',
+                'data.json'
+            ];
+
+            // Check if there are any changes
+            const statusResult = await runGitCommand(spawn, BASE_DIR, ['status', '--porcelain', ...contentPaths]);
+
+            if (!statusResult.trim()) {
+                log("INFO", "[GitSync] No content changes to sync");
+                return;
+            }
+
+            log("INFO", `[GitSync] Changes detected:\n${statusResult}`);
+
+            // Configure git for Render environment
+            await runGitCommand(spawn, BASE_DIR, ['config', 'user.email', 'admin@iustus-mercatura.com']);
+            await runGitCommand(spawn, BASE_DIR, ['config', 'user.name', 'Iustus Admin']);
+
+            // Add only content files
+            for (const path of contentPaths) {
+                try {
+                    await runGitCommand(spawn, BASE_DIR, ['add', path]);
+                } catch (e) {
+                    // Ignore if path doesn't exist
+                }
+            }
+
+            // Commit
+            const commitMsg = `[Auto] Content update: ${description}\n\nAutomated sync from admin panel`;
+            await runGitCommand(spawn, BASE_DIR, ['commit', '-m', commitMsg]);
+
+            // Push
+            await runGitCommand(spawn, BASE_DIR, ['push']);
+
+            log("INFO", "[GitSync] Content synced to Git successfully");
+
+        } catch (e) {
+            log("ERROR", `[GitSync] Failed to sync: ${e}`);
+        }
+    }, 5000); // 5 second debounce
+}
+
+function runGitCommand(spawn: any, cwd: string, args: string[]): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const proc = spawn('git', args, { cwd });
+        let stdout = '';
+        let stderr = '';
+
+        proc.stdout?.on('data', (data: Buffer) => { stdout += data.toString(); });
+        proc.stderr?.on('data', (data: Buffer) => { stderr += data.toString(); });
+
+        proc.on('close', (code: number) => {
+            if (code === 0) {
+                resolve(stdout);
+            } else {
+                reject(new Error(`Git ${args[0]} failed: ${stderr || stdout}`));
+            }
+        });
+
+        proc.on('error', reject);
+    });
+}
+
 // Broadcast to all WebSocket clients
 function broadcastSync(message: any, excludeId?: string) {
     const msgStr = JSON.stringify(message);
@@ -970,6 +1070,30 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
             return new Response(JSON.stringify(db), { headers: jsonHeaders });
         }
 
+        // POST /api/db - Save full database
+        if (pathname === "/api/db" && req.method === "POST") {
+            try {
+                const body = await req.json();
+                // Update in-memory database
+                if (body.websites) db.websites = body.websites;
+                if (body.pages) db.pages = body.pages;
+                if (body.blocks) db.blocks = body.blocks;
+                if (body.collections) db.collections = body.collections;
+                if (body.items) db.items = body.items;
+                if (body.media) db.media = body.media;
+                if (body.settings) db.settings = body.settings;
+
+                // Save to file
+                await Bun.write(DB_PATH, JSON.stringify(db, null, 2));
+                log("INFO", "[API] Database saved via POST /api/db");
+
+                return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
+            } catch (error) {
+                log("ERROR", `[API] Failed to save database: ${error}`);
+                return new Response(JSON.stringify({ error: "Failed to save database" }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
         // GET /api/db/tables - Get table names and counts
         if (pathname === "/api/db/tables" && req.method === "GET") {
             const tables = Object.entries(db).map(([name, data]) => ({
@@ -1706,6 +1830,9 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                             data: { filename, url: imageUrl }
                         });
 
+                        // Schedule Git sync for content changes
+                        scheduleGitSync(`Deleted team image: ${filename}`);
+
                         return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
                     } catch (e) {
                         log("ERROR", `Failed to delete team image: ${e}`);
@@ -1778,6 +1905,9 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     type: 'media_deleted',
                     data: { filename, id: mediaItem.id, url: imageUrl }
                 });
+
+                // Schedule Git sync for content changes
+                scheduleGitSync(`Deleted image: ${filename}`);
 
                 log("INFO", `Image deleted: ${filename}`);
                 return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
