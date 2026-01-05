@@ -73,6 +73,534 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================
+// DYNAMIC CONTENT LOADING FROM DATABASE
+// ============================================
+
+/**
+ * Load dynamic content from database.json via API
+ * This allows Admin/Developer changes to reflect on the website
+ */
+async function loadDynamicContent() {
+    try {
+        const response = await fetch('/api/public/content');
+        if (!response.ok) {
+            console.log('[Dynamic] API not available, using static content');
+            return null;
+        }
+
+        const result = await response.json();
+        if (!result.success) {
+            console.log('[Dynamic] Failed to load content');
+            return null;
+        }
+
+        const data = result.data;
+        console.log('[Dynamic] Content loaded from database');
+
+        // Update Team Section
+        if (data.team) {
+            updateTeamSection(data.team);
+        }
+
+        // Update Products Section
+        if (data.products) {
+            updateProductsSection(data.products);
+        }
+
+        // Update Locations Section
+        if (data.locations) {
+            updateLocationsSection(data.locations);
+        }
+
+        // Update Projects Section
+        if (data.projects) {
+            updateProjectsSection(data.projects);
+        }
+
+        // Update Hero Stats
+        if (data.blocks?.hero?.stats) {
+            updateHeroStats(data.blocks.hero.stats);
+        }
+
+        // Update Values Section
+        if (data.blocks?.values?.values) {
+            updateValuesSection(data.blocks.values.values);
+        }
+
+        // Update Sustainability Stats
+        if (data.blocks?.sustainability?.stats) {
+            updateSustainabilityStats(data.blocks.sustainability.stats);
+        }
+
+        return data;
+    } catch (error) {
+        console.log('[Dynamic] Error loading content:', error.message);
+        return null;
+    }
+}
+
+/**
+ * Dynamically update the team section with data from database
+ */
+function updateTeamSection(teamByCategory) {
+    const teamSection = document.querySelector('.team-section .team-container');
+    if (!teamSection) return;
+
+    // Define category order
+    const categoryOrder = ['Global Leadership', 'CEO', 'COO & Regional Heads'];
+
+    // Clear existing content (except the header)
+    const header = teamSection.querySelector('.team-header');
+    teamSection.innerHTML = '';
+    if (header) {
+        teamSection.appendChild(header);
+    }
+
+    // Generate HTML for each category
+    categoryOrder.forEach(category => {
+        const members = teamByCategory[category];
+        if (!members || members.length === 0) return;
+
+        const categoryHtml = `
+            <div class="team-category">
+                <h3 class="team-category-title">${category}</h3>
+            </div>
+            <div class="team-grid team-grid-3">
+                ${members.map(member => generateTeamCardHtml(member)).join('')}
+            </div>
+        `;
+        teamSection.insertAdjacentHTML('beforeend', categoryHtml);
+    });
+
+    // Re-initialize hover effects for new cards
+    initTeamCardEffects();
+}
+
+/**
+ * Generate HTML for a single team member card
+ */
+function generateTeamCardHtml(member) {
+    const imagePath = member.image ? `/${member.image}` : '';
+    const hasImage = member.image && member.image.length > 0;
+
+    return `
+        <div class="team-card-flip" data-member-id="${member.id}">
+            <div class="team-card-inner">
+                <div class="team-card-front">
+                    <div class="team-image">
+                        ${hasImage
+                            ? `<img src="${imagePath}" alt="${member.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
+                            : ''
+                        }
+                        <div class="team-placeholder" style="${hasImage ? 'display:none;' : 'display:flex;'}">${member.initials || member.name.split(' ').map(n => n[0]).join('')}</div>
+                    </div>
+                    <h4 class="team-name">${member.name}</h4>
+                    <p class="team-role">${member.role}</p>
+                </div>
+                <div class="team-card-back">
+                    <h4 class="team-name">${member.name}</h4>
+                    <p class="team-role">${member.role}</p>
+                    <p class="team-bio">${member.description || ''}</p>
+                    ${member.linkedin ? `<a href="${member.linkedin}" class="team-linkedin" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>` : ''}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Initialize hover/click effects for team cards
+ */
+function initTeamCardEffects() {
+    const teamCards = document.querySelectorAll('.team-card-flip');
+    teamCards.forEach(card => {
+        // Touch device support - tap to flip
+        card.addEventListener('click', function(e) {
+            if ('ontouchstart' in window) {
+                this.classList.toggle('flipped');
+            }
+        });
+    });
+}
+
+/**
+ * Update hero statistics
+ */
+function updateHeroStats(stats) {
+    const heroStats = document.querySelector('.hero-stats');
+    if (!heroStats || !stats || stats.length === 0) return;
+
+    const statItems = heroStats.querySelectorAll('.stat-item');
+    stats.forEach((stat, index) => {
+        if (statItems[index]) {
+            const numberEl = statItems[index].querySelector('.stat-number');
+            const labelEl = statItems[index].querySelector('.stat-label');
+            if (numberEl) numberEl.textContent = stat.value;
+            if (labelEl) labelEl.textContent = stat.label;
+        }
+    });
+}
+
+/**
+ * Update values section - generate dynamically from database
+ */
+function updateValuesSection(values) {
+    const valuesGrid = document.querySelector('.values-grid');
+    if (!valuesGrid || !values || values.length === 0) return;
+
+    // Clear loading placeholder
+    valuesGrid.innerHTML = '';
+
+    // Generate value cards dynamically
+    values.forEach((value, index) => {
+        const valueHtml = `
+            <div class="value-card">
+                <div class="value-number">${value.number}</div>
+                <h3>${value.title}</h3>
+                <p>${value.description}</p>
+            </div>
+        `;
+        valuesGrid.insertAdjacentHTML('beforeend', valueHtml);
+    });
+
+    // Re-initialize animations for value cards
+    initValueAnimations();
+}
+
+/**
+ * Initialize value card animations
+ */
+function initValueAnimations() {
+    if (typeof gsap !== 'undefined') {
+        gsap.utils.toArray('.value-card').forEach((card, i) => {
+            gsap.fromTo(card,
+                { y: 50, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.6,
+                    delay: i * 0.1,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    }
+                }
+            );
+        });
+    }
+}
+
+/**
+ * Update sustainability statistics
+ */
+function updateSustainabilityStats(stats) {
+    const sustainabilityStats = document.querySelector('.sustainability-stats');
+    if (!sustainabilityStats || !stats || stats.length === 0) return;
+
+    const statItems = sustainabilityStats.querySelectorAll('.stat-item');
+    stats.forEach((stat, index) => {
+        if (statItems[index]) {
+            const numberEl = statItems[index].querySelector('.stat-number');
+            const labelEl = statItems[index].querySelector('.stat-label');
+            if (numberEl) numberEl.textContent = stat.value;
+            if (labelEl) labelEl.textContent = stat.label;
+        }
+    });
+}
+
+/**
+ * Update products section with data from database
+ */
+function updateProductsSection(products) {
+    const productsGrid = document.querySelector('.products-section .products-grid');
+    if (!productsGrid || !products || products.length === 0) return;
+
+    // Clear loading placeholder
+    productsGrid.innerHTML = '';
+
+    // Product category to visual class mapping
+    const categoryVisuals = {
+        'Sugar': 'sugar-visual',
+        'Grains': 'soy-visual',
+        'Other': 'generic-visual'
+    };
+
+    // Generate product cards
+    products.forEach((product, index) => {
+        const visualClass = product.name.toLowerCase().includes('corn') ? 'corn-visual' :
+                           product.name.toLowerCase().includes('soy') ? 'soy-visual' :
+                           product.name.toLowerCase().includes('vhp') ? 'vhp-visual' :
+                           categoryVisuals[product.category] || 'sugar-visual';
+
+        const specsHtml = Object.entries(product.specs || {}).map(([key, value]) =>
+            `<li><span>${key}:</span> ${value}</li>`
+        ).join('');
+
+        const productHtml = `
+            <div class="product-card${product.featured ? ' featured' : ''}" data-product-id="${product.id}">
+                ${product.featured ? '<span class="product-badge">Flagship Product</span>' : ''}
+                <div class="product-visual ${visualClass}">
+                    ${visualClass === 'sugar-visual' ? `
+                        <div class="sugar-particles-container">
+                            <div class="sugar-particle"></div>
+                            <div class="sugar-particle"></div>
+                            <div class="sugar-particle"></div>
+                            <div class="sugar-particle"></div>
+                            <div class="sugar-particle"></div>
+                        </div>
+                    ` : ''}
+                    <div class="product-icon">
+                        ${getProductIcon(visualClass)}
+                    </div>
+                </div>
+                <div class="product-content">
+                    <h3>${product.name}</h3>
+                    <p>${product.description}</p>
+                    <ul class="product-specs">
+                        ${specsHtml}
+                    </ul>
+                    <a href="#contact" class="product-link">Request Quote &rarr;</a>
+                </div>
+            </div>
+        `;
+        productsGrid.insertAdjacentHTML('beforeend', productHtml);
+    });
+
+    // Re-initialize animations for new product cards
+    initProductAnimations();
+}
+
+/**
+ * Get SVG icon for product based on visual class
+ */
+function getProductIcon(visualClass) {
+    switch(visualClass) {
+        case 'sugar-visual':
+            return `<svg viewBox="0 0 100 100">
+                <rect x="30" y="30" width="40" height="40" rx="5" fill="currentColor" opacity="0.3"></rect>
+                <rect x="35" y="35" width="30" height="30" rx="3" fill="currentColor" opacity="0.5"></rect>
+                <rect x="40" y="40" width="20" height="20" rx="2" fill="currentColor"></rect>
+            </svg>`;
+        case 'vhp-visual':
+            return `<svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="30" fill="currentColor" opacity="0.3"></circle>
+                <circle cx="50" cy="50" r="20" fill="currentColor" opacity="0.5"></circle>
+                <circle cx="50" cy="50" r="10" fill="currentColor"></circle>
+            </svg>`;
+        case 'soy-visual':
+            return `<svg viewBox="0 0 100 100">
+                <ellipse cx="50" cy="50" rx="25" ry="15" fill="currentColor" opacity="0.3"></ellipse>
+                <ellipse cx="50" cy="50" rx="18" ry="10" fill="currentColor" opacity="0.5"></ellipse>
+                <ellipse cx="50" cy="50" rx="10" ry="5" fill="currentColor"></ellipse>
+            </svg>`;
+        case 'corn-visual':
+            return `<svg viewBox="0 0 100 100">
+                <path d="M50 20 L70 50 L50 80 L30 50 Z" fill="currentColor" opacity="0.3"></path>
+                <path d="M50 30 L62 50 L50 70 L38 50 Z" fill="currentColor" opacity="0.5"></path>
+                <path d="M50 40 L55 50 L50 60 L45 50 Z" fill="currentColor"></path>
+            </svg>`;
+        default:
+            return `<svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="30" fill="currentColor" opacity="0.3"></circle>
+                <circle cx="50" cy="50" r="20" fill="currentColor" opacity="0.5"></circle>
+                <circle cx="50" cy="50" r="10" fill="currentColor"></circle>
+            </svg>`;
+    }
+}
+
+/**
+ * Initialize product card animations
+ */
+function initProductAnimations() {
+    if (typeof gsap !== 'undefined') {
+        gsap.utils.toArray('.product-card').forEach((card, i) => {
+            gsap.fromTo(card,
+                { y: 80, scale: 0.9, opacity: 0 },
+                {
+                    y: 0,
+                    scale: 1,
+                    opacity: 1,
+                    duration: 0.8,
+                    delay: i * 0.1,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    }
+                }
+            );
+        });
+    }
+}
+
+/**
+ * Update locations section with data from database
+ */
+function updateLocationsSection(locations) {
+    const mapInfoBoxes = document.querySelector('.map-info-boxes');
+    if (!mapInfoBoxes || !locations || locations.length === 0) return;
+
+    // Clear existing info boxes
+    mapInfoBoxes.innerHTML = '';
+
+    // Country code to location ID mapping
+    const countryToLocationId = {
+        'VG': 'bvi',
+        'US': 'usa',
+        'BR': 'brazil',
+        'AE': 'uae',
+        'GB': 'uk',
+        'UG': 'uganda',
+        'KE': 'kenya'
+    };
+
+    // Generate info boxes for each location
+    locations.forEach(location => {
+        const locationId = countryToLocationId[location.countryCode] || location.countryCode.toLowerCase();
+        const flagPath = `assets/images/flags/${location.countryCode.toLowerCase()}.svg`;
+
+        const infoBoxHtml = `
+            <div class="map-info-box" data-location="${locationId}">
+                <div class="info-box-header">
+                    <img src="${flagPath}" alt="${location.countryCode}" class="info-flag-img" onerror="this.style.display='none'">
+                    <div class="info-title">
+                        <h4>${location.country}</h4>
+                        <span class="info-type">${location.type}</span>
+                    </div>
+                </div>
+                <div class="info-box-content">
+                    <p class="info-company">${location.company}</p>
+                    <p class="info-address">${location.address}</p>
+                </div>
+            </div>
+        `;
+        mapInfoBoxes.insertAdjacentHTML('beforeend', infoBoxHtml);
+    });
+
+    // Re-initialize map hover effects
+    initMapInteractions();
+}
+
+/**
+ * Initialize map marker interactions
+ */
+function initMapInteractions() {
+    const markers = document.querySelectorAll('.location-marker');
+    const infoBoxes = document.querySelectorAll('.map-info-box');
+
+    markers.forEach(marker => {
+        marker.addEventListener('mouseenter', () => {
+            const locationId = marker.dataset.location;
+            infoBoxes.forEach(box => {
+                if (box.dataset.location === locationId) {
+                    box.classList.add('active');
+                } else {
+                    box.classList.remove('active');
+                }
+            });
+        });
+
+        marker.addEventListener('mouseleave', () => {
+            infoBoxes.forEach(box => box.classList.remove('active'));
+        });
+    });
+}
+
+/**
+ * Update projects section with data from database
+ */
+function updateProjectsSection(projects) {
+    const projectsTimeline = document.querySelector('.projects-timeline');
+    if (!projectsTimeline || !projects || projects.length === 0) return;
+
+    // Keep the timeline line but clear project items
+    const timelineLine = projectsTimeline.querySelector('.timeline-line');
+    projectsTimeline.innerHTML = '';
+    if (timelineLine) {
+        projectsTimeline.appendChild(timelineLine);
+    } else {
+        projectsTimeline.insertAdjacentHTML('afterbegin', '<div class="timeline-line"></div>');
+    }
+
+    // Group projects by year
+    const projectsByYear = {};
+    projects.forEach(project => {
+        const year = project.year || 'Upcoming';
+        if (!projectsByYear[year]) {
+            projectsByYear[year] = [];
+        }
+        projectsByYear[year].push(project);
+    });
+
+    // Generate project items
+    Object.entries(projectsByYear).sort((a, b) => a[0].localeCompare(b[0])).forEach(([year, yearProjects]) => {
+        yearProjects.forEach(project => {
+            const statsHtml = (project.stats || []).map(stat =>
+                `<div class="project-stat">
+                    <span class="stat-value">${stat.value}</span>
+                    <span class="stat-label">${stat.label}</span>
+                </div>`
+            ).join('');
+
+            const projectHtml = `
+                <div class="project-item" data-project-id="${project.id}">
+                    <div class="project-year">${year}</div>
+                    <div class="project-card">
+                        <div class="project-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path>
+                            </svg>
+                        </div>
+                        <div class="project-content">
+                            <h3>${project.name}</h3>
+                            <p>${project.description}</p>
+                            ${statsHtml ? `<div class="project-stats">${statsHtml}</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            projectsTimeline.insertAdjacentHTML('beforeend', projectHtml);
+        });
+    });
+
+    // Re-initialize animations for projects
+    initProjectAnimations();
+}
+
+/**
+ * Initialize project animations
+ */
+function initProjectAnimations() {
+    if (typeof gsap !== 'undefined') {
+        gsap.utils.toArray('.project-item').forEach((item, i) => {
+            gsap.fromTo(item.querySelector('.project-card'),
+                { x: i % 2 === 0 ? -100 : 100, opacity: 0 },
+                {
+                    x: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: item,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    }
+                }
+            );
+        });
+    }
+}
+
+// Load dynamic content when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Load dynamic content from database
+    loadDynamicContent();
+});
+
+// ============================================
 // PRELOADER
 // ============================================
 window.addEventListener('load', () => {

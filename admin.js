@@ -8879,50 +8879,46 @@ class AdminPanel {
                 return { ...img, assignment };
             });
 
-            // Einheitliches Grid - alle Bilder zusammen (links nach rechts)
-            const html = `
-                <div class="mediathek-unified-grid" style="display:flex; flex-wrap:wrap; gap:16px;">
-                    ${imagesWithAssignment.map(img => `
-                        <div class="mediathek-item ${img.assignment ? 'assigned' : ''} ${this._selectedMediathekImages.has(img.url) ? 'selected' : ''}"
-                             data-url="${img.url}" data-filename="${img.filename}"
-                             onclick="adminPanel.toggleMediathekSelect('${img.url}', event)"
-                             style="width:200px; flex-shrink:0; ${img.assignment ? 'border:2px solid #28a745;' : ''}">
-                            <div class="mediathek-checkbox ${this._selectedMediathekImages.has(img.url) ? 'checked' : ''}">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            ${img.assignment ? `
-                                <div class="mediathek-assigned-badge" style="position:absolute; top:8px; left:8px; z-index:5; background:#28a745; color:white; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:600; max-width:calc(100% - 50px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                                    <i class="fas fa-link" style="margin-right:4px;"></i>${img.assignment.name}
-                                </div>
-                            ` : ''}
-                            <img src="${img.url}" alt="${img.filename}" loading="lazy">
-                            <div class="mediathek-item-overlay">
-                                <div class="mediathek-item-name">${img.original_name || img.filename}</div>
-                                <div class="mediathek-item-actions">
-                                    ${img.assignment ? `
-                                        <button class="btn-primary" onclick="event.stopPropagation(); adminPanel.assignImageToWebsite('${img.url}')" title="Neu zuordnen" style="background:var(--gold);color:var(--navy-dark);">
-                                            <i class="fas fa-exchange-alt"></i>
-                                        </button>
-                                        <button class="btn-warning" onclick="event.stopPropagation(); adminPanel.removeImageAssignment('${img.url}')" title="Zuordnung entfernen" style="background:#ffc107;color:#000;">
-                                            <i class="fas fa-unlink"></i>
-                                        </button>
-                                    ` : `
-                                        <button class="btn-primary" onclick="event.stopPropagation(); adminPanel.assignImageToWebsite('${img.url}')" title="Zuordnen" style="background:var(--gold);color:var(--navy-dark);">
-                                            <i class="fas fa-bullseye"></i>
-                                        </button>
-                                        <button class="btn-copy" onclick="event.stopPropagation(); adminPanel.copyImageUrl('${img.url}')" title="URL kopieren">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    `}
-                                    <button class="btn-delete" onclick="event.stopPropagation(); adminPanel.deleteMediathekImage('${img.filename}')" title="Löschen">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
+            // Bilder direkt rendern (kein extra Wrapper - mediathek-grid CSS macht das Grid)
+            const html = imagesWithAssignment.map(img => `
+                <div class="mediathek-item ${img.assignment ? 'assigned' : ''} ${this._selectedMediathekImages.has(img.url) ? 'selected' : ''}"
+                     data-url="${img.url}" data-filename="${img.filename}"
+                     onclick="adminPanel.toggleMediathekSelect('${img.url}', event)"
+                     style="aspect-ratio:1; ${img.assignment ? 'border:2px solid #28a745;' : ''}">
+                    <div class="mediathek-checkbox ${this._selectedMediathekImages.has(img.url) ? 'checked' : ''}">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    ${img.assignment ? `
+                        <div class="mediathek-assigned-badge" style="position:absolute; top:8px; left:8px; z-index:5; background:#28a745; color:white; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:600; max-width:calc(100% - 50px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                            <i class="fas fa-link" style="margin-right:4px;"></i>${img.assignment.name}
                         </div>
-                    `).join('')}
+                    ` : ''}
+                    <img src="${img.url}" alt="${img.filename}" loading="lazy">
+                    <div class="mediathek-item-overlay">
+                        <div class="mediathek-item-name">${img.original_name || img.filename}</div>
+                        <div class="mediathek-item-actions">
+                            ${img.assignment ? `
+                                <button class="btn-primary" onclick="event.stopPropagation(); adminPanel.assignImageToWebsite('${img.url}')" title="Neu zuordnen" style="background:var(--gold);color:var(--navy-dark);">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </button>
+                                <button class="btn-warning" onclick="event.stopPropagation(); adminPanel.removeImageAssignment('${img.url}')" title="Zuordnung entfernen" style="background:#ffc107;color:#000;">
+                                    <i class="fas fa-unlink"></i>
+                                </button>
+                            ` : `
+                                <button class="btn-primary" onclick="event.stopPropagation(); adminPanel.assignImageToWebsite('${img.url}')" title="Zuordnen" style="background:var(--gold);color:var(--navy-dark);">
+                                    <i class="fas fa-bullseye"></i>
+                                </button>
+                                <button class="btn-copy" onclick="event.stopPropagation(); adminPanel.copyImageUrl('${img.url}')" title="URL kopieren">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            `}
+                            <button class="btn-delete" onclick="event.stopPropagation(); adminPanel.deleteMediathekImage('${img.filename}')" title="Löschen">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            `;
+            `).join('');
 
             grid.innerHTML = html;
             this.updateMediathekToolbar();

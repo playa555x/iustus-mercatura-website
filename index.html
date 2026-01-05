@@ -2085,108 +2085,21 @@
         </div>
     </section>
 
-    <!-- Products Section -->
+    <!-- Products Section - Dynamisch geladen von /api/public/content -->
     <section class="products-section" id="products">
         <div class="container">
-            
-            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+            <div class="section-header centered products-header">
                 <span class="section-label">Our Products</span>
                 <h2 class="section-title">Premium <span class="highlight">Brazilian Commodities</span></h2>
                 <p class="section-desc">Sourced ethically, processed meticulously, delivered globally</p>
-            </div><div class="products-grid">
-                
-                <div class="product-card featured" style="translate: none; rotate: none; scale: none; transform: translate(0px, 80px) scale(0.9, 0.9); opacity: 0; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
-                    <span class="product-badge">Flagship Product</span>
-                    <div class="product-visual sugar-visual">
-                        <div class="sugar-particles-container">
-                            <div class="sugar-particle"></div>
-                            <div class="sugar-particle"></div>
-                            <div class="sugar-particle"></div>
-                            <div class="sugar-particle"></div>
-                            <div class="sugar-particle"></div>
-                        </div>
-                        <div class="product-icon">
-                            <svg viewBox="0 0 100 100">
-                                <rect x="30" y="30" width="40" height="40" rx="5" fill="currentColor" opacity="0.3"></rect>
-                                <rect x="35" y="35" width="30" height="30" rx="3" fill="currentColor" opacity="0.5"></rect>
-                                <rect x="40" y="40" width="20" height="20" rx="2" fill="currentColor"></rect>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="product-content">
-                        <h3>Brazilian Sugar IC45</h3>
-                        <p>White Refined Sugar - the pinnacle of sweetness. Meticulously processed for top quality and purity.</p>
-                        <ul class="product-specs">
-                            <li><span>Polarization:</span> Min 99.8%</li>
-                            <li><span>Color:</span> Max 45 ICUMSA</li>
-                            <li><span>Origin:</span> Brazil</li>
-                        </ul>
-                        <a href="#contact" class="product-link">Request Quote &rarr;</a>
-                    </div>
+            </div>
+            <!-- Produkte werden dynamisch von script.js geladen -->
+            <div class="products-grid">
+                <div class="products-loading" style="text-align: center; padding: 40px; grid-column: 1 / -1;">
+                    <div class="loading-spinner"></div>
+                    <p style="color: rgba(255,255,255,0.6); margin-top: 16px;">Loading products...</p>
                 </div>
-                <div class="product-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 80px) scale(0.9, 0.9); opacity: 0; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
-                    <div class="product-visual vhp-visual">
-                        <div class="product-icon">
-                            <svg viewBox="0 0 100 100">
-                                <circle cx="50" cy="50" r="30" fill="currentColor" opacity="0.3"></circle>
-                                <circle cx="50" cy="50" r="20" fill="currentColor" opacity="0.5"></circle>
-                                <circle cx="50" cy="50" r="10" fill="currentColor"></circle>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="product-content">
-                        <h3>Sugar IC600/1200 VHP</h3>
-                        <p>Very High Polarization sugar ideal for refining, available in IC600 and IC1200 grades.</p>
-                        <ul class="product-specs">
-                            <li><span>Polarization:</span> Min 99.4%</li>
-                            <li><span>Color:</span> 600-1200 ICUMSA</li>
-                            <li><span>Origin:</span> Brazil</li>
-                        </ul>
-                        <a href="#contact" class="product-link">Request Quote &rarr;</a>
-                    </div>
-                </div>
-                <div class="product-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 80px) scale(0.9, 0.9); opacity: 0; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
-                    <div class="product-visual soy-visual">
-                        <div class="product-icon">
-                            <svg viewBox="0 0 100 100">
-                                <ellipse cx="50" cy="50" rx="25" ry="15" fill="currentColor" opacity="0.3"></ellipse>
-                                <ellipse cx="50" cy="50" rx="18" ry="10" fill="currentColor" opacity="0.5"></ellipse>
-                                <ellipse cx="50" cy="50" rx="10" ry="5" fill="currentColor"></ellipse>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="product-content">
-                        <h3>Yellow Soybeans</h3>
-                        <p>Premium grade non-GMO soybeans from Brazil's finest agricultural regions.</p>
-                        <ul class="product-specs">
-                            <li><span>Protein:</span> Min 36%</li>
-                            <li><span>Moisture:</span> Max 14%</li>
-                            <li><span>Origin:</span> Brazil</li>
-                        </ul>
-                        <a href="#contact" class="product-link">Request Quote &rarr;</a>
-                    </div>
-                </div>
-            <div class="product-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 80px) scale(0.9, 0.9); opacity: 0; box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;">
-                    <div class="product-visual corn-visual">
-                        <div class="product-icon">
-                            <svg viewBox="0 0 100 100">
-                                <path d="M50 20 L70 50 L50 80 L30 50 Z" fill="currentColor" opacity="0.3"></path>
-                                <path d="M50 30 L62 50 L50 70 L38 50 Z" fill="currentColor" opacity="0.5"></path>
-                                <path d="M50 40 L55 50 L50 60 L45 50 Z" fill="currentColor"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="product-content">
-                        <h3>Yellow Corn</h3>
-                        <p>High-quality feed corn meeting international specifications for animal nutrition.</p>
-                        <ul class="product-specs">
-                            <li><span>Moisture:</span> Max 14%</li>
-                            <li><span>Foreign Matter:</span> Max 2%</li>
-                            <li><span>Origin:</span> Brazil</li>
-                        </ul>
-                        <a href="#contact" class="product-link">Request Quote &rarr;</a>
-                    </div>
-                </div></div>
+            </div>
         </div>
     </section>
 
@@ -2329,594 +2242,48 @@
                         </svg>
                     </div>
                 </div>
-                <!-- Info boxes that appear on marker hover -->
+                <!-- Info boxes - Dynamisch geladen von /api/public/content -->
                 <div class="map-info-boxes">
-                    <div class="map-info-box" data-location="bvi">
-                        <div class="info-box-header">
-                            <img src="assets/images/flags/vg.svg" alt="VG" class="info-flag-img">
-                            <div class="info-title">
-                                <h4>British Virgin Islands</h4>
-                                <span class="info-type">Holding Company HQ</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">Iustus Mercatura Holding Inc.</p>
-                            <p class="info-address">Intershore Chambers 3rd Floor, 333 Waterfront Dr. Geneva Place, Road Town, Tortola, VG 1110</p>
-                        </div>
-                        <div class="info-box-person">
-                            <img src="assets/images/team/Kral.png" alt="Dr. Gerhard Kral" class="person-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <span class="person-initials" style="display:none;">GK</span>
-                            <div class="person-details">
-                                <span class="person-name">Dr. Gerhard Kral</span>
-                                <span class="person-role">Group CEO &amp; Founder</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="map-info-box" data-location="usa">
-                        <div class="info-box-header">
-                            <img src="assets/images/flags/us.svg" alt="US" class="info-flag-img">
-                            <div class="info-title">
-                                <h4>United States</h4>
-                                <span class="info-type">Regional Office</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">FITC Energy Group Inc. &amp; Iustus Mercatura USA Inc.</p>
-                            <p class="info-address">31 Airpark Road, Princeton, 08540 New Jersey, USA</p>
-                        </div>
-                        <div class="info-box-person">
-                            <img src="assets/images/team/Christian-Thomas.png" alt="LLM Christian Thomas" class="person-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <span class="person-initials" style="display:none;">CT</span>
-                            <div class="person-details">
-                                <span class="person-name">LLM Christian Thomas</span>
-                                <span class="person-role">Group Chairman &amp; acting CCO</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="map-info-box" data-location="brazil">
-                        <div class="info-box-header">
-                            <img src="assets/images/flags/br.svg" alt="BR" class="info-flag-img">
-                            <div class="info-title">
-                                <h4>Brazil</h4>
-                                <span class="info-type">Sourcing &amp; Trading</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">Iustus Mercatura Brazil Ltda.</p>
-                            <p class="info-address">Suite 92, 6th Floor, Av. Dr. Cardoso de Melo 1340, Vila Olimpia, 04.548-004 S&atilde;o Paulo</p>
-                        </div>
-                        <div class="info-box-person">
-                            <img src="assets/images/team/Paolo-Sousa.png" alt="Paulo R. de Souza" class="person-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <span class="person-initials" style="display:none;">PS</span>
-                            <div class="person-details">
-                                <span class="person-name">Paulo R. de Souza</span>
-                                <span class="person-role">COO Brazil</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="map-info-box" data-location="uae">
-                        <div class="info-box-header">
-                            <img src="assets/images/flags/ae.svg" alt="AE" class="info-flag-img">
-                            <div class="info-title">
-                                <h4>United Arab Emirates</h4>
-                                <span class="info-type">Finance &amp; Trading</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">FITC Energy Group DBXS FZ-LLC &amp; Iustus Mercatura DMCC</p>
-                            <p class="info-address">Meydan Grandstand, 6th Floor, Meydan Road, Nad Al Sheba, Dubai, U.A.E.</p>
-                        </div>
-                        <div class="info-box-person">
-                            <img src="assets/images/team/Jimmy.png" alt="Jimmey S. Shah" class="person-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <span class="person-initials" style="display:none;">JS</span>
-                            <div class="person-details">
-                                <span class="person-name">Jimmey S. Shah</span>
-                                <span class="person-role">Sales Director Middle East/Asia</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="map-info-box" data-location="uk">
-                        <div class="info-box-header">
-                            <img src="assets/images/flags/gb.svg" alt="GB" class="info-flag-img">
-                            <div class="info-title">
-                                <h4>United Kingdom</h4>
-                                <span class="info-type">Maritime Logistics</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">Iustus Mercatura Maritime Logistics UK Limited</p>
-                            <p class="info-address">7th Floor, Tower 42, 25 Old Broad Street, London EC2N 1HN</p>
-                        </div>
-                        <div class="info-box-person">
-                            <img src="assets/images/team/Andreas-Z.webp" alt="Andreas Zsifkovits" class="person-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <span class="person-initials" style="display:none;">AZ</span>
-                            <div class="person-details">
-                                <span class="person-name">Andreas Zsifkovits</span>
-                                <span class="person-role">CEO Maritime Logistics UK</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="map-info-box" data-location="uganda">
-                        <div class="info-box-header">
-                            <img src="assets/images/flags/ug.svg" alt="UG" class="info-flag-img">
-                            <div class="info-title">
-                                <h4>Uganda</h4>
-                                <span class="info-type">Refinery &amp; Distribution</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">FITC Energy Group Inc. Uganda</p>
-                            <p class="info-address">14 Ntinda Avenue Suite 3, Ntinda, Nakawa, Kampala, Uganda</p>
-                        </div>
-                        <div class="info-box-person">
-                            <img src="assets/images/team/Nankya-Resty.png" alt="Miss Resty Nankya" class="person-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <span class="person-initials" style="display:none;">RN</span>
-                            <div class="person-details">
-                                <span class="person-name">Miss Resty Nankya</span>
-                                <span class="person-role">CEO Uganda</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="map-info-box" data-location="kenya">
-                        <div class="info-box-header">
-                            <img src="assets/images/flags/ke.svg" alt="KE" class="info-flag-img">
-                            <div class="info-title">
-                                <h4>Kenya</h4>
-                                <span class="info-type">Regional Distribution</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">FITC Energy Group Inc Kenya</p>
-                            <p class="info-address">2nd Floor, Kimathi House, Kenyatta Avenue, Nairobi 00100, Kenya</p>
-                        </div>
-                        <div class="info-box-person">
-                            <span class="person-initials">RN</span>
-                            <div class="person-details">
-                                <span class="person-name">Miss Resty Nankya</span>
-                                <span class="person-role">CEO Uganda</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="map-info-box" data-location="usa_texas">
-                        <div class="info-box-header">
-                            <img src="assets/images/flags/us.svg" alt="US" class="info-flag-img">
-                            <div class="info-title">
-                                <h4>United States - Texas</h4>
-                                <span class="info-type">Regional Office</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">Iustus Mercatura (TX) Inc.</p>
-                            <p class="info-address">5900 Balcones Drive Suite 100, Austin, 78731 TX, USA</p>
-                        </div>
-                        <div class="info-box-person">
-                            <span class="person-initials">CT</span>
-                            <div class="person-details">
-                                <span class="person-name">LLM Christian Thomas</span>
-                                <span class="person-role">Group Chairman & acting CCO</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="map-info-box" data-location="usa_florida">
-                        <div class="info-box-header">
-                            <img src="assets/images/flags/us.svg" alt="US" class="info-flag-img">
-                            <div class="info-title">
-                                <h4>United States - Florida</h4>
-                                <span class="info-type">Regional Office</span>
-                            </div>
-                        </div>
-                        <div class="info-box-content">
-                            <p class="info-company">Iustus Mercatura (FL) Inc.</p>
-                            <p class="info-address">25 Biscayne Blvd. Suite 2450, Miami, 33131 FL, USA</p>
-                        </div>
-                        <div class="info-box-person">
-                            <span class="person-initials">CT</span>
-                            <div class="person-details">
-                                <span class="person-name">LLM Christian Thomas</span>
-                                <span class="person-role">Group Chairman & acting CCO</span>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Locations werden dynamisch von script.js geladen -->
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Projects Section -->
+    <!-- Projects Section - Dynamisch geladen von /api/public/content -->
     <section class="projects-section" id="projects">
         <div class="container">
-            
-            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+            <div class="section-header centered projects-header">
                 <span class="section-label">Strategic Initiatives</span>
                 <h2 class="section-title">Upcoming <span class="highlight">Projects</span></h2>
-            </div><div class="projects-timeline">
+            </div>
+            <!-- Projekte werden dynamisch von script.js geladen -->
+            <div class="projects-timeline">
                 <div class="timeline-line"></div>
-                <div class="project-item">
-                    <div class="project-year">2026</div>
-                    
-                <div class="project-card" style="translate: none; rotate: none; scale: none; transform: translate(-100px, 0px); opacity: 0;">
-                        <div class="project-icon uganda-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path>
-                            </svg>
-                        </div>
-                        <h3>Uganda Refinery Project</h3>
-                        <p>20-30 acre refinery in Bugembe District with 500,000 MT annual capacity and 250 sq miles of sugarcane plantation.</p>
-                        <div class="project-stats">
-                            <div class="mini-stat">
-                                <span class="value">300.000</span>
-                                <span class="label">MT Year 1</span>
-                            </div>
-                            <div class="mini-stat">
-                                <span class="value">500.000</span>
-                                <span class="label">MT Target</span>
-                            </div>
-                        </div>
-                    </div></div>
-                <div class="project-item">
-                    <div class="project-year">2025</div>
-                    
-                <div class="project-card" style="translate: none; rotate: none; scale: none; transform: translate(100px, 0px); opacity: 0;">
-                        <div class="project-icon brazil-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                            </svg>
-                        </div>
-                        <h3>Iustus Agricultura Brazil SA</h3>
-                        <p>Acquisition of 2-3 major refining assets with self-sufficient sugarcane cultivation for complete vertical integration.</p>
-                        <div class="project-stats">
-                            <div class="mini-stat">
-                                <span class="value">500.000+</span>
-                                <span class="label">MT Annual</span>
-                            </div>
-                        </div>
-                    </div></div>
-                <div class="project-item">
-                    <div class="project-year">2025</div>
-                    
-                <div class="project-card" style="translate: none; rotate: none; scale: none; transform: translate(-100px, 0px); opacity: 0;">
-                        <div class="project-icon finance-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-                                <path d="M12 8v8M8 12h8"></path>
-                            </svg>
-                        </div>
-                        <h3>Mercatura Finance DIFC</h3>
-                        <p>Full-service financial provider in Dubai offering specialized Sustainable Farming and Trade Finance solutions.</p>
-                        <div class="project-badge">Pending Approval</div>
-                    </div></div>
+                <div class="projects-loading" style="text-align: center; padding: 40px;">
+                    <div class="loading-spinner"></div>
+                    <p style="color: rgba(255,255,255,0.6); margin-top: 16px;">Loading projects...</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Team Section -->
+    <!-- Team Section - Dynamisch geladen von /api/public/content -->
     <section class="team-section" id="team">
-        <div class="container">
-            
-
-            <!-- Global Leadership -->
-            <div class="section-header centered" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
+        <div class="container team-container">
+            <div class="section-header centered team-header">
                 <span class="section-label">Our People</span>
                 <h2 class="section-title">Meet Our <span class="highlight">Team</span></h2>
-            </div><div class="team-category">
-                <h3 class="team-category-title">Global Leadership</h3>
             </div>
-            <div class="team-grid team-grid-3">
-                <!-- Dr. Gerhard Kral -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Kral.png" alt="Dr. Gerhard Kral" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">GK</span>
-                            </div>
-                            <h4>Dr. Gerhard Kral</h4>
-                            <span class="role">Group CEO &amp; Founder</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Dr. Gerhard Kral</h4>
-                                <span class="role">Group CEO &amp; Founder</span>
-                                <p>Visionary Chief Executive Officer who established the company's global strategy on the foundational philosophy of 'Just Trade'. Under his direction, the company is driving strategic vertical integration through initiatives like Project Iustus Agricultura Brazil SA and the Uganda Refinery Project 2026.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- LLM Christian Thomas -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Christian-Thomas.png" alt="LLM Christian Thomas" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">CT</span>
-                            </div>
-                            <h4>LLM Christian Thomas</h4>
-                            <span class="role">Group Chairman &amp; acting CCO</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>LLM Christian Thomas</h4>
-                                <span class="role">Group Chairman &amp; acting CCO</span>
-                                <p>Group Chairman and acting Chief Compliance Officer serving as chief steward of the company's vision and ethical mandate 'Just Trade'. He provides long-term strategic guidance and governance overseeing major initiatives.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Lic. jur. Martin Bohler -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Martin-Bohler.png" alt="Lic. jur. Martin Bohler" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">MB</span>
-                            </div>
-                            <h4>Lic. jur. Martin Bohler</h4>
-                            <span class="role">Co-Founder &amp; CRO</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Lic. jur. Martin Bohler</h4>
-                                <span class="role">Co-Founder &amp; CRO</span>
-                                <p>Legal expertise combined with strategic vision. Co-founded the company and drives risk management and corporate governance.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CEO -->
-            <div class="team-category">
-                <h3 class="team-category-title">CEO</h3>
-            </div>
-            <div class="team-grid team-grid-3">
-                <!-- Andreas Zsifkovits -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Andreas-Z.webp" alt="Andreas Zsifkovits" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">AZ</span>
-                            </div>
-                            <h4>Andreas Zsifkovits</h4>
-                            <span class="role">CEO Maritime Logistics UK</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Andreas Zsifkovits</h4>
-                                <span class="role">CEO Maritime Logistics UK</span>
-                                <p>CEO of Iustus Mercatura Maritime Logistics UK Limited, leads global shipping and freight operations. He ensures the cost-efficient, reliable movement of commodities, translating the 'Just Trade' mandate into operational excellence.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Miss Resty Nankya -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Nankya-Resty.png" alt="Miss Resty Nankya" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">RN</span>
-                            </div>
-                            <h4>Miss Resty Nankya</h4>
-                            <span class="role">CEO Uganda</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Miss Resty Nankya</h4>
-                                <span class="role">CEO Uganda</span>
-                                <p>CEO of Iustus Mercatura Uganda Limited, leads the dedicated African team with passion. She spearheads the transformative Uganda Refinery Project 2026, driving local value creation and securing long-term regional growth.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Stephanie Shi -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Stephanie-Shi.jpeg" alt="Stephanie Shi" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">SS</span>
-                            </div>
-                            <h4>Stephanie Shi</h4>
-                            <span class="role">CEO Asia</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Stephanie Shi</h4>
-                                <span class="role">CEO Asia</span>
-                                <p>Leads Asian market strategy and expansion. Deep expertise in cross-cultural business development and regional trade networks.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COO & Regional Heads -->
-            <div class="team-category">
-                <h3 class="team-category-title">COO &amp; Regional Heads</h3>
-            </div>
-            <div class="team-grid team-grid-3">
-                <!-- Eng. Yong Jiang -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Yong-Jiang.jpeg" alt="Eng. Yong Jiang" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">YJ</span>
-                            </div>
-                            <h4>Eng. Yong Jiang</h4>
-                            <span class="role">COO USA</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Eng. Yong Jiang</h4>
-                                <span class="role">COO USA</span>
-                                <p>COO of Iustus Mercatura USA Inc., leveraging 30+ years of experience in the Asian commodities market. He ensures operational excellence, establishing resilient Brazil-to-Asia supply chains.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Paulo R. de Souza -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Paolo-Sousa.png" alt="Paulo R. de Souza" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">PS</span>
-                            </div>
-                            <h4>Paulo R. de Souza</h4>
-                            <span class="role">COO Brazil</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Paulo R. de Souza</h4>
-                                <span class="role">COO Brazil</span>
-                                <p>COO of Iustus Mercatura Brasil Ltda., strategic leader leveraging 30 years of hands-on expertise in the Brazilian sugar trade. He ensures robust operational control and keeps close contact to local Suppliers and Farmers.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Capt. Eng. Patrick Duggie -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Patrick-Duggie.jpeg" alt="Capt. Eng. Patrick Duggie" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">PD</span>
-                            </div>
-                            <h4>Capt. Eng. Patrick Duggie</h4>
-                            <span class="role">COO Maritime Logistics UK</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Capt. Eng. Patrick Duggie</h4>
-                                <span class="role">COO Maritime Logistics UK</span>
-                                <p>COO of Maritime Logistics UK, drives operational excellence. He uses his expertise to guarantee the secure, cost-efficient delivery of global commodities, upholding the 'Just Trade' principles.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Jimmey S. Shah -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Jimmy.png" alt="Jimmey S. Shah" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">JS</span>
-                            </div>
-                            <h4>Jimmey S. Shah</h4>
-                            <span class="role">Sales Director Middle East/Asia</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Jimmey S. Shah</h4>
-                                <span class="role">Sales Director Middle East/Asia</span>
-                                <p>Sales Director Middle East/Asia (Dubai), drives sales and growth across crucial regional markets. He is also the CCO for FITC Energy Group DXB LLC, leading energy-related business operations.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mozafor Rahman -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Mozafor.png" alt="Mozafor Rahman" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">MR</span>
-                            </div>
-                            <h4>Mozafor Rahman</h4>
-                            <span class="role">COO Bangladesh</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Mozafor Rahman</h4>
-                                <span class="role">COO Bangladesh</span>
-                                <p>COO of Iustus Mercatura Bangladesh, leads regional operations and market development in South Asia. Expert in local supply chain management and trade partnerships.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Marianna Tavares -->
-                <div class="team-card-flip">
-                    <div class="team-card-inner">
-                        <div class="team-card-front">
-                            <div class="team-image">
-                                <img src="assets/images/team/Marianna-Tavares.jpeg" alt="Marianna Tavares" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="initials" style="display:none;">MT</span>
-                            </div>
-                            <h4>Marianna Tavares</h4>
-                            <span class="role">Head of Legal (External)</span>
-                        </div>
-                        <div class="team-card-back">
-                            <div class="back-content">
-                                <h4>Marianna Tavares</h4>
-                                <span class="role">Head of Legal (External)</span>
-                                <p>External legal counsel providing expert guidance on international trade law, compliance, and corporate governance.</p>
-                                <a href="https://www.linkedin.com/company/iustus-mercatura" target="_blank" rel="noopener noreferrer" class="linkedin-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
-                                    LinkedIn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Team-Mitglieder werden dynamisch von script.js geladen -->
+            <div class="team-loading" style="text-align: center; padding: 40px;">
+                <div class="loading-spinner"></div>
+                <p style="color: rgba(255,255,255,0.6); margin-top: 16px;">Loading team...</p>
             </div>
         </div>
     </section>
 
-    <!-- Values Section -->
+    <!-- Values Section - Dynamisch geladen von /api/public/content -->
     <section class="values-section">
         <div class="container">
             <div class="values-content">
@@ -2924,23 +2291,13 @@
                     <span class="section-label">Our Values</span>
                     <h2 class="section-title">The Principles of <span class="highlight">Iustus Mercatura</span></h2>
                 </div>
+                <!-- Values werden dynamisch von script.js geladen -->
                 <div class="values-grid">
-                    
-                    <div class="value-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
-                        <div class="value-number">01</div>
-                        <h3>Integrity &amp; Transparency</h3>
-                        <p>Fair pricing, ethical sourcing, and an open book with all partners. We measure success by trust earned.</p>
+                    <div class="values-loading" style="text-align: center; padding: 40px; grid-column: 1 / -1;">
+                        <div class="loading-spinner"></div>
+                        <p style="color: rgba(255,255,255,0.6); margin-top: 16px;">Loading values...</p>
                     </div>
-                    <div class="value-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
-                        <div class="value-number">02</div>
-                        <h3>Expertise &amp; Excellence</h3>
-                        <p>Deep-rooted market intelligence and world-class logistical management with surgical precision.</p>
-                    </div>
-                <div class="value-card" style="translate: none; rotate: none; scale: none; transform: translate(0px, 50px); opacity: 0;">
-                        <div class="value-number">03</div>
-                        <h3>Partnership &amp; Prosperity</h3>
-                        <p>Every client and producer as a critical part of a shared, sustainable ecosystem for mutual growth.</p>
-                    </div></div>
+                </div>
             </div>
         </div>
     </section>

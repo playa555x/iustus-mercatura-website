@@ -286,8 +286,8 @@ interface Settings {
 interface SyncLogEntry {
     id: string;
     timestamp: string;
-    source: 'dev_admin' | 'admin_panel' | 'website' | 'server';
-    target: 'dev_admin' | 'admin_panel' | 'website' | 'server';
+    source: 'dev_admin' | 'admin_panel' | 'website' | 'server' | 'developer';
+    target: 'dev_admin' | 'admin_panel' | 'website' | 'server' | 'all';
     action: string;
     status: 'success' | 'error' | 'pending';
     details?: string;
@@ -725,6 +725,149 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                 uptime: process.uptime(),
                 server: "Iustus Mercatura Dev Server"
             }), { headers: jsonHeaders });
+        }
+
+        // ==========================================
+        // PUBLIC WEBSITE API (Dynamic Content from DB)
+        // ==========================================
+
+        // GET /api/public/content - Get all website content from database.json
+        if (pathname === "/api/public/content" && req.method === "GET") {
+            try {
+                // Get team members grouped by category
+                const teamItems = db.items?.filter((item: any) => item.collection_id === 'col_team') || [];
+                const teamByCategory: Record<string, any[]> = {};
+
+                teamItems.forEach((item: any) => {
+                    const category = item.data?.category || 'Other';
+                    if (!teamByCategory[category]) {
+                        teamByCategory[category] = [];
+                    }
+                    teamByCategory[category].push({
+                        id: item.id,
+                        name: item.data?.name || '',
+                        role: item.data?.role || '',
+                        image: item.data?.image || '',
+                        initials: item.data?.initials || '',
+                        description: item.data?.description || '',
+                        linkedin: item.data?.linkedin || '',
+                        order: item.order || 0
+                    });
+                });
+
+                // Sort each category by order
+                Object.keys(teamByCategory).forEach(cat => {
+                    teamByCategory[cat].sort((a, b) => a.order - b.order);
+                });
+
+                // Get products
+                const productItems = db.items?.filter((item: any) => item.collection_id === 'col_products') || [];
+                const products = productItems.map((item: any) => ({
+                    id: item.id,
+                    name: item.data?.name || '',
+                    category: item.data?.category || '',
+                    image: item.data?.image || null,
+                    showImage: item.data?.showImage || false,
+                    description: item.data?.description || '',
+                    specs: item.data?.specs || {},
+                    featured: item.data?.featured || false,
+                    order: item.order || 0
+                })).sort((a: any, b: any) => a.order - b.order);
+
+                // Get locations
+                const locationItems = db.items?.filter((item: any) => item.collection_id === 'col_locations') || [];
+                const locations = locationItems.map((item: any) => ({
+                    id: item.id,
+                    country: item.data?.country || '',
+                    city: item.data?.city || '',
+                    type: item.data?.type || '',
+                    company: item.data?.company || '',
+                    address: item.data?.address || '',
+                    countryCode: item.data?.countryCode || '',
+                    coordinates: item.data?.coordinates || { x: 0, y: 0 },
+                    order: item.order || 0
+                })).sort((a: any, b: any) => a.order - b.order);
+
+                // Get projects
+                const projectItems = db.items?.filter((item: any) => item.collection_id === 'col_projects') || [];
+                const projects = projectItems.map((item: any) => ({
+                    id: item.id,
+                    name: item.data?.name || '',
+                    year: item.data?.year || '',
+                    description: item.data?.description || '',
+                    status: item.data?.status || '',
+                    stats: item.data?.stats || [],
+                    order: item.order || 0
+                })).sort((a: any, b: any) => a.order - b.order);
+
+                // Get blocks data (hero, values, sustainability, partners)
+                const blocks: Record<string, any> = {};
+                db.blocks?.forEach((block: any) => {
+                    blocks[block.type] = block.data || {};
+                });
+
+                // Get settings
+                const settings: Record<string, any> = {};
+                db.settings?.forEach((s: any) => {
+                    settings[s.key] = s.value;
+                });
+
+                return new Response(JSON.stringify({
+                    success: true,
+                    data: {
+                        team: teamByCategory,
+                        products,
+                        locations,
+                        projects,
+                        blocks,
+                        settings,
+                        lastUpdated: new Date().toISOString()
+                    }
+                }), { headers: jsonHeaders });
+            } catch (e) {
+                log("ERROR", `Failed to get public content: ${e}`);
+                return new Response(JSON.stringify({
+                    success: false,
+                    error: "Failed to load content"
+                }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // GET /api/public/team - Get only team data
+        if (pathname === "/api/public/team" && req.method === "GET") {
+            try {
+                const teamItems = db.items?.filter((item: any) => item.collection_id === 'col_team') || [];
+                const teamByCategory: Record<string, any[]> = {};
+
+                teamItems.forEach((item: any) => {
+                    const category = item.data?.category || 'Other';
+                    if (!teamByCategory[category]) {
+                        teamByCategory[category] = [];
+                    }
+                    teamByCategory[category].push({
+                        id: item.id,
+                        name: item.data?.name || '',
+                        role: item.data?.role || '',
+                        image: item.data?.image || '',
+                        initials: item.data?.initials || '',
+                        description: item.data?.description || '',
+                        linkedin: item.data?.linkedin || '',
+                        order: item.order || 0
+                    });
+                });
+
+                // Sort each category by order
+                Object.keys(teamByCategory).forEach(cat => {
+                    teamByCategory[cat].sort((a, b) => a.order - b.order);
+                });
+
+                return new Response(JSON.stringify({
+                    success: true,
+                    team: teamByCategory
+                }), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ success: false, error: "Failed to load team" }), { status: 500, headers: jsonHeaders });
+            }
         }
 
         // ==========================================
@@ -2031,6 +2174,277 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                 },
                 timestamp: new Date().toISOString()
             }), { headers: jsonHeaders });
+        }
+
+        // ==========================================
+        // BACKUP & VERSIONING SYSTEM
+        // ==========================================
+
+        // GET /api/backup/list - List all backups
+        if (pathname === "/api/backup/list" && req.method === "GET") {
+            try {
+                const backups: any[] = [];
+                if (existsSync(BACKUP_DIR)) {
+                    const folders = readdirSync(BACKUP_DIR);
+                    for (const folder of folders) {
+                        if (folder.startsWith('backup_')) {
+                            const backupPath = join(BACKUP_DIR, folder);
+                            const stats = await stat(backupPath);
+                            const timestamp = folder.replace('backup_', '').replace(/-/g, ':').replace('T', ' ');
+
+                            // Check which files exist in backup
+                            const files: string[] = [];
+                            const possibleFiles = ['database.json', 'data.json', 'index.html'];
+                            for (const f of possibleFiles) {
+                                if (existsSync(join(backupPath, f))) {
+                                    files.push(f);
+                                }
+                            }
+
+                            backups.push({
+                                id: folder,
+                                timestamp: stats.mtime.toISOString(),
+                                files,
+                                size: files.length
+                            });
+                        }
+                    }
+                    // Sort by date descending
+                    backups.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+                }
+                return new Response(JSON.stringify({ success: true, backups }), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ success: false, error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // POST /api/backup/create - Create a new backup
+        if (pathname === "/api/backup/create" && req.method === "POST") {
+            try {
+                const body = await req.json();
+                const description = body.description || 'Manual backup';
+                const sourceType = body.source || source || 'dev_admin';
+
+                const backupPath = await createBackup();
+                if (backupPath) {
+                    log("INFO", `Backup created by ${sourceType}: ${description}`);
+                    return new Response(JSON.stringify({
+                        success: true,
+                        backup: backupPath,
+                        timestamp: new Date().toISOString(),
+                        description
+                    }), { headers: jsonHeaders });
+                }
+                return new Response(JSON.stringify({ success: false, error: "Backup failed" }), { status: 500, headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ success: false, error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // POST /api/backup/restore/:backupId - Restore from a specific backup
+        if (pathname.match(/^\/api\/backup\/restore\/backup_/) && req.method === "POST") {
+            const backupId = pathname.split('/').pop();
+            const backupPath = join(BACKUP_DIR, backupId || '');
+
+            try {
+                if (!existsSync(backupPath)) {
+                    return new Response(JSON.stringify({ success: false, error: "Backup not found" }), { status: 404, headers: jsonHeaders });
+                }
+
+                // Check source permission (only dev_admin can restore)
+                const body = await req.json();
+                const requesterSource = body.source || source;
+                if (requesterSource !== 'dev_admin' && requesterSource !== 'developer') {
+                    return new Response(JSON.stringify({
+                        success: false,
+                        error: "Only Developer can restore backups"
+                    }), { status: 403, headers: jsonHeaders });
+                }
+
+                // Create a pre-restore backup first
+                await createBackup();
+
+                // Restore files
+                const restoredFiles: string[] = [];
+                const filesToRestore = [
+                    { backup: 'database.json', target: 'database/database.json' },
+                    { backup: 'data.json', target: 'data.json' },
+                    { backup: 'index.html', target: 'index.html' }
+                ];
+
+                for (const f of filesToRestore) {
+                    const backupFile = join(backupPath, f.backup);
+                    const targetFile = join(BASE_DIR, f.target);
+                    if (existsSync(backupFile)) {
+                        await copyFile(backupFile, targetFile);
+                        restoredFiles.push(f.target);
+                    }
+                }
+
+                // Reload database after restore
+                const newDbData = await readFile(join(BASE_DIR, 'database', 'database.json'), 'utf-8');
+                Object.assign(db, JSON.parse(newDbData));
+
+                log("INFO", `Backup ${backupId} restored by ${requesterSource}`);
+                addSyncLog(requesterSource as any, 'all', 'restore', 'success');
+
+                // Broadcast to all clients
+                broadcastSync({
+                    type: 'database_restored',
+                    backupId,
+                    restoredFiles,
+                    timestamp: new Date().toISOString()
+                });
+
+                return new Response(JSON.stringify({
+                    success: true,
+                    message: `Restored from ${backupId}`,
+                    restoredFiles,
+                    timestamp: new Date().toISOString()
+                }), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ success: false, error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // POST /api/sync/override - Developer override (force sync to Admin and Website)
+        if (pathname === "/api/sync/override" && req.method === "POST") {
+            try {
+                const body = await req.json();
+                const { data, reason } = body;
+
+                // Only dev_admin/developer can use override
+                if (source !== 'dev_admin' && source !== 'developer') {
+                    return new Response(JSON.stringify({
+                        success: false,
+                        error: "Only Developer has override permission"
+                    }), { status: 403, headers: jsonHeaders });
+                }
+
+                // Create backup before override
+                await createBackup();
+
+                // Apply the override data
+                if (data) {
+                    if (data.blocks) db.blocks = data.blocks;
+                    if (data.items) db.items = data.items;
+                    if (data.pages) db.pages = data.pages;
+                    if (data.collections) db.collections = data.collections;
+                    if (data.settings) db.settings = data.settings;
+                    if (data.media) db.media = data.media;
+                    await saveDatabase();
+                }
+
+                // Log the override
+                addSyncLog('dev_admin', 'all', 'override', 'success');
+                log("INFO", `Developer override applied. Reason: ${reason || 'Not specified'}`);
+
+                // Broadcast to all clients about the override
+                broadcastSync({
+                    type: 'developer_override',
+                    reason: reason || 'Developer forced sync',
+                    timestamp: new Date().toISOString(),
+                    affectedData: Object.keys(data || {})
+                });
+
+                return new Response(JSON.stringify({
+                    success: true,
+                    message: "Developer override applied",
+                    backupCreated: true,
+                    timestamp: new Date().toISOString()
+                }), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ success: false, error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // POST /api/sync/bidirectional - Bidirectional sync between Admin ↔ Developer
+        if (pathname === "/api/sync/bidirectional" && req.method === "POST") {
+            try {
+                const body = await req.json();
+                const { direction, data, sections } = body;
+                // direction: 'admin_to_dev' | 'dev_to_admin' | 'dev_to_website' | 'admin_to_website'
+
+                // Create backup before any sync
+                await createBackup();
+
+                const sourceType = source as SyncLogEntry['source'];
+                let targetType = '';
+
+                // Determine target based on direction
+                switch (direction) {
+                    case 'admin_to_dev':
+                        targetType = 'dev_admin';
+                        break;
+                    case 'dev_to_admin':
+                        targetType = 'admin_panel';
+                        break;
+                    case 'dev_to_website':
+                    case 'admin_to_website':
+                        targetType = 'website';
+                        break;
+                    default:
+                        targetType = 'all';
+                }
+
+                // Apply data updates
+                if (data) {
+                    if (sections?.includes('team') && data.items) {
+                        // Update only team items
+                        const nonTeamItems = db.items.filter((i: any) => i.collection_id !== 'col_team');
+                        const newTeamItems = data.items.filter((i: any) => i.collection_id === 'col_team');
+                        db.items = [...nonTeamItems, ...newTeamItems];
+                    }
+                    if (sections?.includes('products') && data.items) {
+                        const nonProductItems = db.items.filter((i: any) => i.collection_id !== 'col_products');
+                        const newProductItems = data.items.filter((i: any) => i.collection_id === 'col_products');
+                        db.items = [...nonProductItems, ...newProductItems];
+                    }
+                    if (sections?.includes('locations') && data.items) {
+                        const nonLocationItems = db.items.filter((i: any) => i.collection_id !== 'col_locations');
+                        const newLocationItems = data.items.filter((i: any) => i.collection_id === 'col_locations');
+                        db.items = [...nonLocationItems, ...newLocationItems];
+                    }
+                    if (sections?.includes('blocks') && data.blocks) {
+                        db.blocks = data.blocks;
+                    }
+                    if (sections?.includes('settings') && data.settings) {
+                        db.settings = data.settings;
+                    }
+                    // Full sync if no sections specified
+                    if (!sections || sections.length === 0) {
+                        if (data.blocks) db.blocks = data.blocks;
+                        if (data.items) db.items = data.items;
+                        if (data.pages) db.pages = data.pages;
+                        if (data.collections) db.collections = data.collections;
+                        if (data.settings) db.settings = data.settings;
+                    }
+                    await saveDatabase();
+                }
+
+                // Log sync
+                addSyncLog(sourceType, targetType as any, 'bidirectional_sync', 'success');
+                log("INFO", `Bidirectional sync: ${sourceType} -> ${targetType}`);
+
+                // Broadcast update
+                broadcastSync({
+                    type: 'sync_complete',
+                    direction,
+                    source: sourceType,
+                    target: targetType,
+                    sections: sections || ['all'],
+                    timestamp: new Date().toISOString()
+                });
+
+                return new Response(JSON.stringify({
+                    success: true,
+                    message: `Sync completed: ${direction}`,
+                    sections: sections || ['all'],
+                    timestamp: new Date().toISOString()
+                }), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({ success: false, error: String(e) }), { status: 500, headers: jsonHeaders });
+            }
         }
 
         // ==========================================

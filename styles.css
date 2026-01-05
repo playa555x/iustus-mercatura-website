@@ -2739,7 +2739,15 @@ section {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center center;
+    object-position: center top;
+}
+
+.team-card-front .team-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 50%;
 }
 
 .team-card-front h4 {
@@ -3128,6 +3136,15 @@ section {
     object-fit: cover;
     border: 2px solid rgba(201, 162, 39, 0.5);
     flex-shrink: 0;
+}
+
+.info-box-person .person-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--accent-gold);
 }
 
 .info-box-person .person-initials {
