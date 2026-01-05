@@ -10043,7 +10043,7 @@ class AdminPanel {
     async updateTeamMemberImage(personName, imageUrl) {
         try {
             // Lade aktuelle Datenbank
-            const response = await fetch('/api/database');
+            const response = await fetch('/api/db');
             if (!response.ok) {
                 console.error('Could not load database');
                 return false;
@@ -10084,7 +10084,7 @@ class AdminPanel {
             }
 
             // Speichere aktualisierte Datenbank
-            const saveResponse = await fetch('/api/database', {
+            const saveResponse = await fetch('/api/db', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(database)
