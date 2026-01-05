@@ -9680,8 +9680,8 @@ class AdminPanel {
                             style="background:none; border:none; font-size:24px; cursor:pointer; color:var(--gray-500); line-height:1;">&times;</button>
                 </div>
 
-                <div style="padding:12px 20px; background:var(--gray-100); border-bottom:1px solid var(--gray-200);">
-                    <img src="${sourceUrl}" style="height:50px; width:auto; border-radius:4px; border:2px solid var(--gold);">
+                <div style="padding:16px 20px; background:var(--gray-100); border-bottom:1px solid var(--gray-200); display:flex; justify-content:center;">
+                    <img src="${sourceUrl}" style="max-height:180px; max-width:100%; width:auto; border-radius:8px; border:3px solid var(--gold); box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                 </div>
 
                 <div style="flex:1; overflow-y:auto; padding:16px 20px;">
@@ -9936,6 +9936,7 @@ class AdminPanel {
             if (this._targetImageContainers && this._targetImageContainers[index]) {
                 const container = this._targetImageContainers[index];
                 const el = container.element;
+                const personName = container.personName || 'Person';
 
                 // Prüfe ob bereits ein IMG-Element existiert
                 let img = el.querySelector('img');
@@ -9947,7 +9948,7 @@ class AdminPanel {
                     // Erstelle neues IMG-Element
                     img = doc.createElement('img');
                     img.src = sourceUrl;
-                    img.alt = container.personName || 'Foto';
+                    img.alt = personName;
                     img.style.cssText = 'width:100%; height:100%; object-fit:cover;';
 
                     // Entferne Initialen falls vorhanden
@@ -9963,11 +9964,14 @@ class AdminPanel {
                     el.classList.add('has-photo');
                 }
 
-                this.showToast('success', 'Foto hinzugefügt!', `Foto für "${container.personName || 'Person'}" wurde gesetzt`);
+                // WICHTIG: Aktualisiere auch die Datenbank!
+                await this.updateTeamMemberImage(personName, sourceUrl);
+
+                this.showToast('success', 'Foto gespeichert!', `Foto für "${personName}" wurde in der Datenbank gespeichert`);
                 this.selectElement(el, doc);
 
                 // Speichere die Zuordnung
-                this.saveImageAssignment(sourceUrl, 'container', container.personName || 'Person');
+                this.saveImageAssignment(sourceUrl, 'container', personName);
             }
         }
 
@@ -10032,6 +10036,70 @@ class AdminPanel {
             await this.loadMediathekImages();
         } catch (error) {
             console.error('Error saving image assignment:', error);
+        }
+    }
+
+    // Aktualisiert das Bild eines Team-Mitglieds in der Datenbank
+    async updateTeamMemberImage(personName, imageUrl) {
+        try {
+            // Lade aktuelle Datenbank
+            const response = await fetch('/api/database');
+            if (!response.ok) {
+                console.error('Could not load database');
+                return false;
+            }
+
+            const database = await response.json();
+
+            // Finde Team-Mitglied nach Name
+            let found = false;
+            if (database.items) {
+                for (const item of database.items) {
+                    if (item.collection_id === 'col_team' && item.data?.name) {
+                        // Vergleiche Namen (case-insensitive und trimmed)
+                        if (item.data.name.toLowerCase().trim() === personName.toLowerCase().trim()) {
+                            // Konvertiere absolute URL zu relativem Pfad
+                            let relativePath = imageUrl;
+                            if (imageUrl.startsWith('/')) {
+                                relativePath = imageUrl.substring(1); // Entferne führenden Slash
+                            }
+                            if (imageUrl.includes('://')) {
+                                // Absolute URL - extrahiere Pfad
+                                const url = new URL(imageUrl);
+                                relativePath = url.pathname.substring(1);
+                            }
+
+                            item.data.image = relativePath;
+                            found = true;
+                            console.log(`[Team Image] Updated ${personName}: ${relativePath}`);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!found) {
+                console.warn(`[Team Image] Member "${personName}" not found in database`);
+                return false;
+            }
+
+            // Speichere aktualisierte Datenbank
+            const saveResponse = await fetch('/api/database', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(database)
+            });
+
+            if (saveResponse.ok) {
+                console.log(`[Team Image] Database saved successfully`);
+                return true;
+            } else {
+                console.error('[Team Image] Failed to save database');
+                return false;
+            }
+        } catch (error) {
+            console.error('[Team Image] Error updating team member image:', error);
+            return false;
         }
     }
 
