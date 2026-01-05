@@ -9873,7 +9873,7 @@ class AdminPanel {
         }
     }
 
-    applyImageToTarget(sourceUrl, type, index) {
+    async applyImageToTarget(sourceUrl, type, index) {
         const iframe = document.getElementById('websitePreview');
         if (!iframe || !iframe.contentDocument) return;
 
