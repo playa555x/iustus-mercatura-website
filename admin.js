@@ -8870,100 +8870,59 @@ class AdminPanel {
             // Update folder counts
             this.updateFolderCounts(data.images);
 
-            // Teile Bilder in zugeordnet und nicht zugeordnet
-            const assignedImages = [];
-            const unassignedImages = [];
+            // Cache images for local updates
+            this._cachedImages = filteredImages;
 
-            filteredImages.forEach(img => {
+            // Füge Zuordnungs-Info zu jedem Bild hinzu
+            const imagesWithAssignment = filteredImages.map(img => {
                 const assignment = this._imageAssignments[img.url];
-                if (assignment) {
-                    assignedImages.push({ ...img, assignment });
-                } else {
-                    unassignedImages.push(img);
-                }
+                return { ...img, assignment };
             });
 
-            let html = '';
-
-            // Zugeordnete Bilder
-            if (assignedImages.length > 0) {
-                html += `
-                    <div class="mediathek-section">
-                        <h3 style="margin:0 0 12px 0; padding:8px 12px; background:linear-gradient(135deg, #28a745, #20c997); color:white; border-radius:8px; font-size:13px; display:flex; align-items:center; gap:8px;">
-                            <i class="fas fa-check-circle"></i>
-                            Zugeordnet (${assignedImages.length})
-                        </h3>
-                        <div class="mediathek-assigned-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px; margin-bottom:24px;">
-                            ${assignedImages.map(img => `
-                                <div class="mediathek-item assigned ${this._selectedMediathekImages.has(img.url) ? 'selected' : ''}"
-                                     data-url="${img.url}" data-filename="${img.filename}"
-                                     onclick="adminPanel.toggleMediathekSelect('${img.url}', event)"
-                                     style="border:2px solid #28a745;">
-                                    <div class="mediathek-checkbox ${this._selectedMediathekImages.has(img.url) ? 'checked' : ''}">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="mediathek-assigned-badge" style="position:absolute; top:8px; left:8px; z-index:5; background:#28a745; color:white; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:600; max-width:calc(100% - 50px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                                        <i class="fas fa-link" style="margin-right:4px;"></i>${img.assignment.name}
-                                    </div>
-                                    <img src="${img.url}" alt="${img.filename}" loading="lazy">
-                                    <div class="mediathek-item-overlay">
-                                        <div class="mediathek-item-name">${img.filename}</div>
-                                        <div class="mediathek-item-actions">
-                                            <button class="btn-primary" onclick="event.stopPropagation(); adminPanel.assignImageToWebsite('${img.url}')" title="Neu zuordnen" style="background:var(--gold);color:var(--navy-dark);">
-                                                <i class="fas fa-exchange-alt"></i>
-                                            </button>
-                                            <button class="btn-warning" onclick="event.stopPropagation(); adminPanel.removeImageAssignment(this.closest('.mediathek-item').dataset.url)" title="Zuordnung entfernen" style="background:#ffc107;color:#000;">
-                                                <i class="fas fa-unlink"></i>
-                                            </button>
-                                            <button class="btn-delete" onclick="event.stopPropagation(); adminPanel.deleteMediathekImage('${img.filename}')" title="Löschen">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+            // Einheitliches Grid - alle Bilder zusammen
+            const html = `
+                <div class="mediathek-unified-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:16px;">
+                    ${imagesWithAssignment.map(img => `
+                        <div class="mediathek-item ${img.assignment ? 'assigned' : ''} ${this._selectedMediathekImages.has(img.url) ? 'selected' : ''}"
+                             data-url="${img.url}" data-filename="${img.filename}"
+                             onclick="adminPanel.toggleMediathekSelect('${img.url}', event)"
+                             style="${img.assignment ? 'border:2px solid #28a745;' : ''}">
+                            <div class="mediathek-checkbox ${this._selectedMediathekImages.has(img.url) ? 'checked' : ''}">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            ${img.assignment ? `
+                                <div class="mediathek-assigned-badge" style="position:absolute; top:8px; left:8px; z-index:5; background:#28a745; color:white; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:600; max-width:calc(100% - 50px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                    <i class="fas fa-link" style="margin-right:4px;"></i>${img.assignment.name}
                                 </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Nicht zugeordnete Bilder
-            if (unassignedImages.length > 0) {
-                html += `
-                    <div class="mediathek-section">
-                        <h3 style="margin:0 0 12px 0; padding:8px 12px; background:linear-gradient(135deg, var(--gray-500), var(--gray-600)); color:white; border-radius:8px; font-size:13px; display:flex; align-items:center; gap:8px;">
-                            <i class="fas fa-inbox"></i>
-                            Nicht zugeordnet (${unassignedImages.length})
-                        </h3>
-                        <div class="mediathek-unassigned-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:12px;">
-                            ${unassignedImages.map(img => `
-                                <div class="mediathek-item ${this._selectedMediathekImages.has(img.url) ? 'selected' : ''}"
-                                     data-url="${img.url}" data-filename="${img.filename}"
-                                     onclick="adminPanel.toggleMediathekSelect('${img.url}', event)">
-                                    <div class="mediathek-checkbox ${this._selectedMediathekImages.has(img.url) ? 'checked' : ''}">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <img src="${img.url}" alt="${img.filename}" loading="lazy">
-                                    <div class="mediathek-item-overlay">
-                                        <div class="mediathek-item-name">${img.filename}</div>
-                                        <div class="mediathek-item-actions">
-                                            <button class="btn-primary" onclick="event.stopPropagation(); adminPanel.assignImageToWebsite('${img.url}')" title="Bild auf Website zuordnen" style="background:var(--gold);color:var(--navy-dark);">
-                                                <i class="fas fa-bullseye"></i> Zuordnen
-                                            </button>
-                                            <button class="btn-copy" onclick="event.stopPropagation(); adminPanel.copyImageUrl('${img.url}')" title="URL kopieren">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
-                                            <button class="btn-delete" onclick="event.stopPropagation(); adminPanel.deleteMediathekImage('${img.filename}')" title="Löschen">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+                            ` : ''}
+                            <img src="${img.url}" alt="${img.filename}" loading="lazy">
+                            <div class="mediathek-item-overlay">
+                                <div class="mediathek-item-name">${img.original_name || img.filename}</div>
+                                <div class="mediathek-item-actions">
+                                    ${img.assignment ? `
+                                        <button class="btn-primary" onclick="event.stopPropagation(); adminPanel.assignImageToWebsite('${img.url}')" title="Neu zuordnen" style="background:var(--gold);color:var(--navy-dark);">
+                                            <i class="fas fa-exchange-alt"></i>
+                                        </button>
+                                        <button class="btn-warning" onclick="event.stopPropagation(); adminPanel.removeImageAssignment('${img.url}')" title="Zuordnung entfernen" style="background:#ffc107;color:#000;">
+                                            <i class="fas fa-unlink"></i>
+                                        </button>
+                                    ` : `
+                                        <button class="btn-primary" onclick="event.stopPropagation(); adminPanel.assignImageToWebsite('${img.url}')" title="Zuordnen" style="background:var(--gold);color:var(--navy-dark);">
+                                            <i class="fas fa-bullseye"></i>
+                                        </button>
+                                        <button class="btn-copy" onclick="event.stopPropagation(); adminPanel.copyImageUrl('${img.url}')" title="URL kopieren">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    `}
+                                    <button class="btn-delete" onclick="event.stopPropagation(); adminPanel.deleteMediathekImage('${img.filename}')" title="Löschen">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </div>
-                            `).join('')}
+                            </div>
                         </div>
-                    </div>
-                `;
-            }
+                    `).join('')}
+                </div>
+            `;
 
             grid.innerHTML = html;
             this.updateMediathekToolbar();
@@ -9191,9 +9150,26 @@ class AdminPanel {
 
             if (result.success) {
                 this.showToast('success', 'Gelöscht', 'Bild wurde gelöscht');
-                await this.loadMediathekImages();
+                // Entferne Bild lokal aus DOM statt komplett neu zu laden
+                const item = document.querySelector(`.mediathek-item[data-filename="${filename}"]`);
+                if (item) {
+                    item.style.transition = 'opacity 0.3s, transform 0.3s';
+                    item.style.opacity = '0';
+                    item.style.transform = 'scale(0.8)';
+                    setTimeout(() => item.remove(), 300);
+                }
+                // Update cached data
+                if (this._cachedImages) {
+                    this._cachedImages = this._cachedImages.filter(img => img.filename !== filename);
+                }
+                // Update count
+                const countEl = document.getElementById('mediathekImageCount');
+                if (countEl) {
+                    const current = parseInt(countEl.textContent) || 0;
+                    countEl.textContent = Math.max(0, current - 1);
+                }
             } else {
-                this.showToast('error', 'Fehler', 'Löschen fehlgeschlagen');
+                this.showToast('error', 'Fehler', result.error || 'Löschen fehlgeschlagen');
             }
         } catch (error) {
             console.error('Delete error:', error);
