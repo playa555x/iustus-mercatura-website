@@ -1939,6 +1939,41 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
             }
         }
 
+        // POST /api/upload/team - Upload team image to persistent storage
+        if (pathname === "/api/upload/team" && req.method === "POST") {
+            const formData = await req.formData();
+            const imageFile = formData.get("file") as File;
+
+            if (!imageFile) {
+                return new Response(JSON.stringify({ error: "No file provided" }), {
+                    status: 400,
+                    headers: jsonHeaders,
+                });
+            }
+
+            // Keep original filename for team images
+            const filename = imageFile.name;
+            const filePath = join(TEAM_IMAGES_DIR, filename);
+
+            const arrayBuffer = await imageFile.arrayBuffer();
+            await writeFile(filePath, Buffer.from(arrayBuffer));
+
+            log("INFO", `Team image uploaded: ${filename} to ${TEAM_IMAGES_DIR}`);
+
+            // Broadcast to sync clients
+            broadcastToSyncClients({
+                type: 'media_uploaded',
+                data: { filename, folder: 'team', url: `/assets/images/team/${filename}` }
+            });
+
+            return new Response(JSON.stringify({
+                success: true,
+                filename,
+                url: `/assets/images/team/${filename}`,
+                folder: 'team'
+            }), { headers: jsonHeaders });
+        }
+
         // POST /api/upload
         if (pathname === "/api/upload" && req.method === "POST") {
             const formData = await req.formData();
