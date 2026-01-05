@@ -293,11 +293,17 @@ startSyncScheduler();
 const PORT = parseInt(process.env.PORT || "3005");
 const BASE_DIR = import.meta.dir;
 
-// Directories
-const UPLOADS_DIR = join(BASE_DIR, "uploads");
-const DB_DIR = join(BASE_DIR, "database");
+// On Render, use persistent disk at /data for uploads and database
+// This preserves data across deploys
+const IS_RENDER = !!process.env.RENDER;
+const PERSISTENT_DIR = IS_RENDER ? "/data" : BASE_DIR;
+
+// Directories - use persistent storage on Render
+const UPLOADS_DIR = IS_RENDER ? join(PERSISTENT_DIR, "uploads") : join(BASE_DIR, "uploads");
+const DB_DIR = IS_RENDER ? join(PERSISTENT_DIR, "database") : join(BASE_DIR, "database");
 const TEMPLATES_DIR = join(BASE_DIR, "templates");
-const LOGS_DIR = join(BASE_DIR, "logs");
+const LOGS_DIR = IS_RENDER ? join(PERSISTENT_DIR, "logs") : join(BASE_DIR, "logs");
+const TEAM_IMAGES_DIR = join(BASE_DIR, "assets", "images", "team");
 
 // Ensure directories exist
 for (const dir of [UPLOADS_DIR, DB_DIR, TEMPLATES_DIR, LOGS_DIR]) {
@@ -305,6 +311,11 @@ for (const dir of [UPLOADS_DIR, DB_DIR, TEMPLATES_DIR, LOGS_DIR]) {
         await mkdir(dir, { recursive: true });
     }
 }
+
+// Log storage configuration
+log("INFO", `[Storage] Running on ${IS_RENDER ? "Render" : "Local"}`);
+log("INFO", `[Storage] Database: ${DB_DIR}`);
+log("INFO", `[Storage] Uploads: ${UPLOADS_DIR}`);
 
 // Database Tables (JSON-based for local dev)
 interface DBTables {
@@ -438,9 +449,12 @@ async function loadDatabase(): Promise<void> {
 async function saveDatabase(): Promise<void> {
     const dbFile = join(DB_DIR, "database.json");
     try {
+        log("INFO", `[DB] Saving database to: ${dbFile}`);
         await writeFile(dbFile, JSON.stringify(db, null, 2), "utf-8");
-    } catch (e) {
-        log("ERROR", `Failed to save database: ${e}`);
+        log("INFO", `[DB] Database saved successfully`);
+    } catch (e: any) {
+        log("ERROR", `Failed to save database to ${dbFile}: ${e?.message || e}`);
+        throw e; // Re-throw so caller knows it failed
     }
 }
 
@@ -1085,9 +1099,8 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                 if (body.media) db.media = body.media;
                 if (body.settings) db.settings = body.settings;
 
-                // Save to file
-                log("INFO", `[API] Saving database to ${DB_PATH}`);
-                await Bun.write(DB_PATH, JSON.stringify(db, null, 2));
+                // Save to file using the existing saveDatabase function
+                await saveDatabase();
                 log("INFO", "[API] Database saved successfully via POST /api/db");
 
                 return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
