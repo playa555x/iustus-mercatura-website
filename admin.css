@@ -1337,8 +1337,8 @@ body {
 
 .mediathek-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
 }
 
 /* List View */
@@ -1439,13 +1439,13 @@ body {
 .mediathek-item-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(10, 22, 40, 0.9) 0%, rgba(10, 22, 40, 0.3) 40%, transparent 70%);
+    background: linear-gradient(to top, rgba(10, 22, 40, 0.95) 0%, rgba(10, 22, 40, 0.6) 50%, transparent 80%);
     opacity: 0;
     transition: var(--transition);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 12px;
+    padding: 16px;
 }
 
 .mediathek-item:hover .mediathek-item-overlay {
@@ -1469,17 +1469,18 @@ body {
 
 .mediathek-item-actions button {
     flex: 1;
-    padding: 10px 14px;
+    padding: 12px 16px;
     border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
+    min-height: 44px;
 }
 
 .mediathek-item-actions .btn-copy {
