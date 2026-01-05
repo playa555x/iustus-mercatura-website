@@ -8,6 +8,10 @@ import { mkdir, writeFile, readFile, readdir, stat, copyFile, unlink } from "fs/
 import { join, extname } from "path";
 import { existsSync, readdirSync } from "fs";
 
+// Turso Database (optional - falls back to JSON if not configured)
+import * as turso from "./database/turso";
+const USE_TURSO = turso.isTursoConfigured();
+
 // ==========================================
 // LIVE SYNC SYSTEM
 // ==========================================
@@ -315,7 +319,7 @@ for (const dir of [UPLOADS_DIR, DB_DIR, TEMPLATES_DIR, LOGS_DIR, TEAM_IMAGES_DIR
 
 // Log storage configuration
 log("INFO", `[Storage] Running on ${IS_RENDER ? "Render" : "Local"}`);
-log("INFO", `[Storage] Database: ${DB_DIR}`);
+log("INFO", `[Storage] Database: ${USE_TURSO ? "Turso (Cloud SQLite)" : DB_DIR}`);
 log("INFO", `[Storage] Uploads: ${UPLOADS_DIR}`);
 log("INFO", `[Storage] Team Images: ${TEAM_IMAGES_DIR}`);
 
@@ -430,12 +434,35 @@ let db: DBTables = {
 
 // Load database on startup
 async function loadDatabase(): Promise<void> {
+    // Use Turso if configured
+    if (USE_TURSO) {
+        try {
+            log("INFO", "[DB] Using Turso database");
+            await turso.initializeSchema();
+            db = await turso.loadFullDatabase();
+
+            // If database is empty, initialize with defaults
+            if (!db.websites || db.websites.length === 0) {
+                log("INFO", "[DB] Turso database empty, initializing with defaults");
+                db = getDefaultDatabase();
+                await turso.saveFullDatabase(db);
+            }
+
+            log("INFO", "[DB] Turso database loaded successfully");
+            return;
+        } catch (e) {
+            log("ERROR", `[DB] Turso load failed: ${e}`);
+            // Fall back to JSON
+        }
+    }
+
+    // Fallback: JSON file
     const dbFile = join(DB_DIR, "database.json");
     try {
         if (existsSync(dbFile)) {
             const content = await readFile(dbFile, "utf-8");
             db = JSON.parse(content);
-            log("INFO", "Database loaded successfully");
+            log("INFO", "Database loaded successfully (JSON)");
         } else {
             // Initialize with default data
             db = getDefaultDatabase();
@@ -449,6 +476,20 @@ async function loadDatabase(): Promise<void> {
 }
 
 async function saveDatabase(): Promise<void> {
+    // Use Turso if configured
+    if (USE_TURSO) {
+        try {
+            log("INFO", "[DB] Saving to Turso database");
+            await turso.saveFullDatabase(db);
+            log("INFO", "[DB] Turso database saved successfully");
+            return;
+        } catch (e: any) {
+            log("ERROR", `[DB] Turso save failed: ${e?.message || e}`);
+            // Fall back to JSON
+        }
+    }
+
+    // Fallback: JSON file
     const dbFile = join(DB_DIR, "database.json");
     try {
         log("INFO", `[DB] Saving database to: ${dbFile}`);
@@ -5512,6 +5553,10 @@ async function serveStatic(pathname: string, headers: Record<string, string>): P
     if (pathname.startsWith("/assets/images/team/")) {
         const filename = pathname.replace("/assets/images/team/", "");
         filePath = join(TEAM_IMAGES_DIR, filename);
+    } else if (pathname.startsWith("/uploads/")) {
+        // Serve uploaded files from UPLOADS_DIR
+        const filename = pathname.replace("/uploads/", "");
+        filePath = join(UPLOADS_DIR, filename);
     } else {
         filePath = join(BASE_DIR, pathname);
     }
