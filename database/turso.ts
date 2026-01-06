@@ -358,18 +358,22 @@ export async function loadFullDatabase(): Promise<DBTables> {
 export async function saveFullDatabase(data: DBTables): Promise<void> {
     const db = getDB();
 
-    // Use a transaction for atomic updates
+    // Disable foreign key checks, clear data, re-enable
+    await db.execute("PRAGMA foreign_keys = OFF");
+
+    // Clear existing data (order doesn't matter with FK disabled)
     await db.batch([
-        // Clear existing data
-        { sql: "DELETE FROM websites", args: [] },
-        { sql: "DELETE FROM pages", args: [] },
         { sql: "DELETE FROM blocks", args: [] },
-        { sql: "DELETE FROM collections", args: [] },
         { sql: "DELETE FROM items", args: [] },
         { sql: "DELETE FROM media", args: [] },
         { sql: "DELETE FROM settings", args: [] },
-        { sql: "DELETE FROM connections", args: [] }
+        { sql: "DELETE FROM connections", args: [] },
+        { sql: "DELETE FROM pages", args: [] },
+        { sql: "DELETE FROM collections", args: [] },
+        { sql: "DELETE FROM websites", args: [] }
     ]);
+
+    await db.execute("PRAGMA foreign_keys = ON");
 
     // Insert websites
     for (const w of data.websites || []) {

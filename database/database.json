@@ -47,7 +47,7 @@
             "label": "MT Annually"
           },
           {
-            "value": "8",
+            "value": "10",
             "label": "Global Offices"
           },
           {
@@ -761,6 +761,24 @@
       "order": 8
     },
     {
+      "id": "location_10",
+      "collection_id": "col_locations",
+      "website_id": "ws_iustus",
+      "data": {
+        "country": "Bangladesh",
+        "city": "Dhaka",
+        "type": "Regional Operations",
+        "company": "Iustus Mercatura Bangladesh",
+        "address": "Dhaka, Bangladesh",
+        "countryCode": "BD",
+        "coordinates": {
+          "x": 695,
+          "y": 200
+        }
+      },
+      "order": 9
+    },
+    {
       "id": "project_1",
       "collection_id": "col_projects",
       "website_id": "ws_iustus",
@@ -805,11 +823,20 @@
       "collection_id": "col_projects",
       "website_id": "ws_iustus",
       "data": {
-        "name": "Mercatura Finance DIFC",
+        "name": "Iustus Mercatura Finance DIFC LLC",
         "year": "2025",
-        "description": "Full-service financial provider in Dubai offering specialized Sustainable Farming and Trade Finance solutions.",
+        "description": "Full-service financial provider in Dubai International Financial Centre (DIFC), offering Sustainable Farming Finance and Trade Finance solutions. A Category 4 licensed entity pending DFSA regulatory approval.",
         "status": "Geplant",
-        "stats": []
+        "stats": [
+          {
+            "value": "Cat 4",
+            "label": "DFSA License"
+          },
+          {
+            "value": "DIFC",
+            "label": "Dubai HQ"
+          }
+        ]
       },
       "order": 2
     }
@@ -844,13 +871,19 @@
       "id": "set_5",
       "website_id": "ws_iustus",
       "key": "email",
-      "value": "info@iustus-mercatura.com"
+      "value": "info@imh-bvi.com"
     },
     {
       "id": "set_6",
       "website_id": "ws_iustus",
       "key": "phone",
-      "value": "+44 20 7621 0000"
+      "value": "+1-551-430-7473"
+    },
+    {
+      "id": "set_7",
+      "website_id": "ws_iustus",
+      "key": "website",
+      "value": "www.imh-bvi.com"
     }
   ],
   "sync_log": [
