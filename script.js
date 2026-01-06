@@ -1858,7 +1858,7 @@ function initInteractiveMap() {
         mapInteractionsInitialized = true;
 
         // Use event delegation on the map container for better performance
-        const mapContainer = document.querySelector('.world-map-wrapper');
+        const mapContainer = document.querySelector('.world-map');
         if (mapContainer) {
             mapContainer.addEventListener('mouseover', (e) => {
                 const marker = e.target.closest('.location-marker');
