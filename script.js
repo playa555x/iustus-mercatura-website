@@ -3868,12 +3868,19 @@ document.addEventListener('DOMContentLoaded', () => {
 // CEO MESSAGE MODAL WITH GSAP ANIMATION
 // ============================================
 
-// Initialize CEO Modal on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize CEO Modal - runs when DOM is ready
+function initCEOModal() {
     const modal = document.getElementById('ceo-message-modal');
     const btn = document.getElementById('open-ceo-modal');
 
-    if (!btn || !modal) return;
+    if (!btn || !modal) {
+        console.warn('[CEO Modal] Button or modal not found');
+        return;
+    }
+
+    // Prevent double initialization
+    if (btn.dataset.initialized === 'true') return;
+    btn.dataset.initialized = 'true';
 
     const closeBtn = modal.querySelector('.ceo-modal-close');
     const backdrop = modal.querySelector('.ceo-modal-backdrop');
@@ -4021,4 +4028,16 @@ document.addEventListener('DOMContentLoaded', () => {
             closeCEOModal();
         }
     });
-});
+
+    console.log('[CEO Modal] Initialized successfully');
+}
+
+// Initialize CEO Modal on multiple events to ensure it works on all browsers
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCEOModal);
+} else {
+    // DOM already loaded
+    initCEOModal();
+}
+// Also try on window load as fallback for Safari
+window.addEventListener('load', initCEOModal);
