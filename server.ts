@@ -316,15 +316,19 @@ const IS_RENDER = !!process.env.RENDER;
 const PERSISTENT_DIR = IS_RENDER ? "/data" : BASE_DIR;
 
 // Directories - use persistent storage on Render
+// EINHEITLICHER UPLOAD-ORDNER: Alles nach uploads/ mit Unterordnern
 const UPLOADS_DIR = IS_RENDER ? join(PERSISTENT_DIR, "uploads") : join(BASE_DIR, "uploads");
 const DB_DIR = IS_RENDER ? join(PERSISTENT_DIR, "database") : join(BASE_DIR, "database");
 const TEMPLATES_DIR = join(BASE_DIR, "templates");
 const LOGS_DIR = IS_RENDER ? join(PERSISTENT_DIR, "logs") : join(BASE_DIR, "logs");
-// Team images: persistent on Render, local in assets folder otherwise
-const TEAM_IMAGES_DIR = IS_RENDER ? join(PERSISTENT_DIR, "images", "team") : join(BASE_DIR, "assets", "images", "team");
+
+// Unterordner für verschiedene Upload-Typen (alle unter uploads/)
+const UPLOADS_TEAM_DIR = join(UPLOADS_DIR, "team");
+const UPLOADS_LOGOS_DIR = join(UPLOADS_DIR, "logos");
+const UPLOADS_MEDIA_DIR = join(UPLOADS_DIR, "media");
 
 // Ensure directories exist
-for (const dir of [UPLOADS_DIR, DB_DIR, TEMPLATES_DIR, LOGS_DIR, TEAM_IMAGES_DIR]) {
+for (const dir of [UPLOADS_DIR, UPLOADS_TEAM_DIR, UPLOADS_LOGOS_DIR, UPLOADS_MEDIA_DIR, DB_DIR, TEMPLATES_DIR, LOGS_DIR]) {
     if (!existsSync(dir)) {
         await mkdir(dir, { recursive: true });
     }
@@ -334,7 +338,8 @@ for (const dir of [UPLOADS_DIR, DB_DIR, TEMPLATES_DIR, LOGS_DIR, TEAM_IMAGES_DIR
 log("INFO", `[Storage] Running on ${IS_RENDER ? "Render" : "Local"}`);
 log("INFO", `[Storage] Database: ${USE_TURSO ? "Turso (Cloud SQLite)" : DB_DIR}`);
 log("INFO", `[Storage] Uploads: ${UPLOADS_DIR}`);
-log("INFO", `[Storage] Team Images: ${TEAM_IMAGES_DIR}`);
+log("INFO", `[Storage] Team Images: ${UPLOADS_TEAM_DIR}`);
+log("INFO", `[Storage] Logos: ${UPLOADS_LOGOS_DIR}`);
 
 // Database Tables (JSON-based for local dev)
 interface DBTables {
@@ -1747,9 +1752,9 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     allImages = [...allImages, ...flagImages];
                 }
 
-                // 3. Get team images from persistent storage (TEAM_IMAGES_DIR)
-                if (existsSync(TEAM_IMAGES_DIR)) {
-                    const teamFiles = readdirSync(TEAM_IMAGES_DIR);
+                // 3. Get team images from uploads/team/ (EINHEITLICHER ORT)
+                if (existsSync(UPLOADS_TEAM_DIR)) {
+                    const teamFiles = readdirSync(UPLOADS_TEAM_DIR);
                     const teamImages = teamFiles
                         .filter(f => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f))
                         .map(filename => {
@@ -1758,7 +1763,7 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                             const readableName = nameWithoutExt.replace(/-/g, ' ');
                             return {
                                 filename,
-                                url: `/assets/images/team/${filename}`,
+                                url: `/uploads/team/${filename}`,
                                 type: `image/${filename.split('.').pop()?.toLowerCase() || 'png'}`,
                                 original_name: readableName,
                                 folder: 'team'
@@ -1767,16 +1772,19 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     allImages = [...allImages, ...teamImages];
                 }
 
-                // 4. Get logo from assets/images
-                const logoPath = join(import.meta.dir, 'assets', 'images', 'logo.jpg');
-                if (existsSync(logoPath)) {
-                    allImages.push({
-                        filename: 'logo.jpg',
-                        url: '/assets/images/logo.jpg',
-                        type: 'image/jpeg',
-                        original_name: 'Iustus Mercatura Logo',
-                        folder: 'logos'
-                    });
+                // 4. Get logos from uploads/logos/
+                if (existsSync(UPLOADS_LOGOS_DIR)) {
+                    const logoFiles = readdirSync(UPLOADS_LOGOS_DIR);
+                    const logoImages = logoFiles
+                        .filter(f => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f))
+                        .map(filename => ({
+                            filename,
+                            url: `/uploads/logos/${filename}`,
+                            type: `image/${filename.split('.').pop()?.toLowerCase() || 'png'}`,
+                            original_name: filename.replace(/\.(jpg|jpeg|png|gif|webp|svg)$/i, ''),
+                            folder: 'logos'
+                        }));
+                    allImages = [...allImages, ...logoImages];
                 }
 
                 return new Response(JSON.stringify({ images: allImages }), { headers: jsonHeaders });
@@ -1797,15 +1805,15 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     });
                 }
 
-                // Check if it's a team image (from TEAM_IMAGES_DIR - persistent storage)
-                const teamFilePath = join(TEAM_IMAGES_DIR, filename);
+                // Check if it's a team image (from uploads/team/)
+                const teamFilePath = join(UPLOADS_TEAM_DIR, filename);
                 if (existsSync(teamFilePath)) {
                     // Delete team image file
                     try {
                         await unlink(teamFilePath);
                         log("INFO", `Team image deleted: ${filename}`);
 
-                        const imageUrl = `/assets/images/team/${filename}`;
+                        const imageUrl = `/uploads/team/${filename}`;
 
                         // Remove from data.json (team members)
                         try {
@@ -1836,7 +1844,7 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                             const imagePathVariants = [
                                 imageUrl,
                                 imageUrl.substring(1), // without leading slash
-                                `assets/images/team/${filename}` // relative path
+                                `uploads/team/${filename}` // relative path
                             ];
 
                             let updated = false;
@@ -1999,7 +2007,7 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
             }
         }
 
-        // POST /api/upload/team - Upload team image to persistent storage
+        // POST /api/upload/team - Upload team image to uploads/team/
         if (pathname === "/api/upload/team" && req.method === "POST") {
             const formData = await req.formData();
             const imageFile = formData.get("file") as File;
@@ -2013,23 +2021,23 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
 
             // Keep original filename for team images
             const filename = imageFile.name;
-            const filePath = join(TEAM_IMAGES_DIR, filename);
+            const filePath = join(UPLOADS_TEAM_DIR, filename);
 
             const arrayBuffer = await imageFile.arrayBuffer();
             await writeFile(filePath, Buffer.from(arrayBuffer));
 
-            log("INFO", `Team image uploaded: ${filename} to ${TEAM_IMAGES_DIR}`);
+            log("INFO", `Team image uploaded: ${filename} to ${UPLOADS_TEAM_DIR}`);
 
             // Broadcast to sync clients
             broadcastSync({
                 type: 'media_uploaded',
-                data: { filename, folder: 'team', url: `/assets/images/team/${filename}` }
+                data: { filename, folder: 'team', url: `/uploads/team/${filename}` }
             });
 
             return new Response(JSON.stringify({
                 success: true,
                 filename,
-                url: `/assets/images/team/${filename}`,
+                url: `/uploads/team/${filename}`,
                 folder: 'team'
             }), { headers: jsonHeaders });
         }
@@ -4699,22 +4707,40 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
 
                 // Check master admin password first (password-only login for admin panel)
                 const masterPasswordHash = settings.admin?.masterPasswordHash;
-                if (!username && password && masterPasswordHash) {
-                    let masterMatch = false;
-                    try {
-                        masterMatch = await Bun.password.verify(password, masterPasswordHash);
-                    } catch {
-                        masterMatch = masterPasswordHash === hashPassword(password);
-                    }
 
-                    if (masterMatch) {
-                        const sessionToken = `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                        log("INFO", `[Auth] Master admin login successful`);
-                        return new Response(JSON.stringify({
-                            success: true,
-                            user: { id: 'master', username: 'admin', role: 'master' },
-                            token: sessionToken
-                        }), { headers: jsonHeaders });
+                // FALLBACK: Wenn kein masterPasswordHash gesetzt ist, erlaube Standard-Passwort
+                // Dies ermöglicht den ersten Login nach Setup
+                if (!username && password) {
+                    // Wenn masterPasswordHash existiert, prüfe dagegen
+                    if (masterPasswordHash) {
+                        let masterMatch = false;
+                        try {
+                            masterMatch = await Bun.password.verify(password, masterPasswordHash);
+                        } catch {
+                            masterMatch = masterPasswordHash === hashPassword(password);
+                        }
+
+                        if (masterMatch) {
+                            const sessionToken = `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                            log("INFO", `[Auth] Master admin login successful`);
+                            return new Response(JSON.stringify({
+                                success: true,
+                                user: { id: 'master', username: 'admin', role: 'master' },
+                                token: sessionToken
+                            }), { headers: jsonHeaders });
+                        }
+                    } else {
+                        // Kein masterPasswordHash - erlaube temporäres Passwort "admin123"
+                        // WICHTIG: Nach erstem Login sollte ein sicheres Passwort gesetzt werden!
+                        if (password === 'admin123') {
+                            const sessionToken = `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                            log("WARN", `[Auth] TEMP LOGIN with default password - please set a secure password!`);
+                            return new Response(JSON.stringify({
+                                success: true,
+                                user: { id: 'master', username: 'admin', role: 'master' },
+                                token: sessionToken
+                            }), { headers: jsonHeaders });
+                        }
                     }
                 }
 
@@ -5674,15 +5700,27 @@ async function serveStatic(pathname: string, headers: Record<string, string>): P
         return new Response("Forbidden", { status: 403, headers });
     }
 
-    // Serve team images from persistent storage on Render
+    // EINHEITLICHER UPLOAD-ORDNER: Alles aus uploads/ mit Unterordnern
     let filePath: string;
     let allowedDir: string;
 
-    if (safePath.startsWith("/assets/images/team/")) {
-        const filename = safePath.replace("/assets/images/team/", "");
-        filePath = join(TEAM_IMAGES_DIR, filename);
-        allowedDir = TEAM_IMAGES_DIR;
+    if (safePath.startsWith("/uploads/team/")) {
+        // Team-Bilder aus uploads/team/
+        const filename = safePath.replace("/uploads/team/", "");
+        filePath = join(UPLOADS_TEAM_DIR, filename);
+        allowedDir = UPLOADS_TEAM_DIR;
+    } else if (safePath.startsWith("/uploads/logos/")) {
+        // Logos aus uploads/logos/
+        const filename = safePath.replace("/uploads/logos/", "");
+        filePath = join(UPLOADS_LOGOS_DIR, filename);
+        allowedDir = UPLOADS_LOGOS_DIR;
+    } else if (safePath.startsWith("/uploads/media/")) {
+        // Andere Medien aus uploads/media/
+        const filename = safePath.replace("/uploads/media/", "");
+        filePath = join(UPLOADS_MEDIA_DIR, filename);
+        allowedDir = UPLOADS_MEDIA_DIR;
     } else if (safePath.startsWith("/uploads/")) {
+        // Fallback: direkt aus uploads/
         const filename = safePath.replace("/uploads/", "");
         filePath = join(UPLOADS_DIR, filename);
         allowedDir = UPLOADS_DIR;
