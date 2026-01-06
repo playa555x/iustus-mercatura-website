@@ -3001,11 +3001,17 @@ section {
     pointer-events: auto;
     z-index: 101;
 
-    /* Initial state: small circle */
+    /* Initial state: hidden */
     opacity: 0;
     visibility: hidden;
-    transform: scale(0.1);
+    transform: scale(0.15);
     transform-origin: left top;
+
+    /* CSS transition fallback when GSAP not available */
+    transition:
+        opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+        visibility 0.5s ease;
 }
 
 /* Premium card inner container */

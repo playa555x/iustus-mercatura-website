@@ -1846,26 +1846,22 @@ function showMapInfoBox(locationId) {
     if (mapActiveLocation === locationId) return;
     mapActiveLocation = locationId;
 
-    // Hide all info boxes and markers first
+    // Hide all other info boxes first
     document.querySelectorAll('.map-info-box').forEach(box => {
         if (box.dataset.location !== locationId) {
             box.classList.remove('active');
-            // Quick hide animation for other boxes
+            // Clear any GSAP inline styles
             if (typeof gsap !== 'undefined') {
-                gsap.to(box, {
-                    scale: 0.1,
-                    opacity: 0,
-                    duration: 0.2,
-                    ease: 'power2.in'
-                });
+                gsap.set(box, { clearProps: 'all' });
             }
         }
     });
     document.querySelectorAll('.location-marker').forEach(m => m.classList.remove('active'));
 
-    // Show the matching info box with GSAP animation
+    // Show the matching info box
     const infoBox = document.querySelector(`.map-info-box[data-location="${locationId}"]`);
     if (infoBox) {
+        // Add active class first (CSS handles basic visibility)
         infoBox.classList.add('active');
 
         // GSAP Premium Animation - Circle to Card transformation
@@ -1877,62 +1873,72 @@ function showMapInfoBox(locationId) {
             const teamSection = infoBox.querySelector('.info-team-section');
             const photo = infoBox.querySelector('.info-team-photo, .info-team-initials');
 
+            // Kill any running animations on this element
+            gsap.killTweensOf(infoBox);
+            gsap.killTweensOf([corners, inner, header, content, teamSection, photo]);
+
             // Create timeline for smooth sequential animation
             const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-            // Initial state - small circle
-            gsap.set(infoBox, { scale: 0.1, opacity: 0, visibility: 'visible' });
+            // Set initial states for animation
+            gsap.set(infoBox, { scale: 0.15, opacity: 0 });
             gsap.set(corners, { opacity: 0, scale: 0 });
             if (inner) gsap.set(inner, { opacity: 0 });
-            if (header) gsap.set(header, { opacity: 0, y: -20 });
-            if (content) gsap.set(content, { opacity: 0, y: 20 });
-            if (teamSection) gsap.set(teamSection, { opacity: 0, x: -30 });
-            if (photo) gsap.set(photo, { scale: 0, rotation: -180 });
+            if (header) gsap.set(header, { opacity: 0, y: -15 });
+            if (content) gsap.set(content, { opacity: 0, y: 15 });
+            if (teamSection) gsap.set(teamSection, { opacity: 0, x: -20 });
+            if (photo) gsap.set(photo, { scale: 0.5, rotation: -90 });
 
-            // Step 1: Expand from circle to rectangle (smooth and slow)
+            // Step 1: Expand from small to full size (smooth and slow)
             tl.to(infoBox, {
                 scale: 1,
                 opacity: 1,
-                duration: 0.8,
-                ease: 'power4.out'
+                duration: 0.7,
+                ease: 'power3.out'
             });
 
             // Step 2: Fade in inner content
-            tl.to(inner, {
-                opacity: 1,
-                duration: 0.4
-            }, '-=0.4');
+            if (inner) {
+                tl.to(inner, {
+                    opacity: 1,
+                    duration: 0.3
+                }, '-=0.4');
+            }
 
             // Step 3: Corners animate in
             tl.to(corners, {
                 opacity: 0.6,
                 scale: 1,
-                duration: 0.5,
-                stagger: 0.08,
-                ease: 'back.out(2)'
-            }, '-=0.3');
+                duration: 0.4,
+                stagger: 0.06,
+                ease: 'back.out(1.5)'
+            }, '-=0.2');
 
             // Step 4: Header slides down
-            tl.to(header, {
-                opacity: 1,
-                y: 0,
-                duration: 0.5
-            }, '-=0.4');
+            if (header) {
+                tl.to(header, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.4
+                }, '-=0.3');
+            }
 
             // Step 5: Content slides up
-            tl.to(content, {
-                opacity: 1,
-                y: 0,
-                duration: 0.5
-            }, '-=0.3');
+            if (content) {
+                tl.to(content, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.4
+                }, '-=0.25');
+            }
 
             // Step 6: Team section slides in from left
             if (teamSection) {
                 tl.to(teamSection, {
                     opacity: 1,
                     x: 0,
-                    duration: 0.6
-                }, '-=0.3');
+                    duration: 0.5
+                }, '-=0.2');
             }
 
             // Step 7: Photo spins in with scale (special effect)
@@ -1940,9 +1946,9 @@ function showMapInfoBox(locationId) {
                 tl.to(photo, {
                     scale: 1,
                     rotation: 0,
-                    duration: 0.7,
-                    ease: 'elastic.out(1, 0.6)'
-                }, '-=0.5');
+                    duration: 0.6,
+                    ease: 'back.out(1.7)'
+                }, '-=0.4');
             }
         }
     }
@@ -1958,15 +1964,17 @@ function hideAllMapInfoBoxes() {
     mapActiveLocation = null;
 
     document.querySelectorAll('.map-info-box').forEach(box => {
-        // Smooth hide animation with GSAP
         if (typeof gsap !== 'undefined' && box.classList.contains('active')) {
+            // Smooth hide animation with GSAP
+            gsap.killTweensOf(box);
             gsap.to(box, {
-                scale: 0.1,
+                scale: 0.15,
                 opacity: 0,
-                duration: 0.4,
-                ease: 'power3.in',
+                duration: 0.3,
+                ease: 'power2.in',
                 onComplete: () => {
                     box.classList.remove('active');
+                    gsap.set(box, { clearProps: 'all' });
                 }
             });
         } else {
