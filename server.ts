@@ -4730,11 +4730,13 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                             }), { headers: jsonHeaders });
                         }
                     } else {
-                        // Kein masterPasswordHash - erlaube temporäres Passwort "admin123"
-                        // WICHTIG: Nach erstem Login sollte ein sicheres Passwort gesetzt werden!
-                        if (password === 'admin123') {
+                        // Kein masterPasswordHash in settings.json - verwende Default-Passwort
+                        // Default: Blümchen88!
+                        const DEFAULT_PASSWORD = 'Bl\u00fcmchen88!'; // Blümchen88! mit Unicode escape
+
+                        if (password === DEFAULT_PASSWORD) {
                             const sessionToken = `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                            log("WARN", `[Auth] TEMP LOGIN with default password - please set a secure password!`);
+                            log("INFO", `[Auth] Admin login successful with default password`);
                             return new Response(JSON.stringify({
                                 success: true,
                                 user: { id: 'master', username: 'admin', role: 'master' },
