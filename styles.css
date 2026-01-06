@@ -2936,8 +2936,6 @@ section {
     transition: transform 0.3s ease;
 }
 
-/* Marker hover effect - no transform on group to prevent container scaling */
-
 .marker-hitbox {
     fill: transparent;
     cursor: pointer;
@@ -2947,7 +2945,8 @@ section {
     fill: var(--accent-gold);
     opacity: 0.3;
     pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
 }
 
 .marker-logo {
@@ -2955,25 +2954,29 @@ section {
     stroke-width: 2;
     filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.6));
     pointer-events: none;
-    transition: all 0.3s ease;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
 }
 
+/* Hover: Pulse expandiert nach außen */
+.location-marker:hover .marker-pulse,
+.location-marker.active .marker-pulse {
+    opacity: 0;
+    transform: scale(3);
+}
+
+/* Hover: Logo wird größer mit Glow */
 .location-marker:hover .marker-logo,
 .location-marker.active .marker-logo {
     stroke-width: 3;
-    filter: drop-shadow(0 0 15px rgba(201, 162, 39, 0.9));
-}
-
-.location-marker:hover .marker-pulse,
-.location-marker.active .marker-pulse {
-    opacity: 0.6;
-    transform: scale(1.3);
+    filter: drop-shadow(0 0 20px rgba(201, 162, 39, 1));
+    transform: scale(1.2);
 }
 
 .hq-marker .marker-pulse.hq-pulse {
     fill: #fff;
     opacity: 0.4;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hq-marker .marker-logo {
@@ -2981,8 +2984,6 @@ section {
     stroke-width: 3;
     filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8));
 }
-
-/* Removed pulse animations for cleaner look */
 
 /* Map Info Boxes - Premium Hover Cards */
 .map-info-boxes {
@@ -3437,17 +3438,18 @@ section {
     text-overflow: ellipsis;
 }
 
-/* Position info boxes relative to map markers */
-.map-info-box[data-location="bvi"] { left: 18%; top: 35%; }
-.map-info-box[data-location="usa"] { left: 8%; top: 15%; }
-.map-info-box[data-location="usa_texas"] { left: 3%; top: 25%; }
-.map-info-box[data-location="usa_florida"] { left: 12%; top: 35%; }
-.map-info-box[data-location="brazil"] { left: 22%; top: 55%; }
-.map-info-box[data-location="uae"] { left: 52%; top: 20%; }
-.map-info-box[data-location="uk"] { left: 38%; top: 5%; }
-.map-info-box[data-location="uganda"] { left: 48%; top: 45%; }
-.map-info-box[data-location="kenya"] { left: 52%; top: 45%; }
-.map-info-box[data-location="bangladesh"] { left: 62%; top: 25%; }
+/* Position info boxes - now dynamically set via JavaScript to appear at marker location */
+/* Fallback positions only used if JS fails */
+.map-info-box[data-location="bvi"] { left: 26%; top: 48%; }
+.map-info-box[data-location="usa"] { left: 17%; top: 28%; }
+.map-info-box[data-location="usa_texas"] { left: 13%; top: 34%; }
+.map-info-box[data-location="usa_florida"] { left: 19%; top: 41%; }
+.map-info-box[data-location="brazil"] { left: 32%; top: 70%; }
+.map-info-box[data-location="uae"] { left: 68%; top: 36%; }
+.map-info-box[data-location="uk"] { left: 51%; top: 19%; }
+.map-info-box[data-location="uganda"] { left: 61%; top: 59%; }
+.map-info-box[data-location="kenya"] { left: 64%; top: 58%; }
+.map-info-box[data-location="bangladesh"] { left: 77%; top: 39%; }
 
 /* Mobile responsive for premium map info boxes */
 @media (max-width: 768px) {
