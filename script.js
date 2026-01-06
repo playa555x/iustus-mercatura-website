@@ -454,12 +454,25 @@ function updateLocationsSection(locations) {
         'AE': 'uae',
         'GB': 'uk',
         'UG': 'uganda',
-        'KE': 'kenya'
+        'KE': 'kenya',
+        'BD': 'bangladesh'
+    };
+
+    // City-specific mappings for countries with multiple offices
+    const cityToLocationId = {
+        'Austin': 'usa_texas',
+        'Austin, Texas': 'usa_texas',
+        'Miami': 'usa_florida',
+        'Miami, Florida': 'usa_florida'
     };
 
     // Generate info boxes for each location
     locations.forEach(location => {
-        const locationId = countryToLocationId[location.countryCode] || location.countryCode.toLowerCase();
+        // Check for city-specific mapping first (for USA offices)
+        let locationId = cityToLocationId[location.city];
+        if (!locationId) {
+            locationId = countryToLocationId[location.countryCode] || location.countryCode.toLowerCase();
+        }
         const flagPath = `assets/images/flags/${location.countryCode.toLowerCase()}.svg`;
 
         const infoBoxHtml = `
@@ -481,32 +494,9 @@ function updateLocationsSection(locations) {
     });
 
     // Re-initialize map hover effects
-    initMapInteractions();
-}
-
-/**
- * Initialize map marker interactions
- */
-function initMapInteractions() {
-    const markers = document.querySelectorAll('.location-marker');
-    const infoBoxes = document.querySelectorAll('.map-info-box');
-
-    markers.forEach(marker => {
-        marker.addEventListener('mouseenter', () => {
-            const locationId = marker.dataset.location;
-            infoBoxes.forEach(box => {
-                if (box.dataset.location === locationId) {
-                    box.classList.add('active');
-                } else {
-                    box.classList.remove('active');
-                }
-            });
-        });
-
-        marker.addEventListener('mouseleave', () => {
-            infoBoxes.forEach(box => box.classList.remove('active'));
-        });
-    });
+    // Reset flag since we have new info boxes that need listeners
+    mapInteractionsInitialized = false;
+    initInteractiveMap();
 }
 
 /**
@@ -1777,9 +1767,17 @@ function initPageTransitionEffect() {
 // ============================================
 // INTERACTIVE MAP - Info Box on Hover
 // ============================================
+let mapInteractionsInitialized = false;
 function initInteractiveMap() {
     const markers = document.querySelectorAll('.location-marker');
     const infoBoxes = document.querySelectorAll('.map-info-box');
+
+    // Prevent duplicate event listeners
+    if (mapInteractionsInitialized) {
+        return;
+    }
+    mapInteractionsInitialized = true;
+
     let activeInfoBox = null;
     let hoverTimeout = null;
 
