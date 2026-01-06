@@ -1768,124 +1768,153 @@ function initPageTransitionEffect() {
 // INTERACTIVE MAP - Info Box on Hover
 // ============================================
 let mapInteractionsInitialized = false;
+let mapHoverTimeout = null;
+let mapActiveLocation = null;
+
+function showMapInfoBox(locationId) {
+    // Clear any pending hide
+    clearTimeout(mapHoverTimeout);
+
+    // Skip if already showing this location
+    if (mapActiveLocation === locationId) return;
+    mapActiveLocation = locationId;
+
+    // Hide all info boxes and markers first
+    document.querySelectorAll('.map-info-box').forEach(box => box.classList.remove('active'));
+    document.querySelectorAll('.location-marker').forEach(m => m.classList.remove('active'));
+
+    // Show the matching info box
+    const infoBox = document.querySelector(`.map-info-box[data-location="${locationId}"]`);
+    if (infoBox) {
+        infoBox.classList.add('active');
+    }
+
+    // Highlight the marker
+    const marker = document.querySelector(`.location-marker[data-location="${locationId}"]`);
+    if (marker) {
+        marker.classList.add('active');
+
+        // Animate the marker-logo
+        const logo = marker.querySelector('.marker-logo');
+        const pulse = marker.querySelector('.marker-pulse');
+        if (logo) {
+            gsap.to(logo, {
+                attr: { r: 14 },
+                duration: 0.25,
+                ease: 'power2.out'
+            });
+        }
+        if (pulse) {
+            gsap.to(pulse, {
+                attr: { r: 20 },
+                opacity: 0.8,
+                duration: 0.25,
+                ease: 'power2.out'
+            });
+        }
+    }
+}
+
+function hideAllMapInfoBoxes() {
+    mapActiveLocation = null;
+    document.querySelectorAll('.map-info-box').forEach(box => box.classList.remove('active'));
+    document.querySelectorAll('.location-marker').forEach(marker => {
+        marker.classList.remove('active');
+
+        // Reset marker size
+        const logo = marker.querySelector('.marker-logo');
+        const pulse = marker.querySelector('.marker-pulse');
+        if (logo) {
+            gsap.to(logo, {
+                attr: { r: 12 },
+                duration: 0.2,
+                ease: 'power2.out'
+            });
+        }
+        if (pulse) {
+            gsap.to(pulse, {
+                attr: { r: 14 },
+                opacity: 0.4,
+                duration: 0.2,
+                ease: 'power2.out'
+            });
+        }
+    });
+}
+
+function scheduleHideMapInfoBoxes() {
+    clearTimeout(mapHoverTimeout);
+    mapHoverTimeout = setTimeout(() => {
+        hideAllMapInfoBoxes();
+    }, 400);
+}
+
 function initInteractiveMap() {
     const markers = document.querySelectorAll('.location-marker');
     const infoBoxes = document.querySelectorAll('.map-info-box');
 
-    // Prevent duplicate event listeners
-    if (mapInteractionsInitialized) {
-        return;
-    }
-    mapInteractionsInitialized = true;
+    // Only add marker listeners once (they don't change)
+    if (!mapInteractionsInitialized) {
+        mapInteractionsInitialized = true;
 
-    let activeInfoBox = null;
-    let hoverTimeout = null;
+        // Use event delegation on the map container for better performance
+        const mapContainer = document.querySelector('.world-map-wrapper');
+        if (mapContainer) {
+            mapContainer.addEventListener('mouseover', (e) => {
+                const marker = e.target.closest('.location-marker');
+                if (marker) {
+                    const location = marker.dataset.location;
+                    showMapInfoBox(location);
+                }
+            });
 
-    // Helper function to show info box for a location
-    function showInfoBox(locationId) {
-        // Hide all info boxes first
-        infoBoxes.forEach(box => box.classList.remove('active'));
+            mapContainer.addEventListener('mouseout', (e) => {
+                const marker = e.target.closest('.location-marker');
+                const infoBox = e.target.closest('.map-info-box');
 
-        // Find and show matching info box
-        const infoBox = document.querySelector(`.map-info-box[data-location="${locationId}"]`);
-        if (infoBox) {
-            infoBox.classList.add('active');
-            activeInfoBox = infoBox;
-        }
+                // Only schedule hide if leaving both marker and info box
+                if (marker || infoBox) {
+                    const relatedTarget = e.relatedTarget;
+                    const goingToMarker = relatedTarget && relatedTarget.closest('.location-marker');
+                    const goingToInfoBox = relatedTarget && relatedTarget.closest('.map-info-box');
 
-        // Highlight the marker
-        markers.forEach(m => m.classList.remove('active'));
-        const marker = document.querySelector(`.location-marker[data-location="${locationId}"]`);
-        if (marker) {
-            marker.classList.add('active');
+                    if (!goingToMarker && !goingToInfoBox) {
+                        scheduleHideMapInfoBoxes();
+                    }
+                }
+            });
 
-            // Animate the marker-logo
-            const logo = marker.querySelector('.marker-logo');
-            const pulse = marker.querySelector('.marker-pulse');
-            if (logo) {
-                gsap.to(logo, {
-                    attr: { r: 14 },
-                    duration: 0.25,
-                    ease: 'power2.out'
-                });
-            }
-            if (pulse) {
-                gsap.to(pulse, {
-                    attr: { r: 20 },
-                    opacity: 0.8,
-                    duration: 0.25,
-                    ease: 'power2.out'
-                });
-            }
+            // Click to toggle persistent selection
+            mapContainer.addEventListener('click', (e) => {
+                const marker = e.target.closest('.location-marker');
+                if (marker) {
+                    const location = marker.dataset.location;
+                    if (mapActiveLocation === location) {
+                        hideAllMapInfoBoxes();
+                    } else {
+                        showMapInfoBox(location);
+                    }
+                }
+            });
         }
     }
 
-    // Helper function to hide all info boxes
-    function hideAllInfoBoxes() {
-        infoBoxes.forEach(box => box.classList.remove('active'));
-        markers.forEach(marker => {
-            marker.classList.remove('active');
-
-            // Reset marker size
-            const logo = marker.querySelector('.marker-logo');
-            const pulse = marker.querySelector('.marker-pulse');
-            if (logo) {
-                gsap.to(logo, {
-                    attr: { r: 12 },
-                    duration: 0.2,
-                    ease: 'power2.out'
-                });
-            }
-            if (pulse) {
-                gsap.to(pulse, {
-                    attr: { r: 14 },
-                    opacity: 0.4,
-                    duration: 0.2,
-                    ease: 'power2.out'
-                });
-            }
-        });
-        activeInfoBox = null;
-    }
-
-    // Map marker hover events
-    markers.forEach(marker => {
-        marker.addEventListener('mouseenter', () => {
-            clearTimeout(hoverTimeout);
-            const location = marker.dataset.location;
-            showInfoBox(location);
-        });
-
-        marker.addEventListener('mouseleave', () => {
-            // Delay hiding to allow moving to info box
-            hoverTimeout = setTimeout(() => {
-                hideAllInfoBoxes();
-            }, 300);
-        });
-
-        // Click to toggle persistent selection
-        marker.addEventListener('click', () => {
-            const location = marker.dataset.location;
-            const infoBox = document.querySelector(`.map-info-box[data-location="${location}"]`);
-            const isActive = infoBox && infoBox.classList.contains('active');
-            if (isActive) {
-                hideAllInfoBoxes();
-            } else {
-                showInfoBox(location);
-            }
-        });
-    });
-
-    // Info box hover events - keep visible while hovering
+    // Add listeners to info boxes (they are dynamically created)
     infoBoxes.forEach(box => {
-        box.addEventListener('mouseenter', () => {
-            clearTimeout(hoverTimeout);
+        // Remove old listeners by cloning
+        const newBox = box.cloneNode(true);
+        box.parentNode.replaceChild(newBox, box);
+
+        newBox.addEventListener('mouseenter', () => {
+            clearTimeout(mapHoverTimeout);
         });
 
-        box.addEventListener('mouseleave', () => {
-            hoverTimeout = setTimeout(() => {
-                hideAllInfoBoxes();
-            }, 200);
+        newBox.addEventListener('mouseleave', (e) => {
+            const relatedTarget = e.relatedTarget;
+            const goingToMarker = relatedTarget && relatedTarget.closest('.location-marker');
+            if (!goingToMarker) {
+                scheduleHideMapInfoBoxes();
+            }
         });
     });
 
