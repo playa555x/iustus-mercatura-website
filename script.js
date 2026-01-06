@@ -1777,8 +1777,11 @@ function initPageTransitionEffect() {
     `;
     document.head.appendChild(transitionStyles);
 
-    // Event Listener für alle Anchor Links
+    // Event Listener für alle Anchor Links (außer CEO Modal Button)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        // Skip CEO Modal Button
+        if (anchor.id === 'open-ceo-modal') return;
+
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
@@ -3713,4 +3716,117 @@ document.addEventListener('DOMContentLoaded', () => {
     // Note: Location markers use their own hover system (initInteractiveMap)
     // Do NOT add hover-trigger/hover-target attributes to .location-marker
     // as it conflicts with the custom map info box system
+});
+
+// ============================================
+// CEO MESSAGE MODAL WITH GSAP ANIMATION
+// ============================================
+
+// Initialize CEO Modal on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('ceo-message-modal');
+    const btn = document.getElementById('open-ceo-modal');
+
+    if (!btn || !modal) return;
+
+    const closeBtn = modal.querySelector('.ceo-modal-close');
+    const backdrop = modal.querySelector('.ceo-modal-backdrop');
+
+    function openCEOModal() {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Reset all elements first
+        const allElements = modal.querySelectorAll('.ceo-doc-header, .ceo-doc-title, .ceo-doc-greeting, .ceo-doc-paragraph, .ceo-doc-closing, .ceo-doc-signature, .ceo-doc-footer');
+        allElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+        });
+
+        // GSAP Animation - Ripple/Zusammensetz-Effekt
+        setTimeout(() => {
+            if (typeof gsap !== 'undefined') {
+                const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+                // Header kommt von oben
+                tl.to(modal.querySelector('.ceo-doc-header'), {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6
+                });
+
+                // Titel kommt von oben
+                tl.to(modal.querySelector('.ceo-doc-title'), {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5
+                }, '-=0.3');
+
+                // Begrüßung
+                tl.to(modal.querySelector('.ceo-doc-greeting'), {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.4
+                }, '-=0.2');
+
+                // Absätze nacheinander mit Stagger
+                tl.to(modal.querySelectorAll('.ceo-doc-paragraph'), {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.4,
+                    stagger: 0.1
+                }, '-=0.2');
+
+                // Closing
+                tl.to(modal.querySelector('.ceo-doc-closing'), {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.4
+                }, '-=0.1');
+
+                // Signatur
+                tl.to(modal.querySelector('.ceo-doc-signature'), {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5
+                }, '-=0.1');
+
+                // Footer
+                tl.to(modal.querySelector('.ceo-doc-footer'), {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5
+                }, '-=0.2');
+            } else {
+                // Fallback ohne GSAP
+                allElements.forEach((el, i) => {
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                    }, i * 100);
+                });
+            }
+        }, 300);
+    }
+
+    function closeCEOModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Event Listeners
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openCEOModal();
+    });
+
+    closeBtn?.addEventListener('click', closeCEOModal);
+    backdrop?.addEventListener('click', closeCEOModal);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeCEOModal();
+        }
+    });
 });
