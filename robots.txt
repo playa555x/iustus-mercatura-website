@@ -1,26 +1,30 @@
-# Iustus Mercatura - Robots.txt
-# https://www.iustus-mercatura.com
-
+# Iustus Mercatura - robots.txt
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://www.iustus-mercatura.com/sitemap.xml
+# Sitemaps
+Sitemap: https://iustus-mercatura-eu.onrender.com/sitemap.xml
 
-# Disallow admin areas (if any)
-Disallow: /admin/
-Disallow: /api/
-Disallow: /_private/
+# Block admin/dev areas
+Disallow: /admin.html
+Disallow: /developer.html
+Disallow: /database/
+Disallow: /backups/
+Disallow: /.claude/
 
-# Allow all major search engines
+# Allow important resources
+Allow: /assets/
+Allow: /styles.css
+Allow: /script.js
+
+# Crawl-delay for politeness
+Crawl-delay: 1
+
+# Specific bot rules for faster indexing
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0
 
 User-agent: Bingbot
 Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-User-agent: Slurp
-Allow: /
+Crawl-delay: 0

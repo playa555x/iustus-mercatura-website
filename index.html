@@ -391,14 +391,23 @@
     <meta name="rating" content="general">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://www.iustus-mercatura.com/">
+    <link rel="canonical" href="https://iustus-mercatura-eu.onrender.com/">
+
+    <!-- INSIDER TRICK #6: hreflang fuer internationale SEO -->
+    <link rel="alternate" hreflang="en" href="https://iustus-mercatura-eu.onrender.com/">
+    <link rel="alternate" hreflang="de" href="https://iustus-mercatura-eu.onrender.com/?lang=de">
+    <link rel="alternate" hreflang="x-default" href="https://iustus-mercatura-eu.onrender.com/">
+
+    <!-- INSIDER TRICK #7: Google News/Discover Optimierung -->
+    <meta name="news_keywords" content="commodity trading, sugar prices, agricultural commodities, Brazil exports, sustainable trading">
+    <meta property="article:section" content="Business">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.iustus-mercatura.com/">
+    <meta property="og:url" content="https://iustus-mercatura-eu.onrender.com/">
     <meta property="og:title" content="Iustus Mercatura Holding Inc. | Just Trade - Global Commodities">
     <meta property="og:description" content="Global commodities trading company specializing in Brazilian sugar, soybeans, and corn. Ethical sourcing and sustainable commerce.">
-    <meta property="og:image" content="https://www.iustus-mercatura.com/assets/images/og-image.jpg">
+    <meta property="og:image" content="https://iustus-mercatura-eu.onrender.com/assets/images/logo.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Iustus Mercatura - Just Trade">
@@ -407,10 +416,10 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://www.iustus-mercatura.com/">
+    <meta name="twitter:url" content="https://iustus-mercatura-eu.onrender.com/">
     <meta name="twitter:title" content="Iustus Mercatura Holding Inc. | Just Trade">
     <meta name="twitter:description" content="Global commodities trading - Brazilian sugar, soybeans, and corn. Ethical sourcing and sustainable commerce.">
-    <meta name="twitter:image" content="https://www.iustus-mercatura.com/assets/images/twitter-card.jpg">
+    <meta name="twitter:image" content="https://iustus-mercatura-eu.onrender.com/assets/images/logo.jpg">
     <meta name="twitter:creator" content="@IustusMercatura">
 
     <!-- Favicons -->
@@ -425,18 +434,30 @@
     <meta name="theme-color" content="#0a1628" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
-    <!-- Preconnect for Performance -->
+    <!-- PERFORMANCE TRICK #1: Preconnect - Reduziert DNS/TCP/TLS Zeit um 100-300ms -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="">
 
-    <!-- DNS Prefetch -->
+    <!-- DNS Prefetch fuer alle externen Ressourcen -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://www.linkedin.com">
 
-    <!-- Preload Critical Resources -->
+    <!-- PERFORMANCE TRICK #2: Preload kritischer Ressourcen -->
     <link rel="preload" href="styles.css?v=20241216b" as="style">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" as="style" crossorigin>
+    <link rel="preload" href="assets/images/logo.jpg" as="image" fetchpriority="high">
+
+    <!-- PERFORMANCE TRICK #3: Modulepreload fuer schnelleres JS -->
+    <link rel="modulepreload" href="script.js">
+
+    <!-- PERFORMANCE TRICK #4: Prefetch next likely pages -->
+    <link rel="prefetch" href="quote.html" as="document">
+    <link rel="prefetch" href="booking.html" as="document">
+
+    <!-- INSIDER TRICK #5: fetchpriority fuer LCP-Element -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" as="style" crossorigin fetchpriority="high">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css?v=20241216b">
@@ -471,7 +492,7 @@
         "contactPoint": [
             {
                 "@type": "ContactPoint",
-                "telephone": "+1-281-816-7296",
+                "telephone": "+1-551-430-7473",
                 "contactType": "customer service",
                 "email": "info@imh-bvi.com",
                 "availableLanguage": ["English", "German", "Portuguese", "Spanish"]
@@ -554,6 +575,115 @@
         ]
     }
     </script>
+
+    <!-- INSIDER TRICK #1: FAQ Schema - Erscheint direkt in Google Suchergebnissen -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is Iustus Mercatura?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Iustus Mercatura (Latin for 'Just Trade') is a global commodities trading company headquartered in the British Virgin Islands, specializing in Brazilian sugar (IC45, VHP), soybeans, and corn. We operate across 10 global offices with a focus on ethical sourcing and sustainable commerce."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What types of sugar does Iustus Mercatura trade?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "We specialize in premium Brazilian sugar including ICUMSA 45 (IC45) refined white sugar with 99.8% polarization, and VHP (Very High Polarization) sugar in IC600 and IC1200 grades ideal for refining."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Where are Iustus Mercatura's offices located?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "We have 10 global offices: British Virgin Islands (HQ), USA (Princeton, Austin, Miami), Brazil (Sao Paulo), UK (London), UAE (Dubai), Uganda (Kampala), Kenya (Nairobi), and Bangladesh (Dhaka)."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How can I request a quote for commodities?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You can request a quote by contacting us at info@imh-bvi.com or calling +1-551-430-7473. We also offer an online booking system for consultations at our website."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <!-- INSIDER TRICK #2: Speakable Schema - Fuer Google Assistant/Voice Search -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Iustus Mercatura - Global Commodities Trading",
+        "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [".hero-title", ".hero-subtitle", ".about-text", ".section-title"]
+        },
+        "url": "https://iustus-mercatura-eu.onrender.com/"
+    }
+    </script>
+
+    <!-- INSIDER TRICK #3: LocalBusiness Schema - Fuer Google Maps/Local Pack -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Iustus Mercatura Holding Inc.",
+        "image": "https://iustus-mercatura-eu.onrender.com/assets/images/logo.jpg",
+        "@id": "https://iustus-mercatura-eu.onrender.com/#localbusiness",
+        "url": "https://iustus-mercatura-eu.onrender.com",
+        "telephone": "+1-551-430-7473",
+        "email": "info@imh-bvi.com",
+        "priceRange": "$$$",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "333 Waterfront Drive, Geneva Place, 3rd Floor",
+            "addressLocality": "Road Town",
+            "addressRegion": "Tortola",
+            "postalCode": "VG1110",
+            "addressCountry": "VG"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 18.4286,
+            "longitude": -64.6185
+        },
+        "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "09:00",
+            "closes": "18:00"
+        },
+        "sameAs": [
+            "https://www.linkedin.com/company/iustus-mercatura"
+        ]
+    }
+    </script>
+
+    <!-- INSIDER TRICK #4: BreadcrumbList - Bessere Sitelinks in Google -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://iustus-mercatura-eu.onrender.com/"},
+            {"@type": "ListItem", "position": 2, "name": "Products", "item": "https://iustus-mercatura-eu.onrender.com/#products"},
+            {"@type": "ListItem", "position": 3, "name": "Locations", "item": "https://iustus-mercatura-eu.onrender.com/#locations"},
+            {"@type": "ListItem", "position": 4, "name": "Team", "item": "https://iustus-mercatura-eu.onrender.com/#team"},
+            {"@type": "ListItem", "position": 5, "name": "Contact", "item": "https://iustus-mercatura-eu.onrender.com/#contact"}
+        ]
+    }
+    </script>
+
 <style>
     @keyframes rippleExpand {
         to {
@@ -2910,12 +3040,42 @@
     </div>
 
     <!-- Scripts - Deferred for Performance -->
+    <!-- PERFORMANCE TRICK #8: Async fuer nicht-kritische Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js" defer=""></script>
     <script src="translations.js" defer=""></script>
     <script src="script.js" defer=""></script>
+
+    <!-- INSIDER TRICK #9: Web Vitals Monitoring (Google liebt das!) -->
+    <script>
+    // INP Optimierung - Yield to main thread
+    function yieldToMain() {
+        return new Promise(resolve => {
+            setTimeout(resolve, 0);
+        });
+    }
+
+    // Report Core Web Vitals to console (for debugging)
+    if ('web-vital' in window || true) {
+        new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+                if (entry.entryType === 'largest-contentful-paint') {
+                    console.log('[LCP]', entry.startTime.toFixed(0), 'ms');
+                }
+            }
+        }).observe({type: 'largest-contentful-paint', buffered: true});
+
+        new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+                if (!entry.hadRecentInput) {
+                    console.log('[CLS]', entry.value.toFixed(4));
+                }
+            }
+        }).observe({type: 'layout-shift', buffered: true});
+    }
+    </script>
 
 
 

@@ -1,27 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>https://www.iustus-mercatura.com/</loc>
-        <lastmod>2025-12-03</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>https://www.iustus-mercatura.com/privacy.html</loc>
-        <lastmod>2025-12-03</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.3</priority>
-    </url>
-    <url>
-        <loc>https://www.iustus-mercatura.com/terms.html</loc>
-        <lastmod>2025-12-03</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.3</priority>
-    </url>
-    <url>
-        <loc>https://www.iustus-mercatura.com/imprint.html</loc>
-        <lastmod>2025-12-03</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.3</priority>
-    </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Homepage - Highest Priority -->
+  <url>
+    <loc>https://iustus-mercatura-eu.onrender.com/</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://iustus-mercatura-eu.onrender.com/assets/images/logo.jpg</image:loc>
+      <image:title>Iustus Mercatura Logo</image:title>
+      <image:caption>Iustus Mercatura - Just Trade - Global Commodities Trading</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Request Quote -->
+  <url>
+    <loc>https://iustus-mercatura-eu.onrender.com/quote.html</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Booking/Contact -->
+  <url>
+    <loc>https://iustus-mercatura-eu.onrender.com/booking.html</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Careers -->
+  <url>
+    <loc>https://iustus-mercatura-eu.onrender.com/careers.html</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Legal Pages -->
+  <url>
+    <loc>https://iustus-mercatura-eu.onrender.com/imprint.html</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://iustus-mercatura-eu.onrender.com/privacy.html</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://iustus-mercatura-eu.onrender.com/terms.html</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
 </urlset>
