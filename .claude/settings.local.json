@@ -31,7 +31,11 @@
       "Bash(\"'''' | Select-Object -First 30\")",
       "Bash(bun run:*)",
       "Bash(git -C \"D:\\iustus-mercatura-website\" remote -v)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(ls:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nCleanup: Remove unused files and old backups from repo\n\n- Moved to local archived/ folder:\n  - cache-optimization.js \\(unused\\)\n  - website-loader.js \\(unused\\)\n  - backups/ \\(old backup files\\)\n  - logs/ \\(log files\\)\n  - temp files\n\n- Updated .gitignore to exclude:\n  - archived/\n  - backups/\n  - logs/\n  - *.backup\n  - *.tmp.*\n\nFiles are preserved locally but removed from git tracking.\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push)"
     ],
     "deny": [],
     "ask": []

@@ -19,3 +19,17 @@ credentials.local.js
 # OS
 .DS_Store
 Thumbs.db
+
+# Archived/unused files
+archived/
+
+# Backup files
+backups/
+*.backup
+
+# Log files
+logs/
+*.log
+
+# Temp files
+*.tmp.*
