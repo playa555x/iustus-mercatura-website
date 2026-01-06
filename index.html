@@ -456,12 +456,9 @@
     <link rel="prefetch" href="quote.html" as="document">
     <link rel="prefetch" href="booking.html" as="document">
 
-    <!-- INSIDER TRICK #5: fetchpriority fuer LCP-Element -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" as="style" crossorigin fetchpriority="high">
-
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css?v=20241216b">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Structured Data - Organization -->
     <script type="application/ld+json">
@@ -3063,24 +3060,6 @@
         });
     }
 
-    // Report Core Web Vitals to console (for debugging)
-    if ('web-vital' in window || true) {
-        new PerformanceObserver((list) => {
-            for (const entry of list.getEntries()) {
-                if (entry.entryType === 'largest-contentful-paint') {
-                    console.log('[LCP]', entry.startTime.toFixed(0), 'ms');
-                }
-            }
-        }).observe({type: 'largest-contentful-paint', buffered: true});
-
-        new PerformanceObserver((list) => {
-            for (const entry of list.getEntries()) {
-                if (!entry.hadRecentInput) {
-                    console.log('[CLS]', entry.value.toFixed(4));
-                }
-            }
-        }).observe({type: 'layout-shift', buffered: true});
-    }
     </script>
 
     <!-- CEO Message Modal - Premium Design -->
