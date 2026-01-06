@@ -532,18 +532,26 @@ function updateLocationsSection(locations, teamData) {
 
         const infoBoxHtml = `
             <div class="map-info-box" data-location="${locationId}">
-                <div class="info-box-header">
-                    <img src="${flagPath}" alt="${location.countryCode}" class="info-flag-img" onerror="this.style.display='none'">
-                    <div class="info-title">
-                        <h4>${location.city || location.country}</h4>
-                        <span class="info-type">${location.type}</span>
+                <!-- Corner Decorations -->
+                <div class="info-card-corner info-card-corner-tl"></div>
+                <div class="info-card-corner info-card-corner-tr"></div>
+                <div class="info-card-corner info-card-corner-bl"></div>
+                <div class="info-card-corner info-card-corner-br"></div>
+                <!-- Card Content -->
+                <div class="info-card-inner">
+                    <div class="info-box-header">
+                        <img src="${flagPath}" alt="${location.countryCode}" class="info-flag-img" onerror="this.style.display='none'">
+                        <div class="info-title">
+                            <h4>${location.city || location.country}</h4>
+                            <span class="info-type">${location.type}</span>
+                        </div>
                     </div>
+                    <div class="info-box-content">
+                        <p class="info-company">${location.company}</p>
+                        <p class="info-address">${location.address}</p>
+                    </div>
+                    ${teamSectionHtml}
                 </div>
-                <div class="info-box-content">
-                    <p class="info-company">${location.company}</p>
-                    <p class="info-address">${location.address}</p>
-                </div>
-                ${teamSectionHtml}
             </div>
         `;
         mapInfoBoxes.insertAdjacentHTML('beforeend', infoBoxHtml);
@@ -1838,17 +1846,108 @@ function showMapInfoBox(locationId) {
     if (mapActiveLocation === locationId) return;
     mapActiveLocation = locationId;
 
-    // Hide all info boxes and markers first (CSS handles the animation)
-    document.querySelectorAll('.map-info-box').forEach(box => box.classList.remove('active'));
+    // Hide all info boxes and markers first
+    document.querySelectorAll('.map-info-box').forEach(box => {
+        if (box.dataset.location !== locationId) {
+            box.classList.remove('active');
+            // Quick hide animation for other boxes
+            if (typeof gsap !== 'undefined') {
+                gsap.to(box, {
+                    scale: 0.1,
+                    opacity: 0,
+                    duration: 0.2,
+                    ease: 'power2.in'
+                });
+            }
+        }
+    });
     document.querySelectorAll('.location-marker').forEach(m => m.classList.remove('active'));
 
-    // Show the matching info box
+    // Show the matching info box with GSAP animation
     const infoBox = document.querySelector(`.map-info-box[data-location="${locationId}"]`);
     if (infoBox) {
         infoBox.classList.add('active');
+
+        // GSAP Premium Animation - Circle to Card transformation
+        if (typeof gsap !== 'undefined') {
+            const corners = infoBox.querySelectorAll('.info-card-corner');
+            const inner = infoBox.querySelector('.info-card-inner');
+            const header = infoBox.querySelector('.info-box-header');
+            const content = infoBox.querySelector('.info-box-content');
+            const teamSection = infoBox.querySelector('.info-team-section');
+            const photo = infoBox.querySelector('.info-team-photo, .info-team-initials');
+
+            // Create timeline for smooth sequential animation
+            const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+            // Initial state - small circle
+            gsap.set(infoBox, { scale: 0.1, opacity: 0, visibility: 'visible' });
+            gsap.set(corners, { opacity: 0, scale: 0 });
+            if (inner) gsap.set(inner, { opacity: 0 });
+            if (header) gsap.set(header, { opacity: 0, y: -20 });
+            if (content) gsap.set(content, { opacity: 0, y: 20 });
+            if (teamSection) gsap.set(teamSection, { opacity: 0, x: -30 });
+            if (photo) gsap.set(photo, { scale: 0, rotation: -180 });
+
+            // Step 1: Expand from circle to rectangle (smooth and slow)
+            tl.to(infoBox, {
+                scale: 1,
+                opacity: 1,
+                duration: 0.8,
+                ease: 'power4.out'
+            });
+
+            // Step 2: Fade in inner content
+            tl.to(inner, {
+                opacity: 1,
+                duration: 0.4
+            }, '-=0.4');
+
+            // Step 3: Corners animate in
+            tl.to(corners, {
+                opacity: 0.6,
+                scale: 1,
+                duration: 0.5,
+                stagger: 0.08,
+                ease: 'back.out(2)'
+            }, '-=0.3');
+
+            // Step 4: Header slides down
+            tl.to(header, {
+                opacity: 1,
+                y: 0,
+                duration: 0.5
+            }, '-=0.4');
+
+            // Step 5: Content slides up
+            tl.to(content, {
+                opacity: 1,
+                y: 0,
+                duration: 0.5
+            }, '-=0.3');
+
+            // Step 6: Team section slides in from left
+            if (teamSection) {
+                tl.to(teamSection, {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.6
+                }, '-=0.3');
+            }
+
+            // Step 7: Photo spins in with scale (special effect)
+            if (photo) {
+                tl.to(photo, {
+                    scale: 1,
+                    rotation: 0,
+                    duration: 0.7,
+                    ease: 'elastic.out(1, 0.6)'
+                }, '-=0.5');
+            }
+        }
     }
 
-    // Highlight the marker (CSS handles the visual change)
+    // Highlight the marker
     const marker = document.querySelector(`.location-marker[data-location="${locationId}"]`);
     if (marker) {
         marker.classList.add('active');
@@ -1857,7 +1956,24 @@ function showMapInfoBox(locationId) {
 
 function hideAllMapInfoBoxes() {
     mapActiveLocation = null;
-    document.querySelectorAll('.map-info-box').forEach(box => box.classList.remove('active'));
+
+    document.querySelectorAll('.map-info-box').forEach(box => {
+        // Smooth hide animation with GSAP
+        if (typeof gsap !== 'undefined' && box.classList.contains('active')) {
+            gsap.to(box, {
+                scale: 0.1,
+                opacity: 0,
+                duration: 0.4,
+                ease: 'power3.in',
+                onComplete: () => {
+                    box.classList.remove('active');
+                }
+            });
+        } else {
+            box.classList.remove('active');
+        }
+    });
+
     document.querySelectorAll('.location-marker').forEach(marker => marker.classList.remove('active'));
 }
 

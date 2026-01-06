@@ -2984,7 +2984,7 @@ section {
 
 /* Removed pulse animations for cleaner look */
 
-/* Map Info Boxes */
+/* Map Info Boxes - Premium Hover Cards */
 .map-info-boxes {
     position: absolute;
     top: 0;
@@ -2997,104 +2997,249 @@ section {
 
 .map-info-box {
     position: absolute;
-    background: linear-gradient(145deg, rgba(10, 22, 40, 0.98), rgba(21, 34, 56, 0.95));
-    border: 1px solid rgba(201, 162, 39, 0.4);
-    border-radius: 16px;
-    padding: 0;
-    width: 300px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(15px);
-    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.4s ease;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(201, 162, 39, 0.15);
+    width: 380px;
     pointer-events: auto;
     z-index: 101;
+
+    /* Initial state: small circle */
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.1);
+    transform-origin: left top;
+}
+
+/* Premium card inner container */
+.map-info-box .info-card-inner {
+    position: relative;
+    background: linear-gradient(165deg, rgba(8, 18, 35, 0.98), rgba(15, 28, 50, 0.96));
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 24px;
     overflow: hidden;
-    backdrop-filter: blur(10px);
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.7),
+        0 0 60px rgba(201, 162, 39, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    transform: scale(1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.map-info-box.active {
+.map-info-box:hover .info-card-inner {
+    transform: scale(1.02);
+}
+
+/* Animated border glow */
+.map-info-box .info-card-inner::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg,
+        transparent 30%,
+        rgba(201, 162, 39, 0.5) 50%,
+        transparent 70%);
+    border-radius: 25px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    animation: borderShimmer 3s linear infinite;
+    background-size: 200% 200%;
+}
+
+.map-info-box.active .info-card-inner::before {
     opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
 }
 
-.map-info-box::before {
+@keyframes borderShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Top accent line with animation */
+.map-info-box .info-card-inner::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--accent-gold), rgba(201, 162, 39, 0.3));
-    border-radius: 12px 12px 0 0;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        var(--accent-gold) 20%,
+        var(--accent-gold) 80%,
+        transparent 100%);
+    transform: scaleX(0);
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
 }
 
+.map-info-box.active .info-card-inner::after {
+    transform: scaleX(1);
+}
+
+/* Active state with smooth expansion */
+.map-info-box.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+/* Corner decorations */
+.info-card-corner {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    opacity: 0;
+    transition: opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s;
+}
+
+.info-card-corner-tl {
+    top: 8px;
+    left: 8px;
+    border-top: 2px solid var(--accent-gold);
+    border-left: 2px solid var(--accent-gold);
+    border-radius: 8px 0 0 0;
+    transform: translate(-10px, -10px);
+}
+
+.info-card-corner-tr {
+    top: 8px;
+    right: 8px;
+    border-top: 2px solid var(--accent-gold);
+    border-right: 2px solid var(--accent-gold);
+    border-radius: 0 8px 0 0;
+    transform: translate(10px, -10px);
+}
+
+.info-card-corner-bl {
+    bottom: 8px;
+    left: 8px;
+    border-bottom: 2px solid var(--accent-gold);
+    border-left: 2px solid var(--accent-gold);
+    border-radius: 0 0 0 8px;
+    transform: translate(-10px, 10px);
+}
+
+.info-card-corner-br {
+    bottom: 8px;
+    right: 8px;
+    border-bottom: 2px solid var(--accent-gold);
+    border-right: 2px solid var(--accent-gold);
+    border-radius: 0 0 8px 0;
+    transform: translate(10px, 10px);
+}
+
+.map-info-box.active .info-card-corner {
+    opacity: 0.6;
+    transform: translate(0, 0);
+}
+
+/* Premium Header with gradient background */
 .info-box-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px;
-    background: linear-gradient(135deg, rgba(201, 162, 39, 0.1), transparent);
-    border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+    gap: 14px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.12), rgba(201, 162, 39, 0.02));
+    border-bottom: 1px solid rgba(201, 162, 39, 0.15);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Team member photo in info box */
+/* Subtle pattern overlay */
+.info-box-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 100% 0%, rgba(201, 162, 39, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Team member photo in info box - Premium Style */
 .info-team-photo {
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(201, 162, 39, 0.6);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 3px solid transparent;
+    background:
+        linear-gradient(rgba(8, 18, 35, 1), rgba(8, 18, 35, 1)) padding-box,
+        linear-gradient(135deg, var(--accent-gold), rgba(201, 162, 39, 0.3)) border-box;
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(201, 162, 39, 0.2);
     flex-shrink: 0;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.map-info-box:hover .info-team-photo {
+    transform: scale(1.05);
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(201, 162, 39, 0.3);
 }
 
 .info-team-initials {
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--accent-gold), #b8942e);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--primary-navy);
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(201, 162, 39, 0.3);
+    transition: transform 0.4s ease;
+}
+
+.map-info-box:hover .info-team-initials {
+    transform: scale(1.05);
 }
 
 .info-flag {
-    font-size: 32px;
+    font-size: 36px;
     line-height: 1;
 }
 
 .info-flag-img {
-    width: 28px;
-    height: 20px;
-    min-width: 28px;
-    max-width: 28px;
-    min-height: 20px;
-    max-height: 20px;
+    width: 36px;
+    height: 26px;
+    min-width: 36px;
+    max-width: 36px;
+    min-height: 26px;
+    max-height: 26px;
     object-fit: cover;
-    border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.map-info-box:hover .info-flag-img {
+    transform: scale(1.1);
 }
 
 .info-flag.country-code {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 28px;
+    width: 44px;
+    height: 32px;
     background: linear-gradient(135deg, var(--accent-gold), #b8942e);
     color: var(--primary-navy);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
-    border-radius: 4px;
+    border-radius: 6px;
     letter-spacing: 0.5px;
 }
 
@@ -3106,68 +3251,93 @@ section {
 
 .info-title h4 {
     color: #fff;
-    font-size: 15px;
-    font-weight: 600;
-    margin: 0 0 2px 0;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    letter-spacing: 0.3px;
 }
 
 .info-type {
     color: var(--accent-gold);
-    font-size: 11px;
-    font-weight: 500;
+    font-size: 12px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+/* Content section with premium styling */
 .info-box-content {
-    padding: 16px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 14px;
 }
 
 .info-company {
     color: rgba(255, 255, 255, 0.95);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.5;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.12);
 }
 
 .info-address {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 12px;
-    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    line-height: 1.6;
     margin: 0;
     display: flex;
     align-items: flex-start;
-    gap: 6px;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(201, 162, 39, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(201, 162, 39, 0.1);
 }
 
 .info-address::before {
     content: '';
-    width: 12px;
-    height: 12px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(201,162,39,0.7)' stroke-width='2'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
+    width: 16px;
+    height: 16px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(201,162,39,0.8)' stroke-width='2'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
     background-size: contain;
     flex-shrink: 0;
     margin-top: 2px;
 }
 
-/* Team member section in info box */
+/* Premium Team member section */
 .info-team-section {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: rgba(201, 162, 39, 0.08);
+    gap: 16px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.1), rgba(201, 162, 39, 0.02));
     border-top: 1px solid rgba(201, 162, 39, 0.15);
+    position: relative;
+}
+
+/* Subtle shine effect */
+.info-team-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+    transition: left 0.8s ease;
+}
+
+.map-info-box:hover .info-team-section::before {
+    left: 100%;
 }
 
 .info-team-details {
@@ -3177,9 +3347,9 @@ section {
 
 .info-team-name {
     color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-    margin: 0 0 2px 0;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3187,10 +3357,11 @@ section {
 
 .info-team-role {
     color: var(--accent-gold);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     margin: 0;
     opacity: 0.9;
+    letter-spacing: 0.3px;
 }
 
 /* Person info in map info box */
@@ -3272,33 +3443,51 @@ section {
 .map-info-box[data-location="kenya"] { left: 52%; top: 45%; }
 .map-info-box[data-location="bangladesh"] { left: 62%; top: 25%; }
 
-/* Mobile responsive for map info boxes */
+/* Mobile responsive for premium map info boxes */
 @media (max-width: 768px) {
     .map-info-box {
-        min-width: 240px;
-        max-width: 280px;
-        padding: 12px;
-        font-size: 12px;
+        width: 320px;
     }
 
-    .info-flag {
-        font-size: 24px;
+    .info-card-inner {
+        border-radius: 18px;
+    }
+
+    .info-box-header {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .info-flag-img {
+        width: 30px;
+        height: 22px;
+        min-width: 30px;
+        max-width: 30px;
+        min-height: 22px;
+        max-height: 22px;
     }
 
     .info-title h4 {
-        font-size: 14px;
+        font-size: 15px;
     }
 
     .info-type {
-        font-size: 10px;
-    }
-
-    .info-company {
         font-size: 11px;
     }
 
+    .info-box-content {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .info-company {
+        font-size: 13px;
+        padding-bottom: 10px;
+    }
+
     .info-address {
-        font-size: 10px;
+        font-size: 12px;
+        padding: 10px;
     }
 
     /* Reposition for smaller screens */
@@ -3313,36 +3502,41 @@ section {
     .map-info-box[data-location="kenya"] { left: 45%; top: 50%; }
     .map-info-box[data-location="bangladesh"] { left: 55%; top: 28%; }
 
-    /* Team section in info box mobile */
+    /* Team section mobile */
     .info-team-section {
-        padding: 10px 12px;
+        padding: 14px 16px;
+        gap: 12px;
     }
 
     .info-team-photo,
     .info-team-initials {
-        width: 40px;
-        height: 40px;
-        font-size: 14px;
+        width: 55px;
+        height: 55px;
+        font-size: 18px;
     }
 
     .info-team-name {
-        font-size: 12px;
+        font-size: 13px;
     }
 
     .info-team-role {
-        font-size: 10px;
+        font-size: 11px;
+    }
+
+    /* Hide corner decorations on mobile */
+    .info-card-corner {
+        display: none;
     }
 }
 
 @media (max-width: 480px) {
     .map-info-box {
-        min-width: 200px;
-        max-width: 220px;
-        padding: 10px;
+        width: calc(100vw - 30px);
+        max-width: 300px;
         left: 50% !important;
-        transform: translateX(-50%) translateY(10px) scale(0.95);
         top: auto !important;
-        bottom: 10px;
+        bottom: 15px;
+        transform-origin: center bottom;
     }
 
     .map-info-box.active {
