@@ -100,6 +100,8 @@ async function loadDynamicContent() {
         // Update Team Section
         if (data.team) {
             updateTeamSection(data.team);
+            // Cache team data for locations
+            cachedTeamData = data.team;
         }
 
         // Update Products Section
@@ -107,9 +109,9 @@ async function loadDynamicContent() {
             updateProductsSection(data.products);
         }
 
-        // Update Locations Section
+        // Update Locations Section (pass team data for info boxes)
         if (data.locations) {
-            updateLocationsSection(data.locations);
+            updateLocationsSection(data.locations, data.team);
         }
 
         // Update Projects Section
@@ -436,12 +438,20 @@ function initProductAnimations() {
     }
 }
 
+// Store team data globally for location info boxes
+let cachedTeamData = null;
+
 /**
  * Update locations section with data from database
  */
-function updateLocationsSection(locations) {
+function updateLocationsSection(locations, teamData) {
     const mapInfoBoxes = document.querySelector('.map-info-boxes');
     if (!mapInfoBoxes || !locations || locations.length === 0) return;
+
+    // Use passed team data or cached data
+    if (teamData) {
+        cachedTeamData = teamData;
+    }
 
     // Clear existing info boxes
     mapInfoBoxes.innerHTML = '';
@@ -466,6 +476,30 @@ function updateLocationsSection(locations) {
         'Miami, Florida': 'usa_florida'
     };
 
+    // Map locations to team members by role keywords
+    const locationTeamMap = {
+        'bvi': ['CEO', 'Founder', 'Chairman', 'Group'],
+        'usa': ['USA', 'Princeton'],
+        'usa_texas': ['Texas', 'Austin', '(TX)'],
+        'usa_florida': ['Florida', 'Miami', '(FL)'],
+        'brazil': ['Brazil', 'Brasil'],
+        'uae': ['Dubai', 'UAE', 'Middle East', 'FITC Energy'],
+        'uk': ['UK', 'Maritime', 'Logistics'],
+        'uganda': ['Uganda'],
+        'kenya': ['Kenya', 'East Africa'],
+        'bangladesh': ['Bangladesh']
+    };
+
+    // Find team member for a location
+    function findTeamMember(locationId) {
+        if (!cachedTeamData) return null;
+        const keywords = locationTeamMap[locationId] || [];
+        return cachedTeamData.find(member => {
+            const role = member.role || '';
+            return keywords.some(kw => role.toLowerCase().includes(kw.toLowerCase()));
+        });
+    }
+
     // Generate info boxes for each location
     locations.forEach(location => {
         // Check for city-specific mapping first (for USA offices)
@@ -475,12 +509,33 @@ function updateLocationsSection(locations) {
         }
         const flagPath = `assets/images/flags/${location.countryCode.toLowerCase()}.svg`;
 
+        // Find team member for this location
+        const teamMember = findTeamMember(locationId);
+
+        // Generate team section HTML if team member found
+        let teamSectionHtml = '';
+        if (teamMember) {
+            const photoHtml = teamMember.image
+                ? `<img src="${teamMember.image}" alt="${teamMember.name}" class="info-team-photo" onerror="this.outerHTML='<div class=\\'info-team-initials\\'>${teamMember.initials || ''}</div>'">`
+                : `<div class="info-team-initials">${teamMember.initials || ''}</div>`;
+
+            teamSectionHtml = `
+                <div class="info-team-section">
+                    ${photoHtml}
+                    <div class="info-team-details">
+                        <p class="info-team-name">${teamMember.name}</p>
+                        <p class="info-team-role">${teamMember.role}</p>
+                    </div>
+                </div>
+            `;
+        }
+
         const infoBoxHtml = `
             <div class="map-info-box" data-location="${locationId}">
                 <div class="info-box-header">
                     <img src="${flagPath}" alt="${location.countryCode}" class="info-flag-img" onerror="this.style.display='none'">
                     <div class="info-title">
-                        <h4>${location.country}</h4>
+                        <h4>${location.city || location.country}</h4>
                         <span class="info-type">${location.type}</span>
                     </div>
                 </div>
@@ -488,6 +543,7 @@ function updateLocationsSection(locations) {
                     <p class="info-company">${location.company}</p>
                     <p class="info-address">${location.address}</p>
                 </div>
+                ${teamSectionHtml}
             </div>
         `;
         mapInfoBoxes.insertAdjacentHTML('beforeend', infoBoxHtml);
@@ -1779,7 +1835,7 @@ function showMapInfoBox(locationId) {
     if (mapActiveLocation === locationId) return;
     mapActiveLocation = locationId;
 
-    // Hide all info boxes and markers first
+    // Hide all info boxes and markers first (CSS handles the animation)
     document.querySelectorAll('.map-info-box').forEach(box => box.classList.remove('active'));
     document.querySelectorAll('.location-marker').forEach(m => m.classList.remove('active'));
 
@@ -1789,57 +1845,17 @@ function showMapInfoBox(locationId) {
         infoBox.classList.add('active');
     }
 
-    // Highlight the marker
+    // Highlight the marker (CSS handles the visual change)
     const marker = document.querySelector(`.location-marker[data-location="${locationId}"]`);
     if (marker) {
         marker.classList.add('active');
-
-        // Animate the marker-logo
-        const logo = marker.querySelector('.marker-logo');
-        const pulse = marker.querySelector('.marker-pulse');
-        if (logo) {
-            gsap.to(logo, {
-                attr: { r: 14 },
-                duration: 0.25,
-                ease: 'power2.out'
-            });
-        }
-        if (pulse) {
-            gsap.to(pulse, {
-                attr: { r: 20 },
-                opacity: 0.8,
-                duration: 0.25,
-                ease: 'power2.out'
-            });
-        }
     }
 }
 
 function hideAllMapInfoBoxes() {
     mapActiveLocation = null;
     document.querySelectorAll('.map-info-box').forEach(box => box.classList.remove('active'));
-    document.querySelectorAll('.location-marker').forEach(marker => {
-        marker.classList.remove('active');
-
-        // Reset marker size
-        const logo = marker.querySelector('.marker-logo');
-        const pulse = marker.querySelector('.marker-pulse');
-        if (logo) {
-            gsap.to(logo, {
-                attr: { r: 12 },
-                duration: 0.2,
-                ease: 'power2.out'
-            });
-        }
-        if (pulse) {
-            gsap.to(pulse, {
-                attr: { r: 14 },
-                opacity: 0.4,
-                duration: 0.2,
-                ease: 'power2.out'
-            });
-        }
-    });
+    document.querySelectorAll('.location-marker').forEach(marker => marker.classList.remove('active'));
 }
 
 function scheduleHideMapInfoBoxes() {

@@ -2945,9 +2945,9 @@ section {
 
 .marker-pulse {
     fill: var(--accent-gold);
-    opacity: 0.4;
-    animation: markerPulse 2.5s ease-in-out infinite;
+    opacity: 0.3;
     pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .marker-logo {
@@ -2958,15 +2958,22 @@ section {
     transition: all 0.3s ease;
 }
 
-.location-marker:hover .marker-logo {
+.location-marker:hover .marker-logo,
+.location-marker.active .marker-logo {
     stroke-width: 3;
     filter: drop-shadow(0 0 15px rgba(201, 162, 39, 0.9));
 }
 
+.location-marker:hover .marker-pulse,
+.location-marker.active .marker-pulse {
+    opacity: 0.6;
+    transform: scale(1.3);
+}
+
 .hq-marker .marker-pulse.hq-pulse {
     fill: #fff;
-    opacity: 0.6;
-    animation: hqPulse 2s ease-in-out infinite;
+    opacity: 0.4;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hq-marker .marker-logo {
@@ -2975,15 +2982,7 @@ section {
     filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8));
 }
 
-@keyframes markerPulse {
-    0%, 100% { r: 14; opacity: 0.4; }
-    50% { r: 22; opacity: 0; }
-}
-
-@keyframes hqPulse {
-    0%, 100% { r: 16; opacity: 0.6; }
-    50% { r: 26; opacity: 0; }
-}
+/* Removed pulse animations for cleaner look */
 
 /* Map Info Boxes */
 .map-info-boxes {
@@ -2998,25 +2997,26 @@ section {
 
 .map-info-box {
     position: absolute;
-    background: linear-gradient(135deg, rgba(10, 22, 40, 0.98), rgba(21, 34, 56, 0.95));
-    border: 1px solid rgba(201, 162, 39, 0.5);
-    border-radius: 12px;
-    padding: 16px;
-    width: 280px;
+    background: linear-gradient(145deg, rgba(10, 22, 40, 0.98), rgba(21, 34, 56, 0.95));
+    border: 1px solid rgba(201, 162, 39, 0.4);
+    border-radius: 16px;
+    padding: 0;
+    width: 300px;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(10px) scale(0.95);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(201, 162, 39, 0.2);
+    transform: translateY(15px);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.4s ease;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(201, 162, 39, 0.15);
     pointer-events: auto;
     z-index: 101;
     overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 .map-info-box.active {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
 }
 
 .map-info-box::before {
@@ -3033,10 +3033,36 @@ section {
 .info-box-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
+    gap: 12px;
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.1), transparent);
     border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+}
+
+/* Team member photo in info box */
+.info-team-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(201, 162, 39, 0.6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+}
+
+.info-team-initials {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-gold), #b8942e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-navy);
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .info-flag {
@@ -3100,16 +3126,18 @@ section {
 }
 
 .info-box-content {
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
 .info-company {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 13px;
-    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 14px;
+    font-weight: 600;
     margin: 0;
+    line-height: 1.4;
 }
 
 .info-address {
@@ -3117,6 +3145,52 @@ section {
     font-size: 12px;
     line-height: 1.5;
     margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.info-address::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(201,162,39,0.7)' stroke-width='2'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
+    background-size: contain;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Team member section in info box */
+.info-team-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(201, 162, 39, 0.08);
+    border-top: 1px solid rgba(201, 162, 39, 0.15);
+}
+
+.info-team-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.info-team-name {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info-team-role {
+    color: var(--accent-gold);
+    font-size: 11px;
+    font-weight: 500;
+    margin: 0;
+    opacity: 0.9;
 }
 
 /* Person info in map info box */
@@ -3189,11 +3263,14 @@ section {
 /* Position info boxes relative to map markers */
 .map-info-box[data-location="bvi"] { left: 18%; top: 35%; }
 .map-info-box[data-location="usa"] { left: 8%; top: 15%; }
+.map-info-box[data-location="usa_texas"] { left: 3%; top: 25%; }
+.map-info-box[data-location="usa_florida"] { left: 12%; top: 35%; }
 .map-info-box[data-location="brazil"] { left: 22%; top: 55%; }
 .map-info-box[data-location="uae"] { left: 52%; top: 20%; }
 .map-info-box[data-location="uk"] { left: 38%; top: 5%; }
 .map-info-box[data-location="uganda"] { left: 48%; top: 45%; }
 .map-info-box[data-location="kenya"] { left: 52%; top: 45%; }
+.map-info-box[data-location="bangladesh"] { left: 62%; top: 25%; }
 
 /* Mobile responsive for map info boxes */
 @media (max-width: 768px) {
@@ -3227,11 +3304,34 @@ section {
     /* Reposition for smaller screens */
     .map-info-box[data-location="bvi"] { left: 5%; top: 40%; }
     .map-info-box[data-location="usa"] { left: 2%; top: 18%; }
+    .map-info-box[data-location="usa_texas"] { left: 2%; top: 28%; }
+    .map-info-box[data-location="usa_florida"] { left: 5%; top: 38%; }
     .map-info-box[data-location="brazil"] { left: 5%; top: 60%; }
     .map-info-box[data-location="uae"] { left: 45%; top: 25%; }
     .map-info-box[data-location="uk"] { left: 30%; top: 8%; }
     .map-info-box[data-location="uganda"] { left: 40%; top: 50%; }
     .map-info-box[data-location="kenya"] { left: 45%; top: 50%; }
+    .map-info-box[data-location="bangladesh"] { left: 55%; top: 28%; }
+
+    /* Team section in info box mobile */
+    .info-team-section {
+        padding: 10px 12px;
+    }
+
+    .info-team-photo,
+    .info-team-initials {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .info-team-name {
+        font-size: 12px;
+    }
+
+    .info-team-role {
+        font-size: 10px;
+    }
 }
 
 @media (max-width: 480px) {
