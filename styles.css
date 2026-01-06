@@ -5035,7 +5035,7 @@ section {
 /* END ELEGANT CONTACT FORM */
 
 /* ============================================
-   CEO MESSAGE MODAL
+   CEO MESSAGE MODAL - PREMIUM DESIGN
    ============================================ */
 
 .ceo-modal {
@@ -5050,7 +5050,8 @@ section {
     justify-content: center;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.4s ease, visibility 0.4s ease;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    overflow: hidden;
 }
 
 .ceo-modal.active {
@@ -5058,282 +5059,522 @@ section {
     visibility: visible;
 }
 
+/* Backdrop with gradient */
 .ceo-modal-backdrop {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(10, 22, 40, 0.95);
-    backdrop-filter: blur(10px);
+    background: radial-gradient(ellipse at center, rgba(10, 22, 40, 0.92) 0%, rgba(5, 10, 20, 0.98) 100%);
+    backdrop-filter: blur(20px);
 }
 
+/* Animated Corner Effects */
+.ceo-modal-corner {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.8s ease 0.3s;
+}
+
+.ceo-modal.active .ceo-modal-corner {
+    opacity: 1;
+}
+
+.ceo-modal-corner-tl {
+    top: 20px;
+    left: 20px;
+    border-top: 2px solid var(--accent-gold);
+    border-left: 2px solid var(--accent-gold);
+}
+
+.ceo-modal-corner-tr {
+    top: 20px;
+    right: 20px;
+    border-top: 2px solid var(--accent-gold);
+    border-right: 2px solid var(--accent-gold);
+}
+
+.ceo-modal-corner-bl {
+    bottom: 20px;
+    left: 20px;
+    border-bottom: 2px solid var(--accent-gold);
+    border-left: 2px solid var(--accent-gold);
+}
+
+.ceo-modal-corner-br {
+    bottom: 20px;
+    right: 20px;
+    border-bottom: 2px solid var(--accent-gold);
+    border-right: 2px solid var(--accent-gold);
+}
+
+/* Floating Particles Background */
+.ceo-modal-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.ceo-modal-particles::before,
+.ceo-modal-particles::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201, 162, 39, 0.15) 0%, transparent 70%);
+    animation: floatParticle 8s ease-in-out infinite;
+}
+
+.ceo-modal-particles::before {
+    top: -100px;
+    right: -100px;
+    animation-delay: 0s;
+}
+
+.ceo-modal-particles::after {
+    bottom: -100px;
+    left: -100px;
+    animation-delay: 4s;
+}
+
+@keyframes floatParticle {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+    50% { transform: translate(30px, 30px) scale(1.2); opacity: 0.8; }
+}
+
+/* Main Content Container */
 .ceo-modal-content {
     position: relative;
-    max-width: 700px;
-    max-height: 90vh;
-    overflow-y: auto;
-    margin: 20px;
-    transform: scale(0.9) translateY(30px);
-    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    width: 95%;
+    max-width: 1100px;
+    max-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0.8) translateY(50px);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .ceo-modal.active .ceo-modal-content {
     transform: scale(1) translateY(0);
+    opacity: 1;
 }
 
+/* Close Button */
 .ceo-modal-close {
     position: absolute;
-    top: -15px;
-    right: -15px;
-    width: 45px;
-    height: 45px;
+    top: -20px;
+    right: -20px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    background: var(--accent-gold);
+    background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-dark) 100%);
     color: var(--primary-navy);
     border: none;
-    font-size: 28px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 10;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(201, 162, 39, 0.4);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 5px 25px rgba(201, 162, 39, 0.5);
+}
+
+.ceo-modal-close svg {
+    width: 20px;
+    height: 20px;
 }
 
 .ceo-modal-close:hover {
-    background: var(--accent-gold-light);
-    transform: rotate(90deg) scale(1.1);
+    transform: rotate(90deg) scale(1.15);
+    box-shadow: 0 8px 35px rgba(201, 162, 39, 0.7);
 }
 
-/* Document styling */
-.ceo-document {
-    background: linear-gradient(180deg, #ffffff 0%, #f8f6f2 100%);
-    padding: 50px 45px;
-    border-radius: 4px;
-    box-shadow:
-        0 25px 80px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(201, 162, 39, 0.2),
-        inset 0 0 100px rgba(255, 255, 255, 0.5);
-    position: relative;
+/* Document Wrapper - Two Column Layout */
+.ceo-document-wrapper {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    background: linear-gradient(135deg, #0d1a2d 0%, #0a1628 50%, #071220 100%);
+    border-radius: 20px;
     overflow: hidden;
+    box-shadow:
+        0 30px 100px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(201, 162, 39, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.ceo-document::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: var(--gradient-gold);
-}
-
-.ceo-document::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, transparent 50%, rgba(201, 162, 39, 0.1) 50%);
-    pointer-events: none;
-}
-
-/* Document Header */
-.ceo-doc-header {
+/* Left Side - CEO Photo Section */
+.ceo-photo-section {
+    background: linear-gradient(180deg, rgba(201, 162, 39, 0.1) 0%, transparent 100%);
+    padding: 50px 30px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 20px;
-    padding-bottom: 25px;
-    border-bottom: 2px solid rgba(201, 162, 39, 0.2);
-    margin-bottom: 30px;
+    justify-content: center;
+    border-right: 1px solid rgba(201, 162, 39, 0.2);
+    position: relative;
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateX(-50px);
 }
 
-.ceo-doc-logo img {
-    width: 70px;
-    height: 70px;
-    object-fit: contain;
-    border-radius: 8px;
+/* Photo Frame with Glow */
+.ceo-photo-frame {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 30px;
 }
 
-.ceo-doc-company h3 {
-    color: var(--primary-navy);
+.ceo-photo-glow {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: radial-gradient(circle, rgba(201, 162, 39, 0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.ceo-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+}
+
+.ceo-photo-border {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 3px solid var(--accent-gold);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.ceo-photo-border::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 50%;
+}
+
+/* Photo Info */
+.ceo-photo-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.ceo-photo-info h3 {
+    color: var(--text-white);
     font-size: 1.4rem;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin: 0 0 5px 0;
 }
 
-.ceo-doc-company span {
-    color: var(--accent-gold-dark);
-    font-size: 0.85rem;
+.ceo-photo-info span {
+    color: var(--accent-gold);
+    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
-/* Document Title */
-.ceo-doc-title {
-    text-align: center;
+/* Decoration */
+.ceo-photo-decoration {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.decoration-line {
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+}
+
+.decoration-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-gold);
+    border-radius: 50%;
+}
+
+/* Right Side - Message Section */
+.ceo-message-section {
+    padding: 45px 50px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 85vh;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.ceo-message-section::-webkit-scrollbar {
+    display: none;
+}
+
+/* Message Header */
+.ceo-message-header {
     margin-bottom: 35px;
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-30px);
 }
 
-.ceo-doc-title h2 {
-    color: var(--primary-navy);
-    font-size: 2rem;
-    font-weight: 300;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin: 0 0 15px 0;
+.ceo-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
-.ceo-doc-line {
-    width: 100px;
-    height: 2px;
-    background: var(--gradient-gold);
-    margin: 0 auto;
+.ceo-brand-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 8px;
 }
 
-/* Document Body */
-.ceo-doc-body {
-    margin-bottom: 35px;
+.ceo-brand-text {
+    display: flex;
+    flex-direction: column;
 }
 
-.ceo-doc-greeting {
+.ceo-brand-name {
+    color: var(--text-white);
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--primary-navy);
+}
+
+.ceo-brand-tagline {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.ceo-message-title {
+    position: relative;
+}
+
+.ceo-title-label {
+    color: var(--accent-gold);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.ceo-message-title h2 {
+    color: var(--text-white);
+    font-size: 2.2rem;
+    font-weight: 300;
+    margin: 0 0 15px 0;
+    letter-spacing: 1px;
+}
+
+.ceo-title-line {
+    width: 80px;
+    height: 3px;
+    background: var(--gradient-gold);
+    border-radius: 2px;
+}
+
+/* Message Body */
+.ceo-message-body {
+    margin-bottom: 30px;
+}
+
+.ceo-greeting {
+    color: var(--accent-gold-light);
+    font-size: 1.1rem;
+    font-weight: 500;
     margin-bottom: 25px;
     opacity: 0;
     transform: translateX(-30px);
 }
 
-.ceo-doc-paragraph {
-    color: #333;
+.ceo-paragraph {
+    color: rgba(255, 255, 255, 0.85);
     font-size: 1rem;
-    line-height: 1.85;
-    margin-bottom: 18px;
-    text-align: justify;
+    line-height: 1.9;
+    margin-bottom: 20px;
     opacity: 0;
     transform: translateX(-30px);
 }
 
-.ceo-doc-closing {
+.ceo-closing {
+    color: var(--accent-gold-light);
     font-style: italic;
-    color: var(--primary-navy);
     margin-top: 30px;
-    margin-bottom: 10px;
     opacity: 0;
     transform: translateX(-30px);
 }
 
-/* Document Signature */
-.ceo-doc-signature {
-    padding-top: 20px;
+/* Signature */
+.ceo-message-signature {
+    padding: 25px 0;
+    border-top: 1px solid rgba(201, 162, 39, 0.2);
     opacity: 0;
     transform: translateY(20px);
 }
 
-.ceo-doc-sign-line {
-    width: 200px;
-    height: 1px;
-    background: rgba(0, 0, 0, 0.2);
+.ceo-signature-line {
+    width: 150px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-gold), transparent);
     margin-bottom: 15px;
 }
 
-.ceo-doc-signature h4 {
-    color: var(--primary-navy);
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin: 0 0 5px 0;
+.ceo-signature-name {
+    color: var(--text-white);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 5px;
 }
 
-.ceo-doc-signature span {
-    display: block;
-    color: var(--text-gray);
+.ceo-signature-title {
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.9rem;
 }
 
-.ceo-doc-date {
-    margin-top: 10px;
-    font-style: italic;
-    color: var(--accent-gold-dark) !important;
-}
-
-/* Document Footer */
-.ceo-doc-footer {
-    margin-top: 40px;
-    padding-top: 25px;
-    border-top: 1px solid rgba(201, 162, 39, 0.2);
+/* Footer */
+.ceo-message-footer {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(201, 162, 39, 0.15);
     opacity: 0;
     transform: translateY(20px);
 }
 
-.ceo-doc-seal {
-    width: 50px;
-    height: 50px;
-    border: 3px solid var(--accent-gold);
+.ceo-seal {
+    width: 45px;
+    height: 45px;
+    border: 2px solid var(--accent-gold);
     border-radius: 50%;
-    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(201, 162, 39, 0.1);
 }
 
-.ceo-doc-seal::before {
-    content: 'IM';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-weight: 700;
-    font-size: 1rem;
+.ceo-seal span {
     color: var(--accent-gold);
+    font-weight: 700;
+    font-size: 0.9rem;
 }
 
-.ceo-doc-footer > span {
-    color: var(--text-gray);
-    font-size: 0.85rem;
+.ceo-motto {
+    color: rgba(255, 255, 255, 0.5);
     font-style: italic;
+    font-size: 0.9rem;
 }
 
-/* Modal Responsive */
-@media (max-width: 768px) {
+/* Responsive Design */
+@media (max-width: 900px) {
+    .ceo-document-wrapper {
+        grid-template-columns: 1fr;
+        max-height: 85vh;
+    }
+
+    .ceo-photo-section {
+        padding: 30px;
+        border-right: none;
+        border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+        flex-direction: row;
+        gap: 25px;
+    }
+
+    .ceo-photo-frame {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 0;
+    }
+
+    .ceo-photo-info {
+        text-align: left;
+        margin-bottom: 0;
+    }
+
+    .ceo-photo-decoration {
+        display: none;
+    }
+
+    .ceo-message-section {
+        padding: 30px;
+    }
+
+    .ceo-message-title h2 {
+        font-size: 1.6rem;
+    }
+
+    .ceo-modal-corner {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media (max-width: 600px) {
     .ceo-modal-content {
-        margin: 10px;
+        width: 98%;
     }
 
-    .ceo-document {
-        padding: 35px 25px;
-    }
-
-    .ceo-doc-header {
+    .ceo-photo-section {
         flex-direction: column;
+        padding: 25px 20px;
+    }
+
+    .ceo-photo-info {
         text-align: center;
     }
 
-    .ceo-doc-title h2 {
-        font-size: 1.5rem;
-        letter-spacing: 2px;
+    .ceo-message-section {
+        padding: 25px 20px;
     }
 
-    .ceo-doc-paragraph {
+    .ceo-message-title h2 {
+        font-size: 1.4rem;
+    }
+
+    .ceo-paragraph {
         font-size: 0.95rem;
-        text-align: left;
     }
 
     .ceo-modal-close {
-        top: -10px;
-        right: -10px;
+        top: 10px;
+        right: 10px;
         width: 40px;
         height: 40px;
-        font-size: 24px;
+    }
+
+    .ceo-modal-corner {
+        display: none;
     }
 }
 

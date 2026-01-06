@@ -3736,77 +3736,123 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
 
-        // Reset all elements first
-        const allElements = modal.querySelectorAll('.ceo-doc-header, .ceo-doc-title, .ceo-doc-greeting, .ceo-doc-paragraph, .ceo-doc-closing, .ceo-doc-signature, .ceo-doc-footer');
+        // Reset all elements first - Premium Layout
+        const photoSection = modal.querySelector('.ceo-photo-section');
+        const messageHeader = modal.querySelector('.ceo-message-header');
+        const greeting = modal.querySelector('.ceo-greeting');
+        const paragraphs = modal.querySelectorAll('.ceo-paragraph');
+        const closing = modal.querySelector('.ceo-closing');
+        const signature = modal.querySelector('.ceo-message-signature');
+        const footer = modal.querySelector('.ceo-message-footer');
+        const corners = modal.querySelectorAll('.ceo-modal-corner');
+
+        const allElements = [photoSection, messageHeader, greeting, ...paragraphs, closing, signature, footer];
         allElements.forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(40px) scale(0.95)';
+            }
         });
 
-        // GSAP Animation - Ripple/Zusammensetz-Effekt
+        // Corner animations reset
+        corners.forEach(corner => {
+            corner.style.opacity = '0';
+            corner.style.transform = 'scale(0)';
+        });
+
+        // GSAP Animation - Premium Zusammensetz-Effekt
         setTimeout(() => {
             if (typeof gsap !== 'undefined') {
-                const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+                const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-                // Header kommt von oben
-                tl.to(modal.querySelector('.ceo-doc-header'), {
+                // Ecken erscheinen zuerst mit Rotation
+                tl.to(corners, {
                     opacity: 1,
-                    y: 0,
-                    duration: 0.6
+                    scale: 1,
+                    rotation: 0,
+                    duration: 0.5,
+                    stagger: 0.08,
+                    ease: 'back.out(1.7)'
                 });
 
-                // Titel kommt von oben
-                tl.to(modal.querySelector('.ceo-doc-title'), {
+                // Foto-Sektion kommt von links
+                tl.to(photoSection, {
                     opacity: 1,
                     y: 0,
+                    scale: 1,
+                    x: 0,
+                    duration: 0.8,
+                    ease: 'power3.out'
+                }, '-=0.2');
+
+                // Header gleitet ein
+                tl.to(messageHeader, {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.6
+                }, '-=0.5');
+
+                // Begrüßung
+                tl.to(greeting, {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
                     duration: 0.5
                 }, '-=0.3');
 
-                // Begrüßung
-                tl.to(modal.querySelector('.ceo-doc-greeting'), {
+                // Absätze mit elegantem Stagger
+                tl.to(paragraphs, {
                     opacity: 1,
                     y: 0,
-                    duration: 0.4
-                }, '-=0.2');
-
-                // Absätze nacheinander mit Stagger
-                tl.to(modal.querySelectorAll('.ceo-doc-paragraph'), {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.4,
-                    stagger: 0.1
+                    scale: 1,
+                    duration: 0.5,
+                    stagger: 0.12
                 }, '-=0.2');
 
                 // Closing
-                tl.to(modal.querySelector('.ceo-doc-closing'), {
+                tl.to(closing, {
                     opacity: 1,
                     y: 0,
+                    scale: 1,
                     duration: 0.4
                 }, '-=0.1');
 
-                // Signatur
-                tl.to(modal.querySelector('.ceo-doc-signature'), {
+                // Signatur mit besonderem Effekt
+                tl.to(signature, {
                     opacity: 1,
                     y: 0,
-                    duration: 0.5
+                    scale: 1,
+                    duration: 0.6,
+                    ease: 'elastic.out(1, 0.8)'
                 }, '-=0.1');
 
                 // Footer
-                tl.to(modal.querySelector('.ceo-doc-footer'), {
+                tl.to(footer, {
                     opacity: 1,
                     y: 0,
+                    scale: 1,
                     duration: 0.5
-                }, '-=0.2');
+                }, '-=0.3');
+
             } else {
                 // Fallback ohne GSAP
                 allElements.forEach((el, i) => {
+                    if (el) {
+                        setTimeout(() => {
+                            el.style.opacity = '1';
+                            el.style.transform = 'translateY(0) scale(1)';
+                        }, i * 120);
+                    }
+                });
+                corners.forEach((corner, i) => {
                     setTimeout(() => {
-                        el.style.opacity = '1';
-                        el.style.transform = 'translateY(0)';
-                    }, i * 100);
+                        corner.style.opacity = '1';
+                        corner.style.transform = 'scale(1)';
+                    }, i * 80);
                 });
             }
-        }, 300);
+        }, 250);
     }
 
     function closeCEOModal() {
