@@ -102,6 +102,8 @@ async function loadDynamicContent() {
             updateTeamSection(data.team);
             // Cache team data for locations
             cachedTeamData = data.team;
+            // Update CEO Modal with CEO data
+            updateCeoModal(data.team);
         }
 
         // Update Products Section
@@ -139,6 +141,57 @@ async function loadDynamicContent() {
         console.log('[Dynamic] Error loading content:', error.message);
         return null;
     }
+}
+
+/**
+ * Update CEO Modal with data from database
+ */
+function updateCeoModal(teamData) {
+    // Find the CEO (usually first in leadership or has CEO in role)
+    let ceo = null;
+
+    // Check if teamData is array or object with categories
+    if (Array.isArray(teamData)) {
+        ceo = teamData.find(m => m.role && (m.role.toLowerCase().includes('ceo') || m.role.toLowerCase().includes('founder')));
+    } else {
+        // Check leadership category first
+        if (teamData['Global Leadership']) {
+            ceo = teamData['Global Leadership'].find(m => m.role && (m.role.toLowerCase().includes('ceo') || m.role.toLowerCase().includes('founder')));
+        }
+        if (!ceo && teamData['CEO']) {
+            ceo = teamData['CEO'][0];
+        }
+    }
+
+    if (!ceo) return;
+
+    // Update CEO Modal elements
+    const modal = document.getElementById('ceo-message-modal');
+    if (!modal) return;
+
+    // Update photo
+    const photoImg = modal.querySelector('.ceo-photo');
+    const photoFallback = modal.querySelector('.ceo-photo-fallback');
+    if (photoImg && ceo.image) {
+        photoImg.src = ceo.image.startsWith('/') ? ceo.image : '/' + ceo.image;
+        photoImg.alt = ceo.name;
+        photoImg.style.display = '';
+        if (photoFallback) photoFallback.style.display = 'none';
+    }
+
+    // Update name and role
+    const nameEl = modal.querySelector('.ceo-photo-info h3');
+    const roleEl = modal.querySelector('.ceo-photo-info span');
+    if (nameEl) nameEl.textContent = ceo.name;
+    if (roleEl) roleEl.textContent = ceo.role || 'Founder & CEO';
+
+    // Update signature
+    const signatureName = modal.querySelector('.ceo-signature-name');
+    const signatureRole = modal.querySelector('.ceo-signature-role');
+    if (signatureName) signatureName.textContent = ceo.name;
+    if (signatureRole) signatureRole.textContent = ceo.role || 'Founder & CEO';
+
+    console.log('[Dynamic] CEO Modal updated with:', ceo.name);
 }
 
 /**
