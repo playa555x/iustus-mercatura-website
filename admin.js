@@ -2147,7 +2147,7 @@ class AdminPanel {
             </div>
             <div class="form-group">
                 <label>Bild-Pfad</label>
-                <input type="text" class="form-input" id="modalTeamImage" placeholder="assets/images/team/...">
+                <input type="text" class="form-input" id="modalTeamImage" placeholder="uploads/team/...">
             </div>
             <div class="form-group">
                 <label>LinkedIn URL</label>
@@ -2170,7 +2170,7 @@ class AdminPanel {
                 name: name,
                 role: role,
                 description: document.getElementById('modalTeamDesc').value,
-                image: document.getElementById('modalTeamImage').value || 'assets/images/placeholder.jpg',
+                image: document.getElementById('modalTeamImage').value || '',
                 linkedin: document.getElementById('modalTeamLinkedin').value
             });
 
@@ -2497,7 +2497,7 @@ class AdminPanel {
             </div>
             <div class="form-group">
                 <label>Bild-Pfad</label>
-                <input type="text" class="form-input" id="modalProdImage" placeholder="assets/images/products/...">
+                <input type="text" class="form-input" id="modalProdImage" placeholder="uploads/media/...">
             </div>
         `, () => {
             const name = document.getElementById('modalProdName').value;
@@ -2511,7 +2511,7 @@ class AdminPanel {
                 name: name,
                 category: document.getElementById('modalProdCategory').value,
                 description: document.getElementById('modalProdDesc').value,
-                image: document.getElementById('modalProdImage').value || 'assets/images/placeholder.jpg'
+                image: document.getElementById('modalProdImage').value || ''
             });
 
             this.trackChange('Produkt hinzugefügt');
@@ -10370,8 +10370,8 @@ class AdminPanel {
 
             // Mögliche Bildpfade die zum Dateinamen passen
             const possiblePaths = [
-                `assets/images/team/${filename}`,
-                `/assets/images/team/${filename}`,
+                `uploads/team/${filename}`,
+                `/uploads/team/${filename}`,
                 filename
             ];
 

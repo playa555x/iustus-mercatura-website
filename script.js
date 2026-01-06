@@ -207,17 +207,26 @@ function updateCeoModal(teamData) {
  * Dynamically update the team section with data from database
  */
 function updateTeamSection(teamByCategory) {
+    console.log('[Dynamic] updateTeamSection called with:', teamByCategory);
     const teamSection = document.querySelector('.team-section .team-container');
-    if (!teamSection) return;
+    if (!teamSection) {
+        console.log('[Dynamic] ERROR: team-container not found!');
+        return;
+    }
+    console.log('[Dynamic] Found team-container, updating...');
 
     // Define category order
     const categoryOrder = ['Global Leadership', 'CEO', 'COO & Regional Heads'];
 
     // Clear existing content (except the header)
     const header = teamSection.querySelector('.team-header');
+    console.log('[Dynamic] Header found:', !!header);
+
+    // Clone the header before clearing innerHTML (to preserve it)
+    const headerClone = header ? header.cloneNode(true) : null;
     teamSection.innerHTML = '';
-    if (header) {
-        teamSection.appendChild(header);
+    if (headerClone) {
+        teamSection.appendChild(headerClone);
     }
 
     // Generate HTML for each category
@@ -238,25 +247,31 @@ function updateTeamSection(teamByCategory) {
 
     // Re-initialize hover effects for new cards
     initTeamCardEffects();
+    console.log('[Dynamic] Team section update complete. Cards in DOM:', document.querySelectorAll('.team-card-flip').length);
 }
 
 /**
  * Generate HTML for a single team member card
  */
 function generateTeamCardHtml(member) {
-    const imagePath = member.image ? `/${member.image}` : '';
-    const hasImage = member.image && member.image.length > 0;
+    // Use path exactly as stored in database (same as Admin Panel does)
+    const imagePath = member.image || '';
+    const hasImage = member.image && member.image.trim() !== '';
+    console.log('[Dynamic] Generating card for', member.name, 'image:', imagePath, 'hasImage:', hasImage);
+
+    // Generate initials for fallback
+    const initials = member.initials || member.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
     return `
         <div class="team-card-flip" data-member-id="${member.id}">
             <div class="team-card-inner">
                 <div class="team-card-front">
-                    <div class="team-image">
+                    <div class="team-image${hasImage ? ' has-photo' : ''}">
                         ${hasImage
                             ? `<img src="${imagePath}" alt="${member.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
                             : ''
                         }
-                        <div class="team-placeholder" style="${hasImage ? 'display:none;' : 'display:flex;'}">${member.initials || member.name.split(' ').map(n => n[0]).join('')}</div>
+                        <div class="initials" style="${hasImage ? 'display:none;' : ''}">${initials}</div>
                     </div>
                     <h4 class="team-name">${member.name}</h4>
                     <p class="team-role">${member.role}</p>
