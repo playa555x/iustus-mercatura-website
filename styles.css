@@ -2988,12 +2988,13 @@ section {
 /* Map Info Boxes - Premium Hover Cards */
 .map-info-boxes {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 35px; /* Account for map-container padding */
+    left: 35px;
+    right: 35px;
+    bottom: 35px;
     pointer-events: none;
     z-index: 100;
+    overflow: visible;
 }
 
 .map-info-box {

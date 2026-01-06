@@ -1871,8 +1871,8 @@ function showMapInfoBox(locationId) {
 
     if (infoBox && marker) {
         // Position info box at marker location
-        const mapContainer = document.querySelector('.world-map');
-        const svg = mapContainer?.querySelector('svg');
+        const mapContainer = document.querySelector('.map-container');
+        const svg = mapContainer?.querySelector('svg.map-svg');
 
         if (svg && mapContainer) {
             const markerCircle = marker.querySelector('.marker-logo');
@@ -1880,19 +1880,18 @@ function showMapInfoBox(locationId) {
                 const cx = parseFloat(markerCircle.getAttribute('cx'));
                 const cy = parseFloat(markerCircle.getAttribute('cy'));
 
-                // Get SVG dimensions and container dimensions
-                const svgRect = svg.getBoundingClientRect();
-                const containerRect = mapContainer.getBoundingClientRect();
-
-                // Calculate percentage position
+                // Get SVG viewBox for percentage calculation
                 const viewBox = svg.viewBox.baseVal;
                 const percentX = (cx / viewBox.width) * 100;
                 const percentY = (cy / viewBox.height) * 100;
 
                 // Set dynamic position - card appears from marker point
+                // Offset slightly so card doesn't cover the marker
                 infoBox.style.left = `${percentX}%`;
                 infoBox.style.top = `${percentY}%`;
-                infoBox.style.transform = 'translate(-20px, -20px)';
+
+                // Ensure visibility is set
+                infoBox.style.visibility = 'visible';
             }
         }
 
