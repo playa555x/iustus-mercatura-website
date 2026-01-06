@@ -8,6 +8,19 @@ import { mkdir, writeFile, readFile, readdir, stat, copyFile, unlink } from "fs/
 import { join, extname } from "path";
 import { existsSync, readdirSync } from "fs";
 
+// ==========================================
+// GLOBAL ERROR HANDLERS - Prevent server crashes
+// ==========================================
+process.on('uncaughtException', (error) => {
+    console.error('[CRITICAL] Uncaught Exception:', error);
+    // Don't exit - keep server running
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('[CRITICAL] Unhandled Rejection at:', promise, 'reason:', reason);
+    // Don't exit - keep server running
+});
+
 // Turso Database (optional - falls back to JSON if not configured)
 import * as turso from "./database/turso";
 const USE_TURSO = turso.isTursoConfigured();
@@ -5566,28 +5579,17 @@ async function serveStatic(pathname: string, headers: Record<string, string>): P
         if (await bunFile.exists()) {
             const ext = extname(filePath);
             const contentType = MIME_TYPES[ext] || "application/octet-stream";
-            
+
             // Add cache headers based on file type
             const cacheHeaders = { ...headers, "Content-Type": contentType };
-            
-            // Cache static assets for 1 year
-            if ([".css", ".js", ".jpg", ".jpeg", ".png", ".webp", ".svg", ".woff", ".woff2"].some(e => ext === e)) {
-                cacheHeaders["Cache-Control"] = "public, max-age=31536000, immutable";
-            } else if (ext === ".html") {
-                cacheHeaders["Cache-Control"] = "public, max-age=300";
-            }
-            
-            return new Response(bunFile, { headers: cacheHeaders });
-            
+
             // Cache static assets for 1 year
             if (['.css', '.js', '.jpg', '.jpeg', '.png', '.webp', '.svg', '.woff', '.woff2', '.ttf', '.eot'].includes(ext)) {
                 cacheHeaders["Cache-Control"] = "public, max-age=31536000, immutable";
-            } 
-            // Short cache for HTML
-            else if (ext === '.html') {
+            } else if (ext === '.html') {
                 cacheHeaders["Cache-Control"] = "public, max-age=300";
             }
-            
+
             return new Response(bunFile, { headers: cacheHeaders });
         }
     } catch (e) {
