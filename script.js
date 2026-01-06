@@ -3710,21 +3710,7 @@ class HoverTriggerSystem {
 document.addEventListener('DOMContentLoaded', () => {
     window.hoverTriggerSystem = new HoverTriggerSystem();
 
-    // Auto-connect location cards with map markers (existing data-location attributes)
-    document.querySelectorAll('.location-card[data-location]').forEach(card => {
-        const location = card.dataset.location;
-        // Add hover trigger attributes
-        card.setAttribute('data-hover-trigger', `location-${location}`);
-        card.setAttribute('data-hover-target', `location-${location}`);
-    });
-
-    document.querySelectorAll('.location-marker[data-location]').forEach(marker => {
-        const location = marker.dataset.location;
-        // Add hover target attributes
-        marker.setAttribute('data-hover-trigger', `location-${location}`);
-        marker.setAttribute('data-hover-target', `location-${location}`);
-    });
-
-    // Reinitialize after adding attributes
-    window.hoverTriggerSystem = new HoverTriggerSystem();
+    // Note: Location markers use their own hover system (initInteractiveMap)
+    // Do NOT add hover-trigger/hover-target attributes to .location-marker
+    // as it conflicts with the custom map info box system
 });
