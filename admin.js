@@ -162,28 +162,28 @@ class AdminPanel {
     // AUTHENTICATION
     // ============================================
     async login(password) {
-        // Versuche API Login
-        if (window.CmsApi) {
-            try {
-                const result = await CmsApi.loginSite(this.siteId, password);
-                if (result.token) {
-                    sessionStorage.setItem('iustus_admin_auth', 'true');
-                    sessionStorage.setItem('iustus_admin_token', result.token);
-                    this.apiAvailable = true;
-                    return { success: true };
-                }
-            } catch (error) {
-                this.log('API login failed, trying fallback:', error.message);
+        // Server-side authentication only - no client-side password validation
+        try {
+            const response = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+
+            const result = await response.json();
+
+            if (result.success && result.token) {
+                sessionStorage.setItem('iustus_admin_auth', 'true');
+                sessionStorage.setItem('iustus_admin_token', result.token);
+                this.apiAvailable = true;
+                return { success: true };
             }
-        }
 
-        // Fallback: Lokale Passwort-Prüfung
-        if (password === 'Blümchen88!') {
-            sessionStorage.setItem('iustus_admin_auth', 'true');
-            return { success: true };
+            return { success: false, error: result.error || 'Falsches Passwort' };
+        } catch (error) {
+            this.log('Login failed:', error.message);
+            return { success: false, error: 'Server nicht erreichbar' };
         }
-
-        return { success: false, error: 'Falsches Passwort' };
     }
 
     logout() {

@@ -67,9 +67,18 @@ async function updateCommodityTicker() {
 }
 
 // Update ticker on load and every 5 minutes
+let tickerInterval = null;
 document.addEventListener('DOMContentLoaded', () => {
     updateCommodityTicker();
-    setInterval(updateCommodityTicker, 5 * 60 * 1000);
+    tickerInterval = setInterval(updateCommodityTicker, 5 * 60 * 1000);
+});
+
+// Cleanup interval on page unload
+window.addEventListener('beforeunload', () => {
+    if (tickerInterval) {
+        clearInterval(tickerInterval);
+        tickerInterval = null;
+    }
 });
 
 // ============================================
@@ -802,6 +811,8 @@ if (cursor && cursorFollower && !isTouchDevice && !isMobile) {
 // ============================================
 let scene, camera, renderer, globe, particles;
 let globeRotationSpeed = 0.002;
+let globeAnimationId = null;
+let isGlobeVisible = true;
 
 function initGlobe() {
     const container = document.getElementById('globe-container');
@@ -1089,7 +1100,13 @@ function createParticleField() {
 }
 
 function animateGlobe() {
-    requestAnimationFrame(animateGlobe);
+    // Only animate if globe is visible (performance optimization)
+    if (!isGlobeVisible || !renderer) {
+        globeAnimationId = null;
+        return;
+    }
+
+    globeAnimationId = requestAnimationFrame(animateGlobe);
 
     if (globe) {
         globe.rotation.y += globeRotationSpeed;
@@ -1104,116 +1121,57 @@ function animateGlobe() {
     renderer.render(scene, camera);
 }
 
+// Start/stop globe animation based on visibility
+function startGlobeAnimation() {
+    if (!globeAnimationId && renderer) {
+        isGlobeVisible = true;
+        animateGlobe();
+    }
+}
+
+function stopGlobeAnimation() {
+    isGlobeVisible = false;
+    if (globeAnimationId) {
+        cancelAnimationFrame(globeAnimationId);
+        globeAnimationId = null;
+    }
+}
+
+// Pause animation when tab is hidden
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        stopGlobeAnimation();
+    } else {
+        startGlobeAnimation();
+    }
+});
+
+// Use IntersectionObserver to pause animation when globe is not visible
+if (typeof IntersectionObserver !== 'undefined') {
+    const globeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                startGlobeAnimation();
+            } else {
+                stopGlobeAnimation();
+            }
+        });
+    }, { threshold: 0.1 });
+
+    // Observe globe container when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('globe-container');
+        if (container) {
+            globeObserver.observe(container);
+        }
+    });
+}
+
 // ============================================
-// SUGAR PARTICLE CANVAS EFFECT
+// SUGAR PARTICLE CANVAS EFFECT (Disabled for performance)
 // ============================================
 function initSugarParticles() {
-    // Disabled for better performance - 80 particles with gradients cause frame drops
-    return;
-
-    const canvas = document.getElementById('sugarParticles');
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    const particles = [];
-    const particleCount = 80;
-
-    class SugarParticle {
-        constructor() {
-            this.reset();
-        }
-
-        reset() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 4 + 2;
-            this.speedX = (Math.random() - 0.5) * 0.5;
-            this.speedY = Math.random() * 0.5 + 0.2;
-            this.opacity = Math.random() * 0.5 + 0.2;
-            this.rotation = Math.random() * Math.PI * 2;
-            this.rotationSpeed = (Math.random() - 0.5) * 0.02;
-
-            // Crystal shape vertices (6-sided)
-            this.vertices = 6;
-            this.shapeOffset = Math.random() * 0.3;
-        }
-
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            this.rotation += this.rotationSpeed;
-
-            // Reset if out of bounds
-            if (this.y > canvas.height + 20) {
-                this.y = -20;
-                this.x = Math.random() * canvas.width;
-            }
-            if (this.x < -20 || this.x > canvas.width + 20) {
-                this.x = Math.random() * canvas.width;
-            }
-        }
-
-        draw() {
-            ctx.save();
-            ctx.translate(this.x, this.y);
-            ctx.rotate(this.rotation);
-
-            // Draw crystal shape
-            ctx.beginPath();
-            for (let i = 0; i < this.vertices; i++) {
-                const angle = (i / this.vertices) * Math.PI * 2;
-                const radius = this.size * (1 + (i % 2) * this.shapeOffset);
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
-
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.closePath();
-
-            // Gradient fill
-            const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size);
-            gradient.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
-            gradient.addColorStop(0.5, `rgba(249, 245, 235, ${this.opacity * 0.8})`);
-            gradient.addColorStop(1, `rgba(201, 162, 39, ${this.opacity * 0.3})`);
-
-            ctx.fillStyle = gradient;
-            ctx.fill();
-
-            // Crystal edge highlight
-            ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity * 0.5})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-
-            ctx.restore();
-        }
-    }
-
-    // Initialize particles
-    for (let i = 0; i < particleCount; i++) {
-        particles.push(new SugarParticle());
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        particles.forEach(particle => {
-            particle.update();
-            particle.draw();
-        });
-
-        requestAnimationFrame(animate);
-    }
-
-    animate();
+    // Disabled - 80 particles with gradients cause frame drops
 }
 
 // ============================================

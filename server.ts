@@ -4697,20 +4697,53 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     settings = JSON.parse(data);
                 }
 
+                // Check master admin password first (password-only login for admin panel)
+                const masterPasswordHash = settings.admin?.masterPasswordHash;
+                if (!username && password && masterPasswordHash) {
+                    let masterMatch = false;
+                    try {
+                        masterMatch = await Bun.password.verify(password, masterPasswordHash);
+                    } catch {
+                        masterMatch = masterPasswordHash === hashPassword(password);
+                    }
+
+                    if (masterMatch) {
+                        const sessionToken = `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                        log("INFO", `[Auth] Master admin login successful`);
+                        return new Response(JSON.stringify({
+                            success: true,
+                            user: { id: 'master', username: 'admin', role: 'master' },
+                            token: sessionToken
+                        }), { headers: jsonHeaders });
+                    }
+                }
+
                 const users = settings.admin?.users || [];
                 const user = users.find((u: any) => u.username === username || u.email === username);
 
                 if (!user) {
+                    log("WARN", `[Auth] Failed login attempt: user not found`);
                     return new Response(JSON.stringify({
                         success: false,
                         error: "Invalid credentials"
                     }), { status: 401, headers: jsonHeaders });
                 }
 
-                // Simple password check (in production use bcrypt)
-                const passwordMatch = user.passwordHash === hashPassword(password);
+                // Secure password verification
+                let passwordMatch = false;
 
-                if (!passwordMatch && user.passwordHash !== '' && password !== 'admin') {
+                if (user.passwordHash) {
+                    // Try Bun's secure password verify first
+                    try {
+                        passwordMatch = await Bun.password.verify(password, user.passwordHash);
+                    } catch {
+                        // Fallback to legacy hash comparison for migration
+                        passwordMatch = user.passwordHash === hashPassword(password);
+                    }
+                }
+
+                if (!passwordMatch) {
+                    log("WARN", `[Auth] Failed login attempt for user: ${username}`);
                     return new Response(JSON.stringify({
                         success: false,
                         error: "Invalid credentials"
@@ -4794,6 +4827,58 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                 return new Response(JSON.stringify({
                     success: true,
                     message: "Password updated successfully"
+                }), { headers: jsonHeaders });
+            } catch (e) {
+                return new Response(JSON.stringify({
+                    success: false,
+                    error: String(e)
+                }), { status: 500, headers: jsonHeaders });
+            }
+        }
+
+        // POST /api/admin/setup-password - Initial master password setup (only works if no password set)
+        if (pathname === "/api/admin/setup-password" && req.method === "POST") {
+            try {
+                const body = await req.json();
+                const { password } = body;
+
+                if (!password || password.length < 8) {
+                    return new Response(JSON.stringify({
+                        success: false,
+                        error: "Password must be at least 8 characters"
+                    }), { status: 400, headers: jsonHeaders });
+                }
+
+                let settings: any = {};
+                if (existsSync(settingsFile)) {
+                    const data = await readFile(settingsFile, 'utf-8');
+                    settings = JSON.parse(data);
+                }
+
+                // Only allow if no master password is set yet
+                if (settings.admin?.masterPasswordHash) {
+                    return new Response(JSON.stringify({
+                        success: false,
+                        error: "Master password already configured"
+                    }), { status: 403, headers: jsonHeaders });
+                }
+
+                // Hash password with Bun's secure password hashing (bcrypt)
+                const hashedPassword = await Bun.password.hash(password, {
+                    algorithm: "bcrypt",
+                    cost: 10
+                });
+
+                if (!settings.admin) settings.admin = {};
+                settings.admin.masterPasswordHash = hashedPassword;
+                settings.updatedAt = new Date().toISOString();
+                await writeFile(settingsFile, JSON.stringify(settings, null, 2));
+
+                log("INFO", `[Auth] Master admin password configured`);
+
+                return new Response(JSON.stringify({
+                    success: true,
+                    message: "Master password configured successfully"
                 }), { headers: jsonHeaders });
             } catch (e) {
                 return new Response(JSON.stringify({
@@ -5552,6 +5637,27 @@ function extractPageSections(html: string): any[] {
     return sections;
 }
 
+// Security: Sanitize path to prevent directory traversal attacks
+function sanitizePath(unsafePath: string): string | null {
+    // Remove null bytes
+    const cleaned = unsafePath.replace(/\0/g, '');
+
+    // Normalize path separators
+    const normalized = cleaned.replace(/\\/g, '/');
+
+    // Check for path traversal attempts
+    if (normalized.includes('..') || normalized.includes('//')) {
+        return null;
+    }
+
+    // Only allow alphanumeric, dash, underscore, dot, and forward slash
+    if (!/^[a-zA-Z0-9\-_./]+$/.test(normalized)) {
+        return null;
+    }
+
+    return normalized;
+}
+
 async function serveStatic(pathname: string, headers: Record<string, string>): Promise<Response> {
     if (pathname === "/") {
         pathname = "/index.html";
@@ -5561,17 +5667,36 @@ async function serveStatic(pathname: string, headers: Record<string, string>): P
         pathname = "/dev-admin/index.html";
     }
 
+    // Security: Sanitize pathname to prevent path traversal
+    const safePath = sanitizePath(pathname);
+    if (!safePath) {
+        log("WARN", `[Security] Blocked path traversal attempt: ${pathname}`);
+        return new Response("Forbidden", { status: 403, headers });
+    }
+
     // Serve team images from persistent storage on Render
     let filePath: string;
-    if (pathname.startsWith("/assets/images/team/")) {
-        const filename = pathname.replace("/assets/images/team/", "");
+    let allowedDir: string;
+
+    if (safePath.startsWith("/assets/images/team/")) {
+        const filename = safePath.replace("/assets/images/team/", "");
         filePath = join(TEAM_IMAGES_DIR, filename);
-    } else if (pathname.startsWith("/uploads/")) {
-        // Serve uploaded files from UPLOADS_DIR
-        const filename = pathname.replace("/uploads/", "");
+        allowedDir = TEAM_IMAGES_DIR;
+    } else if (safePath.startsWith("/uploads/")) {
+        const filename = safePath.replace("/uploads/", "");
         filePath = join(UPLOADS_DIR, filename);
+        allowedDir = UPLOADS_DIR;
     } else {
-        filePath = join(BASE_DIR, pathname);
+        filePath = join(BASE_DIR, safePath);
+        allowedDir = BASE_DIR;
+    }
+
+    // Security: Verify resolved path is within allowed directory
+    const resolvedPath = join(filePath).replace(/\\/g, '/');
+    const resolvedAllowedDir = join(allowedDir).replace(/\\/g, '/');
+    if (!resolvedPath.startsWith(resolvedAllowedDir)) {
+        log("WARN", `[Security] Path escape attempt blocked: ${pathname} -> ${resolvedPath}`);
+        return new Response("Forbidden", { status: 403, headers });
     }
 
     try {
