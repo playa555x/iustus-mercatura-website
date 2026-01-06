@@ -2285,38 +2285,182 @@ class AdminPanel {
         const loc = this.data.locations?.find(l => l.id === id);
         if (!loc) return;
 
+        // Get all team members for dropdown
+        const allTeamMembers = this.getAllTeamMembers();
+        const teamOptions = allTeamMembers.map(m =>
+            `<option value="${m.id}" ${loc.assignedTeamMemberId === m.id ? 'selected' : ''}>${m.name} - ${m.role || 'Kein Titel'}</option>`
+        ).join('');
+
+        // Find currently assigned team member
+        const assignedMember = allTeamMembers.find(m => m.id === loc.assignedTeamMemberId);
+
         this.openModal('Standort bearbeiten', `
-            <div class="form-group">
-                <label>Land</label>
-                <input type="text" class="form-input" id="modalLocCountry" value="${loc.country}" required>
-            </div>
-            <div class="form-group">
-                <label>Stadt</label>
-                <input type="text" class="form-input" id="modalLocCity" value="${loc.city}" required>
-            </div>
-            <div class="form-group">
-                <label>Typ</label>
-                <input type="text" class="form-input" id="modalLocType" value="${loc.type}" required>
-            </div>
-            <div class="form-group">
-                <label>Adresse</label>
-                <textarea class="form-textarea" id="modalLocAddress" rows="2">${loc.address || ''}</textarea>
-            </div>
-            <div class="form-group">
-                <label>Flaggen-Emoji</label>
-                <input type="text" class="form-input" id="modalLocFlag" value="${loc.flag || ''}">
+            <div class="location-edit-modal">
+                <div class="location-edit-form">
+                    <div class="form-group">
+                        <label>Land</label>
+                        <input type="text" class="form-input" id="modalLocCountry" value="${loc.country || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stadt</label>
+                        <input type="text" class="form-input" id="modalLocCity" value="${loc.city || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Firmenname</label>
+                        <input type="text" class="form-input" id="modalLocCompany" value="${loc.company || ''}" placeholder="z.B. FITC Energy LLC">
+                    </div>
+                    <div class="form-group">
+                        <label>Typ</label>
+                        <select class="form-input" id="modalLocType">
+                            <option value="Headquarters" ${loc.type === 'Headquarters' ? 'selected' : ''}>Headquarters</option>
+                            <option value="Regional Office" ${loc.type === 'Regional Office' ? 'selected' : ''}>Regional Office</option>
+                            <option value="Branch Office" ${loc.type === 'Branch Office' ? 'selected' : ''}>Branch Office</option>
+                            <option value="Representative" ${loc.type === 'Representative' ? 'selected' : ''}>Representative</option>
+                            <option value="Partner" ${loc.type === 'Partner' ? 'selected' : ''}>Partner</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse</label>
+                        <textarea class="form-textarea" id="modalLocAddress" rows="2">${loc.address || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ländercode (2-stellig)</label>
+                        <input type="text" class="form-input" id="modalLocCountryCode" value="${loc.countryCode || ''}" maxlength="2" placeholder="z.B. DE, US, GB">
+                    </div>
+
+                    <div class="form-divider"></div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-user-tie"></i> Zuständiger Mitarbeiter</label>
+                        <select class="form-input" id="modalLocTeamMember" onchange="adminPanel.updateLocationPreview()">
+                            <option value="">-- Kein Mitarbeiter zugewiesen --</option>
+                            ${teamOptions}
+                        </select>
+                        <small class="form-hint">Dieser Mitarbeiter wird in der Hover-Karte auf der Karte angezeigt</small>
+                    </div>
+                </div>
+
+                <div class="location-preview-section">
+                    <h4><i class="fas fa-eye"></i> Vorschau Hover-Karte</h4>
+                    <div class="hover-card-preview" id="hoverCardPreview">
+                        ${this.generateHoverCardPreview(loc, assignedMember)}
+                    </div>
+                </div>
             </div>
         `, () => {
             loc.country = document.getElementById('modalLocCountry').value;
             loc.city = document.getElementById('modalLocCity').value;
+            loc.company = document.getElementById('modalLocCompany').value;
             loc.type = document.getElementById('modalLocType').value;
             loc.address = document.getElementById('modalLocAddress').value;
-            loc.flag = document.getElementById('modalLocFlag').value;
+            loc.countryCode = document.getElementById('modalLocCountryCode').value.toUpperCase();
+
+            const selectedTeamId = document.getElementById('modalLocTeamMember').value;
+            loc.assignedTeamMemberId = selectedTeamId || null;
 
             this.trackChange('Standort bearbeitet');
             this.renderLocations();
             this.showToast('success', 'Aktualisiert', 'Standort wurde aktualisiert.');
         });
+
+        // Store current location for preview updates
+        this._currentEditLocation = loc;
+    }
+
+    // Get all team members from all categories
+    getAllTeamMembers() {
+        const team = this.data.team || {};
+        const allMembers = [];
+
+        // Collect from all team categories
+        if (team.leadership) allMembers.push(...team.leadership);
+        if (team.ceo) allMembers.push(...team.ceo);
+        if (team.cooRegional) allMembers.push(...team.cooRegional);
+        if (team.advisors) allMembers.push(...team.advisors);
+        if (team.operations) allMembers.push(...team.operations);
+
+        // Also check if team is an array directly
+        if (Array.isArray(team)) {
+            allMembers.push(...team);
+        }
+
+        return allMembers;
+    }
+
+    // Generate hover card preview HTML
+    generateHoverCardPreview(loc, teamMember) {
+        const flagPath = loc.countryCode ? `assets/images/flags/${loc.countryCode.toLowerCase()}.svg` : '';
+
+        let teamHtml = '';
+        if (teamMember) {
+            const photoHtml = teamMember.image
+                ? `<img src="${teamMember.image}" alt="${teamMember.name}" class="preview-team-photo">`
+                : `<div class="preview-team-initials">${teamMember.initials || teamMember.name?.split(' ').map(n => n[0]).join('') || '?'}</div>`;
+
+            teamHtml = `
+                <div class="preview-team-section">
+                    ${photoHtml}
+                    <div class="preview-team-info">
+                        <span class="preview-team-name">${teamMember.name}</span>
+                        <span class="preview-team-role">${teamMember.role || ''}</span>
+                    </div>
+                </div>
+            `;
+        } else {
+            teamHtml = `
+                <div class="preview-no-team">
+                    <i class="fas fa-user-slash"></i>
+                    <span>Kein Mitarbeiter zugewiesen</span>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="preview-card">
+                <div class="preview-corner preview-corner-tl"></div>
+                <div class="preview-corner preview-corner-tr"></div>
+                <div class="preview-corner preview-corner-bl"></div>
+                <div class="preview-corner preview-corner-br"></div>
+                <div class="preview-card-inner">
+                    <div class="preview-header">
+                        ${flagPath ? `<img src="${flagPath}" class="preview-flag" onerror="this.style.display='none'">` : ''}
+                        <div class="preview-title">
+                            <h5>${loc.city || 'Stadt'}</h5>
+                            <span class="preview-type">${loc.type || 'Office'}</span>
+                        </div>
+                    </div>
+                    <div class="preview-content">
+                        <p class="preview-company">${loc.company || 'Firmenname'}</p>
+                        <p class="preview-address"><i class="fas fa-map-marker-alt"></i> ${loc.address || 'Adresse'}</p>
+                    </div>
+                    ${teamHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    // Update preview when team member changes
+    updateLocationPreview() {
+        const loc = this._currentEditLocation;
+        if (!loc) return;
+
+        const selectedTeamId = document.getElementById('modalLocTeamMember')?.value;
+        const teamMember = selectedTeamId ? this.getAllTeamMembers().find(m => m.id === selectedTeamId) : null;
+
+        // Update preview values from form
+        const previewLoc = {
+            ...loc,
+            city: document.getElementById('modalLocCity')?.value || loc.city,
+            company: document.getElementById('modalLocCompany')?.value || loc.company,
+            type: document.getElementById('modalLocType')?.value || loc.type,
+            address: document.getElementById('modalLocAddress')?.value || loc.address,
+            countryCode: document.getElementById('modalLocCountryCode')?.value || loc.countryCode
+        };
+
+        const previewEl = document.getElementById('hoverCardPreview');
+        if (previewEl) {
+            previewEl.innerHTML = this.generateHoverCardPreview(previewLoc, teamMember);
+        }
     }
 
     deleteLocation(id) {
@@ -7423,6 +7567,8 @@ class AdminPanel {
 
             if (result.success) {
                 this.showToast('success', 'Gelöscht', 'Bild wurde gelöscht');
+                // WICHTIG: Auch Datenbank aktualisieren
+                await this.clearImageFromDatabase(filename);
                 await this.loadGalleryImages();
             } else {
                 this.showToast('error', 'Fehler', 'Löschen fehlgeschlagen');
@@ -9322,6 +9468,9 @@ class AdminPanel {
                     const current = parseInt(countEl.textContent) || 0;
                     countEl.textContent = Math.max(0, current - 1);
                 }
+
+                // WICHTIG: Auch lokale Datenbank aktualisieren - Team-Bilder entfernen
+                await this.clearImageFromDatabase(filename);
             } else {
                 this.showToast('error', 'Fehler', result.error || 'Löschen fehlgeschlagen');
             }
@@ -10203,6 +10352,60 @@ class AdminPanel {
         } catch (error) {
             console.error('Error removing assignment:', error);
             this.showToast('error', 'Fehler', 'Konnte Zuordnung nicht entfernen');
+        }
+    }
+
+    /**
+     * Entfernt Bild-Referenzen aus der Datenbank wenn ein Bild gelöscht wird
+     * Aktualisiert sowohl lokale als auch Remote-Datenbank
+     */
+    async clearImageFromDatabase(filename) {
+        try {
+            // Hole aktuelle Datenbank
+            const response = await fetch('/api/db');
+            if (!response.ok) return;
+
+            const db = await response.json();
+            let updated = false;
+
+            // Mögliche Bildpfade die zum Dateinamen passen
+            const possiblePaths = [
+                `assets/images/team/${filename}`,
+                `/assets/images/team/${filename}`,
+                filename
+            ];
+
+            // Durchsuche alle Items nach diesem Bild
+            if (db.items && Array.isArray(db.items)) {
+                for (const item of db.items) {
+                    if (item.data && item.data.image) {
+                        // Prüfe ob das Bild übereinstimmt
+                        if (possiblePaths.includes(item.data.image) ||
+                            item.data.image.endsWith(filename)) {
+                            console.log(`[clearImageFromDatabase] Clearing image for ${item.data.name || item.id}`);
+                            item.data.image = null;
+                            updated = true;
+                        }
+                    }
+                }
+            }
+
+            // Speichere wenn Änderungen gemacht wurden
+            if (updated) {
+                const saveResponse = await fetch('/api/db', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(db)
+                });
+
+                if (saveResponse.ok) {
+                    console.log('[clearImageFromDatabase] Database updated successfully');
+                } else {
+                    console.error('[clearImageFromDatabase] Failed to save database');
+                }
+            }
+        } catch (error) {
+            console.error('[clearImageFromDatabase] Error:', error);
         }
     }
 }

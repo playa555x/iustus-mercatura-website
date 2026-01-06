@@ -8252,3 +8252,250 @@ body {
     padding-left: 12px !important;
     border-left: 1px solid #e9ecef !important;
 }
+
+/* ============================================
+   LOCATION EDIT MODAL WITH PREVIEW
+   ============================================ */
+.location-edit-modal {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 30px;
+    min-width: 750px;
+}
+
+.location-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gray-300), transparent);
+    margin: 8px 0;
+}
+
+.form-hint {
+    display: block;
+    color: var(--gray-500);
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+.location-preview-section {
+    background: var(--navy-dark);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.location-preview-section h4 {
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hover-card-preview {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Preview Card Styles */
+.preview-card {
+    position: relative;
+    width: 280px;
+    background: linear-gradient(165deg, rgba(8, 18, 35, 0.98), rgba(15, 28, 50, 0.96));
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: 20px;
+    overflow: visible;
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(201, 162, 39, 0.1);
+}
+
+.preview-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+}
+
+.preview-corner-tl {
+    top: 6px;
+    left: 6px;
+    border-top: 2px solid var(--gold);
+    border-left: 2px solid var(--gold);
+    border-radius: 6px 0 0 0;
+}
+
+.preview-corner-tr {
+    top: 6px;
+    right: 6px;
+    border-top: 2px solid var(--gold);
+    border-right: 2px solid var(--gold);
+    border-radius: 0 6px 0 0;
+}
+
+.preview-corner-bl {
+    bottom: 6px;
+    left: 6px;
+    border-bottom: 2px solid var(--gold);
+    border-left: 2px solid var(--gold);
+    border-radius: 0 0 0 6px;
+}
+
+.preview-corner-br {
+    bottom: 6px;
+    right: 6px;
+    border-bottom: 2px solid var(--gold);
+    border-right: 2px solid var(--gold);
+    border-radius: 0 0 6px 0;
+}
+
+.preview-card-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.1), transparent);
+    border-bottom: 1px solid rgba(201, 162, 39, 0.15);
+}
+
+.preview-flag {
+    width: 28px;
+    height: 20px;
+    border-radius: 3px;
+    object-fit: cover;
+}
+
+.preview-title h5 {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 2px 0;
+}
+
+.preview-type {
+    color: var(--gold);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.preview-content {
+    padding: 14px 16px;
+}
+
+.preview-company {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.1);
+}
+
+.preview-address {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 11px;
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.preview-address i {
+    color: var(--gold);
+    opacity: 0.7;
+    margin-top: 2px;
+}
+
+.preview-team-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.08), transparent);
+    border-top: 1px solid rgba(201, 162, 39, 0.15);
+}
+
+.preview-team-photo {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--gold);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.preview-team-initials {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #b8942e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy-dark);
+}
+
+.preview-team-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.preview-team-name {
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.preview-team-role {
+    color: var(--gold);
+    font-size: 10px;
+    opacity: 0.9;
+}
+
+.preview-no-team {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: rgba(201, 162, 39, 0.05);
+    border-top: 1px solid rgba(201, 162, 39, 0.1);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+}
+
+.preview-no-team i {
+    font-size: 18px;
+    opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .location-edit-modal {
+        grid-template-columns: 1fr;
+        min-width: auto;
+    }
+
+    .location-preview-section {
+        order: -1;
+    }
+}

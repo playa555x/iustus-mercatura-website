@@ -2873,7 +2873,7 @@ section {
         rgba(30, 58, 95, 0.95) 100%);
     border-radius: 24px;
     padding: 35px;
-    overflow: hidden;
+    overflow: visible;
     border: 1px solid rgba(201, 162, 39, 0.2);
     box-shadow:
         0 25px 80px rgba(0, 0, 0, 0.3),

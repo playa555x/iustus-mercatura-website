@@ -476,23 +476,30 @@ function updateLocationsSection(locations, teamData) {
         'Miami, Florida': 'usa_florida'
     };
 
-    // Map locations to team members by role keywords
-    const locationTeamMap = {
-        'bvi': ['CEO', 'Founder', 'Chairman', 'Group'],
-        'usa': ['USA', 'Princeton'],
-        'usa_texas': ['Texas', 'Austin', '(TX)'],
-        'usa_florida': ['Florida', 'Miami', '(FL)'],
-        'brazil': ['Brazil', 'Brasil'],
-        'uae': ['Dubai', 'UAE', 'Middle East', 'FITC Energy'],
-        'uk': ['UK', 'Maritime', 'Logistics'],
-        'uganda': ['Uganda'],
-        'kenya': ['Kenya', 'East Africa'],
-        'bangladesh': ['Bangladesh']
-    };
-
-    // Find team member for a location
-    function findTeamMember(locationId) {
+    // Find team member for a location by assigned ID or fallback to keywords
+    function findTeamMember(location, locationId) {
         if (!cachedTeamData) return null;
+
+        // First: Check if location has a directly assigned team member
+        if (location.assignedTeamMemberId) {
+            const assigned = cachedTeamData.find(m => m.id === location.assignedTeamMemberId);
+            if (assigned) return assigned;
+        }
+
+        // Fallback: Legacy keyword matching for unassigned locations
+        const locationTeamMap = {
+            'bvi': ['CEO', 'Founder', 'Chairman', 'Group'],
+            'usa': ['USA', 'Princeton'],
+            'usa_texas': ['Texas', 'Austin', '(TX)'],
+            'usa_florida': ['Florida', 'Miami', '(FL)'],
+            'brazil': ['Brazil', 'Brasil'],
+            'uae': ['Dubai', 'UAE', 'Middle East', 'FITC Energy'],
+            'uk': ['UK', 'Maritime', 'Logistics'],
+            'uganda': ['Uganda'],
+            'kenya': ['Kenya', 'East Africa'],
+            'bangladesh': ['Bangladesh']
+        };
+
         const keywords = locationTeamMap[locationId] || [];
         return cachedTeamData.find(member => {
             const role = member.role || '';
@@ -509,8 +516,8 @@ function updateLocationsSection(locations, teamData) {
         }
         const flagPath = `assets/images/flags/${location.countryCode.toLowerCase()}.svg`;
 
-        // Find team member for this location
-        const teamMember = findTeamMember(locationId);
+        // Find team member for this location (using assigned ID or keyword fallback)
+        const teamMember = findTeamMember(location, locationId);
 
         // Generate team section HTML if team member found
         let teamSectionHtml = '';
