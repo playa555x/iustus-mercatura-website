@@ -1857,17 +1857,20 @@ function showMapInfoBox(locationId) {
     document.querySelectorAll('.map-info-box').forEach(box => {
         if (box.dataset.location !== locationId) {
             box.classList.remove('active');
-            // Clear any GSAP inline styles
-            if (typeof gsap !== 'undefined') {
-                gsap.set(box, { clearProps: 'all' });
-            }
+            box.style.opacity = '0';
+            box.style.visibility = 'hidden';
         }
     });
     document.querySelectorAll('.location-marker').forEach(m => m.classList.remove('active'));
 
-    // Get the marker to position the info box relative to it
+    // Get the marker and info box
     const marker = document.querySelector(`.location-marker[data-location="${locationId}"]`);
     const infoBox = document.querySelector(`.map-info-box[data-location="${locationId}"]`);
+
+    if (!infoBox) {
+        console.warn('[Map] No info box found for location:', locationId);
+        return;
+    }
 
     if (infoBox && marker) {
         // Position info box at marker location
@@ -1885,112 +1888,43 @@ function showMapInfoBox(locationId) {
                 const percentX = (cx / viewBox.width) * 100;
                 const percentY = (cy / viewBox.height) * 100;
 
-                // Set dynamic position - card appears from marker point
-                // Offset slightly so card doesn't cover the marker
+                // Position the card - offset so it doesn't cover marker
                 infoBox.style.left = `${percentX}%`;
                 infoBox.style.top = `${percentY}%`;
-
-                // Ensure visibility is set
-                infoBox.style.visibility = 'visible';
             }
         }
 
-        // Add active class
+        // Show the info box
+        infoBox.style.visibility = 'visible';
+        infoBox.style.opacity = '1';
         infoBox.classList.add('active');
         marker.classList.add('active');
 
-        // GSAP Premium Animation - Marker expands into Card
+        // GSAP Premium Animation
         if (typeof gsap !== 'undefined') {
             const corners = infoBox.querySelectorAll('.info-card-corner');
             const inner = infoBox.querySelector('.info-card-inner');
             const header = infoBox.querySelector('.info-box-header');
             const content = infoBox.querySelector('.info-box-content');
             const teamSection = infoBox.querySelector('.info-team-section');
-            const photo = infoBox.querySelector('.info-team-photo, .info-team-initials');
 
             // Kill any running animations
-            gsap.killTweensOf(infoBox);
-            gsap.killTweensOf([corners, inner, header, content, teamSection, photo]);
+            gsap.killTweensOf([infoBox, corners, inner, header, content, teamSection]);
 
             // Create timeline
             const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-            // Initial state - tiny circle at marker position
-            gsap.set(infoBox, {
-                scale: 0.05,
-                opacity: 0,
-                borderRadius: '50%'
-            });
-            gsap.set(corners, { opacity: 0, scale: 0 });
-            if (inner) gsap.set(inner, { opacity: 0, scale: 0.8 });
-            if (header) gsap.set(header, { opacity: 0, y: -20 });
-            if (content) gsap.set(content, { opacity: 0, y: 20 });
-            if (teamSection) gsap.set(teamSection, { opacity: 0, x: -30 });
-            if (photo) gsap.set(photo, { scale: 0, rotation: -180 });
+            // Initial state
+            gsap.set(infoBox, { scale: 0.1, opacity: 0 });
+            gsap.set(corners, { opacity: 0 });
+            if (inner) gsap.set(inner, { opacity: 0 });
 
-            // Step 1: Expand from marker (circle to rectangle)
-            tl.to(infoBox, {
-                scale: 1,
-                opacity: 1,
-                borderRadius: '24px',
-                duration: 0.8,
-                ease: 'power4.out'
-            });
-
-            // Step 2: Inner content fades in
-            if (inner) {
-                tl.to(inner, {
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.4
-                }, '-=0.5');
-            }
-
-            // Step 3: Corners appear with bounce
-            tl.to(corners, {
-                opacity: 0.6,
-                scale: 1,
-                duration: 0.5,
-                stagger: 0.08,
-                ease: 'back.out(2)'
-            }, '-=0.3');
-
-            // Step 4: Header slides in
-            if (header) {
-                tl.to(header, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.5
-                }, '-=0.4');
-            }
-
-            // Step 5: Content slides up
-            if (content) {
-                tl.to(content, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.5
-                }, '-=0.3');
-            }
-
-            // Step 6: Team section slides in
-            if (teamSection) {
-                tl.to(teamSection, {
-                    opacity: 1,
-                    x: 0,
-                    duration: 0.6
-                }, '-=0.3');
-            }
-
-            // Step 7: Photo spins in dramatically
-            if (photo) {
-                tl.to(photo, {
-                    scale: 1,
-                    rotation: 0,
-                    duration: 0.8,
-                    ease: 'elastic.out(1, 0.5)'
-                }, '-=0.5');
-            }
+            // Animate in
+            tl.to(infoBox, { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.5)' });
+            if (inner) tl.to(inner, { opacity: 1, duration: 0.3 }, '-=0.3');
+            tl.to(corners, { opacity: 0.6, duration: 0.3, stagger: 0.05 }, '-=0.2');
+            if (content) tl.to(content, { opacity: 1, duration: 0.3 }, '-=0.2');
+            if (teamSection) tl.to(teamSection, { opacity: 1, duration: 0.3 }, '-=0.2');
         }
     }
 }
