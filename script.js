@@ -130,9 +130,19 @@ async function loadDynamicContent() {
             updateProjectsSection(data.projects);
         }
 
-        // Update Hero Stats
-        if (data.blocks?.hero?.stats) {
-            updateHeroStats(data.blocks.hero.stats);
+        // Update Hero Section (full)
+        if (data.blocks?.hero) {
+            updateHeroSection(data.blocks.hero);
+        }
+
+        // Update About Section
+        if (data.blocks?.about) {
+            updateAboutSection(data.blocks.about);
+        }
+
+        // Update CEO Section (main page, not modal)
+        if (data.blocks?.ceo) {
+            updateCeoSection(data.blocks.ceo);
         }
 
         // Update Values Section
@@ -143,6 +153,16 @@ async function loadDynamicContent() {
         // Update Sustainability Stats
         if (data.blocks?.sustainability?.stats) {
             updateSustainabilityStats(data.blocks.sustainability.stats);
+        }
+
+        // Update Footer
+        if (data.blocks?.footer) {
+            updateFooterSection(data.blocks.footer);
+        }
+
+        // Update Contact Section
+        if (data.blocks?.contact) {
+            updateContactSection(data.blocks.contact);
         }
 
         return data;
@@ -387,6 +407,313 @@ function updateSustainabilityStats(stats) {
             if (labelEl) labelEl.textContent = stat.label;
         }
     });
+}
+
+/**
+ * Update Hero Section with full content from database
+ */
+function updateHeroSection(heroData) {
+    if (!heroData) return;
+
+    // Update hero label
+    const heroLabel = document.querySelector('.hero-label');
+    if (heroLabel && heroData.label) {
+        const labelIcon = heroLabel.querySelector('.label-icon');
+        heroLabel.innerHTML = (labelIcon ? labelIcon.outerHTML : '<span class="label-icon">&#9670;</span>') + ' ' + heroData.label;
+    }
+
+    // Update hero title lines
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle && heroData.titleLines) {
+        heroTitle.innerHTML = heroData.titleLines.map((line, i) =>
+            `<span class="title-line${i === 1 ? ' highlight' : ''}">${line}</span>`
+        ).join('');
+    }
+
+    // Update hero description
+    const heroDesc = document.querySelector('.hero-description');
+    if (heroDesc && heroData.description) {
+        heroDesc.textContent = heroData.description;
+    }
+
+    // Update primary button
+    const primaryBtn = document.querySelector('.hero-buttons .btn-primary');
+    if (primaryBtn && heroData.buttonPrimary) {
+        primaryBtn.href = heroData.buttonPrimary.link;
+        const btnIcon = primaryBtn.querySelector('.btn-icon');
+        primaryBtn.innerHTML = heroData.buttonPrimary.text + (btnIcon ? btnIcon.outerHTML : '<span class="btn-icon">&rarr;</span>');
+    }
+
+    // Update secondary button
+    const secondaryBtn = document.querySelector('.hero-buttons .btn-outline');
+    if (secondaryBtn && heroData.buttonSecondary) {
+        secondaryBtn.href = heroData.buttonSecondary.link;
+        const btnIcon = secondaryBtn.querySelector('.btn-icon');
+        secondaryBtn.innerHTML = heroData.buttonSecondary.text + (btnIcon ? btnIcon.outerHTML : '<span class="btn-icon">&rarr;</span>');
+    }
+
+    // Update stats (also handled by updateHeroStats but included here for completeness)
+    if (heroData.stats) {
+        updateHeroStats(heroData.stats);
+    }
+
+    console.log('[Dynamic] Hero section updated');
+}
+
+/**
+ * Update About Section with content from database
+ */
+function updateAboutSection(aboutData) {
+    if (!aboutData) return;
+
+    const aboutSection = document.querySelector('.about-section');
+    if (!aboutSection) return;
+
+    // Update section label
+    const sectionLabel = aboutSection.querySelector('.section-label');
+    if (sectionLabel && aboutData.sectionLabel) {
+        sectionLabel.textContent = aboutData.sectionLabel;
+    }
+
+    // Update section title (allows HTML for highlight span)
+    const sectionTitle = aboutSection.querySelector('.section-title');
+    if (sectionTitle && aboutData.title) {
+        sectionTitle.innerHTML = aboutData.title;
+    }
+
+    // Update lead text
+    const leadText = aboutSection.querySelector('.about-text .lead');
+    if (leadText && aboutData.leadText) {
+        leadText.textContent = aboutData.leadText;
+    }
+
+    // Update description paragraph
+    const descPara = aboutSection.querySelector('.about-text > p:not(.lead)');
+    if (descPara && aboutData.description) {
+        descPara.textContent = aboutData.description;
+    }
+
+    // Update features
+    if (aboutData.features && aboutData.features.length > 0) {
+        const featureItems = aboutSection.querySelectorAll('.feature-item');
+        aboutData.features.forEach((feature, index) => {
+            if (featureItems[index]) {
+                const titleEl = featureItems[index].querySelector('h4');
+                const descEl = featureItems[index].querySelector('p');
+                if (titleEl) titleEl.textContent = feature.title;
+                if (descEl) descEl.textContent = feature.description;
+            }
+        });
+    }
+
+    // Update founded year and text
+    const cardYear = aboutSection.querySelector('.card-year');
+    if (cardYear && aboutData.foundedYear) {
+        cardYear.textContent = aboutData.foundedYear;
+    }
+
+    const cardDesc = aboutSection.querySelector('.main-card .card-content p');
+    if (cardDesc && aboutData.foundedText) {
+        cardDesc.textContent = aboutData.foundedText;
+    }
+
+    console.log('[Dynamic] About section updated');
+}
+
+/**
+ * Update CEO Section (main page) with content from database
+ */
+function updateCeoSection(ceoData) {
+    if (!ceoData) return;
+
+    const ceoSection = document.querySelector('.ceo-section');
+    if (!ceoSection) return;
+
+    // Update section label
+    const sectionLabel = ceoSection.querySelector('.section-label');
+    if (sectionLabel && ceoData.sectionLabel) {
+        sectionLabel.textContent = ceoData.sectionLabel;
+    }
+
+    // Update CEO quote
+    const ceoQuote = ceoSection.querySelector('.ceo-quote');
+    if (ceoQuote && ceoData.quote) {
+        ceoQuote.innerHTML = '"' + ceoData.quote + '"';
+    }
+
+    // Update CEO name
+    const ceoName = ceoSection.querySelector('.ceo-info h4');
+    if (ceoName && ceoData.name) {
+        ceoName.textContent = ceoData.name;
+    }
+
+    // Update CEO role
+    const ceoRole = ceoSection.querySelector('.ceo-info span');
+    if (ceoRole && ceoData.role) {
+        ceoRole.textContent = ceoData.role;
+    }
+
+    // Update initials
+    const initials = ceoSection.querySelector('.initials');
+    if (initials && ceoData.initials) {
+        initials.textContent = ceoData.initials;
+    }
+
+    // Update button text
+    const ceoBtn = ceoSection.querySelector('#open-ceo-modal');
+    if (ceoBtn && ceoData.buttonText) {
+        ceoBtn.innerHTML = ceoData.buttonText + ' &rarr;';
+    }
+
+    console.log('[Dynamic] CEO section updated');
+}
+
+/**
+ * Update Footer Section with content from database
+ */
+function updateFooterSection(footerData) {
+    if (!footerData) return;
+
+    const footer = document.querySelector('.footer');
+    if (!footer) return;
+
+    // Update tagline
+    const tagline = footer.querySelector('.footer-tagline');
+    if (tagline && footerData.tagline) {
+        tagline.textContent = footerData.tagline;
+    }
+
+    // Update email
+    const emailLink = footer.querySelector('.footer-contact-info a[href^="mailto:"]');
+    if (emailLink && footerData.email) {
+        emailLink.href = 'mailto:' + footerData.email;
+        const svg = emailLink.querySelector('svg');
+        emailLink.innerHTML = (svg ? svg.outerHTML : '') + footerData.email;
+    }
+
+    // Update phone
+    const phoneLink = footer.querySelector('.footer-contact-info a[href^="tel:"]');
+    if (phoneLink && footerData.phone) {
+        phoneLink.href = 'tel:' + footerData.phone.replace(/\s/g, '');
+        const svg = phoneLink.querySelector('svg');
+        phoneLink.innerHTML = (svg ? svg.outerHTML : '') + footerData.phone;
+    }
+
+    // Update WhatsApp link
+    const whatsappLink = document.querySelector('.whatsapp-float');
+    if (whatsappLink && footerData.whatsapp) {
+        whatsappLink.href = 'https://wa.me/' + footerData.whatsapp.replace(/\+/g, '') + '?text=Hello%2C%20I%20would%20like%20to%20inquire%20about%20your%20products';
+    }
+
+    // Update copyright
+    const copyright = footer.querySelector('.footer-bottom p');
+    if (copyright && footerData.copyright) {
+        copyright.textContent = footerData.copyright;
+    }
+
+    // Update footer columns (links)
+    if (footerData.columns && footerData.columns.length > 0) {
+        const footerColumns = footer.querySelectorAll('.footer-column');
+        footerData.columns.forEach((col, index) => {
+            if (footerColumns[index]) {
+                const titleEl = footerColumns[index].querySelector('h4');
+                if (titleEl) titleEl.textContent = col.title;
+
+                const linksList = footerColumns[index].querySelector('ul');
+                if (linksList && col.links) {
+                    linksList.innerHTML = col.links.map(link =>
+                        `<li><a href="${link.href}">${link.text}</a></li>`
+                    ).join('');
+                }
+            }
+        });
+    }
+
+    // Update newsletter section
+    if (footerData.newsletter) {
+        const newsletterTitle = footer.querySelector('.newsletter-content h4');
+        const newsletterSubtitle = footer.querySelector('.newsletter-content p');
+        const newsletterBtn = footer.querySelector('.newsletter-form button span');
+
+        if (newsletterTitle && footerData.newsletter.title) {
+            newsletterTitle.textContent = footerData.newsletter.title;
+        }
+        if (newsletterSubtitle && footerData.newsletter.subtitle) {
+            newsletterSubtitle.textContent = footerData.newsletter.subtitle;
+        }
+        if (newsletterBtn && footerData.newsletter.buttonText) {
+            newsletterBtn.textContent = footerData.newsletter.buttonText;
+        }
+    }
+
+    console.log('[Dynamic] Footer section updated');
+}
+
+/**
+ * Update Contact Section with content from database
+ */
+function updateContactSection(contactData) {
+    if (!contactData) return;
+
+    const contactSection = document.querySelector('.contact-section');
+    if (!contactSection) return;
+
+    // Update section label
+    const sectionLabel = contactSection.querySelector('.section-label');
+    if (sectionLabel && contactData.sectionLabel) {
+        sectionLabel.textContent = contactData.sectionLabel;
+    }
+
+    // Update section title (allows HTML for highlight span)
+    const sectionTitle = contactSection.querySelector('.section-title');
+    if (sectionTitle && contactData.title) {
+        sectionTitle.innerHTML = contactData.title;
+    }
+
+    // Update description
+    const description = contactSection.querySelector('.contact-intro p');
+    if (description && contactData.description) {
+        description.textContent = contactData.description;
+    }
+
+    // Update contact info
+    const emailEl = contactSection.querySelector('.contact-info-item a[href^="mailto:"]');
+    if (emailEl && contactData.email) {
+        emailEl.href = 'mailto:' + contactData.email;
+        emailEl.textContent = contactData.email;
+    }
+
+    const phoneEl = contactSection.querySelector('.contact-info-item a[href^="tel:"]');
+    if (phoneEl && contactData.phone) {
+        phoneEl.href = 'tel:' + contactData.phone.replace(/\s/g, '');
+        phoneEl.textContent = contactData.phone;
+    }
+
+    // Update form labels if provided
+    if (contactData.formLabels) {
+        const form = contactSection.querySelector('.contact-form');
+        if (form) {
+            const labels = contactData.formLabels;
+
+            // Update placeholders
+            const nameInput = form.querySelector('input[name="name"]');
+            const emailInput = form.querySelector('input[name="email"]');
+            const companyInput = form.querySelector('input[name="company"]');
+            const messageInput = form.querySelector('textarea[name="message"]');
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            if (nameInput && labels.name) nameInput.placeholder = labels.name;
+            if (emailInput && labels.email) emailInput.placeholder = labels.email;
+            if (companyInput && labels.company) companyInput.placeholder = labels.company;
+            if (messageInput && labels.message) messageInput.placeholder = labels.message;
+            if (submitBtn && labels.submit) {
+                const svg = submitBtn.querySelector('svg');
+                submitBtn.innerHTML = '<span>' + labels.submit + '</span>' + (svg ? svg.outerHTML : '');
+            }
+        }
+    }
+
+    console.log('[Dynamic] Contact section updated');
 }
 
 /**

@@ -39,8 +39,13 @@
       "type": "hero",
       "order": 0,
       "data": {
+        "label": "Global Commodity Trading",
         "title": "Connecting Farmers to Consumers Worldwide",
+        "titleLines": ["Connecting", "Farmers to Consumers", "Worldwide"],
+        "description": "Iustus Mercatura - Latin for \"Just Trade\" - delivers essential food commodities with integrity, transparency, and a commitment to sustainable global commerce.",
         "subtitle": "Just Trade - Ethical Commodity Trading",
+        "buttonPrimary": { "text": "Discover Our Story", "link": "#about" },
+        "buttonSecondary": { "text": "View Products", "link": "#products" },
         "stats": [
           {
             "value": "500K+",
@@ -152,6 +157,184 @@
             "label": "Farmers Supported"
           }
         ]
+      }
+    },
+    {
+      "id": "block_about",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "about",
+      "order": 7,
+      "data": {
+        "sectionLabel": "About Us",
+        "title": "The Philosophy of <span class=\"highlight\">Just Trade</span>",
+        "leadText": "At Iustus Mercatura Holding Inc., we prioritize integrity, transparency, and long-term partnerships to create lasting value across global markets.",
+        "description": "Our dual-location model in the British Virgin Islands and vibrant economic regions worldwide exemplifies our strategic approach. We are deeply committed to upholding the highest ethical and sustainable business practices, strictly adhering to UN standards and ISO 9001 quality management principles.",
+        "features": [
+          {
+            "icon": "shield",
+            "title": "Ethical Trading",
+            "description": "Fair pricing and transparent transactions"
+          },
+          {
+            "icon": "globe",
+            "title": "Global Reach",
+            "description": "Operations across 5 continents"
+          },
+          {
+            "icon": "layers",
+            "title": "Vertical Integration",
+            "description": "From field to final delivery"
+          }
+        ],
+        "foundedYear": "2025",
+        "foundedText": "Established on the principles of fair and ethical global trade"
+      }
+    },
+    {
+      "id": "block_ceo",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "ceo",
+      "order": 8,
+      "data": {
+        "sectionLabel": "CEO Message",
+        "quote": "We have not only positioned the Holding Company as a strategic management holding, but also moved away from purely trading in food commodities towards establishing the complete supply chain - from the field to the end customer.",
+        "name": "Dr. Gerhard Kral",
+        "role": "Founder & Chief Executive Officer",
+        "initials": "GK",
+        "buttonText": "Read Full Message"
+      }
+    },
+    {
+      "id": "block_footer",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "footer",
+      "order": 20,
+      "data": {
+        "tagline": "Connecting farmers to consumers to deliver essential food, feed and fuel to the world.",
+        "email": "info@imh-bvi.com",
+        "phone": "+1 281 816 7296",
+        "whatsapp": "+256791359556",
+        "copyright": "© 2025 Iustus Mercatura Holding Inc. All rights reserved.",
+        "columns": [
+          {
+            "title": "Company",
+            "links": [
+              { "text": "About Us", "href": "#about" },
+              { "text": "Leadership", "href": "#team" },
+              { "text": "Careers", "href": "careers.html" },
+              { "text": "Locations", "href": "#locations" }
+            ]
+          },
+          {
+            "title": "Products",
+            "links": [
+              { "text": "Brazilian Sugar IC45", "href": "#products" },
+              { "text": "Sugar VHP", "href": "#products" },
+              { "text": "Soybeans", "href": "#products" },
+              { "text": "Yellow Corn", "href": "#products" }
+            ]
+          },
+          {
+            "title": "Services",
+            "links": [
+              { "text": "For Producers", "href": "#about" },
+              { "text": "For Buyers", "href": "#about" },
+              { "text": "Trade Finance", "href": "#projects" },
+              { "text": "Logistics", "href": "#locations" }
+            ]
+          },
+          {
+            "title": "Legal",
+            "links": [
+              { "text": "Privacy Policy", "href": "privacy.html" },
+              { "text": "Terms of Service", "href": "terms.html" },
+              { "text": "Imprint", "href": "imprint.html" },
+              { "text": "Compliance", "href": "#sustainability" }
+            ]
+          }
+        ],
+        "newsletter": {
+          "title": "Stay Updated",
+          "subtitle": "Subscribe to our newsletter for market insights and company updates.",
+          "buttonText": "Subscribe",
+          "disclaimer": "By subscribing, you consent to receive marketing emails. You will receive a confirmation email (Double Opt-In). You can unsubscribe at any time."
+        }
+      }
+    },
+    {
+      "id": "block_contact",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "contact",
+      "order": 15,
+      "data": {
+        "sectionLabel": "Get In Touch",
+        "title": "Contact <span class=\"highlight\">Us</span>",
+        "description": "Ready to discuss your commodity needs? Our team is here to help.",
+        "email": "info@imh-bvi.com",
+        "phone": "+1 281 816 7296",
+        "address": "Intershore Chambers 3rd Floor, 333 Waterfront Dr. Geneva Place, Road Town, Tortola, VG 1110",
+        "formLabels": {
+          "name": "Full Name",
+          "email": "Email Address",
+          "company": "Company",
+          "message": "Message",
+          "submit": "Send Message"
+        }
+      }
+    },
+    {
+      "id": "block_navigation",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "navigation",
+      "order": 0,
+      "data": {
+        "logoText": "IUSTUS MERCATURA",
+        "logoTagline": "Just Trade",
+        "menuItems": [
+          {
+            "label": "About Us",
+            "hasDropdown": true,
+            "dropdownTitle": "About Iustus Mercatura",
+            "dropdownDesc": "Founded on the principle of \"Just Trade\", we are committed to ethical business practices and responsible global commerce.",
+            "links": [
+              { "text": "Our Story", "href": "#about" },
+              { "text": "Leadership Team", "href": "#team" },
+              { "text": "Corporate Values", "href": "#about" },
+              { "text": "Global Presence", "href": "#locations" },
+              { "text": "Certifications", "href": "#sustainability" }
+            ]
+          },
+          {
+            "label": "Products",
+            "hasDropdown": true,
+            "dropdownTitle": "Our Products",
+            "dropdownDesc": "Premium Brazilian commodities sourced ethically and delivered globally with uncompromising quality.",
+            "links": [
+              { "text": "Brazilian Sugar IC45", "href": "#products" },
+              { "text": "Sugar IC600/1200 VHP", "href": "#products" },
+              { "text": "Yellow Soybeans", "href": "#products" },
+              { "text": "Yellow Corn", "href": "#products" }
+            ]
+          },
+          {
+            "label": "Projects",
+            "href": "#projects"
+          },
+          {
+            "label": "Sustainability",
+            "href": "#sustainability"
+          },
+          {
+            "label": "Contact",
+            "href": "#contact"
+          }
+        ],
+        "ctaButton": { "text": "Request Quote", "href": "quote.html" }
       }
     }
   ],

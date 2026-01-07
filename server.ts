@@ -1278,8 +1278,8 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
             return new Response(JSON.stringify({ success: true, block }), { headers: jsonHeaders });
         }
 
-        // PUT /api/blocks/:id
-        if (pathname.match(/^\/api\/blocks\/blk_\d+$/) && req.method === "PUT") {
+        // PUT /api/blocks/:id (supports both blk_ and block_ prefixes)
+        if (pathname.match(/^\/api\/blocks\/(blk_\d+|block_\w+)$/) && req.method === "PUT") {
             const blockId = pathname.split("/").pop()!;
             const body = await req.json();
             const index = db.blocks.findIndex(b => b.id === blockId);
