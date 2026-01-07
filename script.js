@@ -185,6 +185,11 @@ async function loadDynamicContent() {
             updateContactSection(data.blocks.contact);
         }
 
+        // Update Navigation Section (Logo, Menu, CTA)
+        if (data.blocks?.navigation) {
+            updateNavigationSection(data.blocks.navigation);
+        }
+
         return data;
     } catch (error) {
         console.log('[Dynamic] Error loading content:', error.message);
@@ -827,6 +832,102 @@ function updatePartnersSection(partnersData) {
     }
 
     console.log('[Dynamic] Partners section updated');
+}
+
+/**
+ * Update Navigation section (Logo, Menu Items, CTA Button)
+ */
+function updateNavigationSection(navData) {
+    if (!navData) return;
+
+    const header = document.querySelector('.main-header');
+    if (!header) return;
+
+    // Update Logo Text
+    const logoMain = header.querySelector('.logo-main');
+    if (logoMain && navData.logoText) {
+        logoMain.textContent = navData.logoText;
+    }
+
+    // Update Logo Tagline
+    const logoTagline = header.querySelector('.logo-tagline');
+    if (logoTagline && navData.logoTagline) {
+        logoTagline.textContent = navData.logoTagline;
+    }
+
+    // Update CTA Button
+    const ctaBtn = header.querySelector('.nav-cta .btn-primary');
+    if (ctaBtn && navData.ctaButton) {
+        ctaBtn.href = navData.ctaButton.href;
+        const btnIcon = ctaBtn.querySelector('.btn-icon');
+        ctaBtn.innerHTML = navData.ctaButton.text + (btnIcon ? btnIcon.outerHTML : '<span class="btn-icon">&rarr;</span>');
+    }
+
+    // Update Menu Items Labels & Dropdown Titles
+    if (navData.menuItems && navData.menuItems.length > 0) {
+        const navItems = header.querySelectorAll('.nav-item');
+
+        navData.menuItems.forEach((item, index) => {
+            if (navItems[index]) {
+                // Update nav link text
+                const navLink = navItems[index].querySelector('.nav-link');
+                if (navLink) {
+                    navLink.textContent = item.label;
+                }
+
+                // Update dropdown title and description if this item has dropdown
+                if (item.hasDropdown) {
+                    const dropdownTitle = navItems[index].querySelector('.dropdown-main-title');
+                    const dropdownDesc = navItems[index].querySelector('.dropdown-desc');
+
+                    if (dropdownTitle && item.dropdownTitle) {
+                        dropdownTitle.textContent = item.dropdownTitle;
+                    }
+                    if (dropdownDesc && item.dropdownDesc) {
+                        dropdownDesc.textContent = item.dropdownDesc;
+                    }
+
+                    // Update dropdown links
+                    if (item.links && item.links.length > 0) {
+                        const dropdownNavList = navItems[index].querySelector('.dropdown-nav-list');
+                        if (dropdownNavList) {
+                            const listItems = dropdownNavList.querySelectorAll('li a');
+                            item.links.forEach((link, linkIndex) => {
+                                if (listItems[linkIndex]) {
+                                    listItems[linkIndex].href = link.href;
+                                    // Preserve data-panel attribute
+                                    const panel = listItems[linkIndex].getAttribute('data-panel');
+                                    listItems[linkIndex].textContent = link.text;
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    // Simple link without dropdown
+                    const navLink = navItems[index].querySelector('.nav-link');
+                    if (navLink && item.href) {
+                        navLink.href = item.href;
+                    }
+                }
+            }
+        });
+    }
+
+    // Update Mobile Navigation as well
+    const mobileNav = document.querySelector('.mobile-nav-menu');
+    if (mobileNav && navData.menuItems) {
+        const mobileLinks = mobileNav.querySelectorAll('.mobile-nav-link');
+        navData.menuItems.forEach((item, index) => {
+            if (mobileLinks[index]) {
+                const textSpan = mobileLinks[index].querySelector('span');
+                if (textSpan) {
+                    textSpan.textContent = item.label;
+                }
+            }
+        });
+    }
+
+    console.log('[Dynamic] Navigation section updated');
 }
 
 /**
