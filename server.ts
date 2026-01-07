@@ -1766,28 +1766,25 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
 
                         const imageUrl = `/uploads/team/${filename}`;
 
-                        // Remove from data.json (team members)
+                        // Remove from imageAssignments in settings (unified DB)
                         try {
-                            const dataFile = join(BASE_DIR, "data.json");
-                            if (existsSync(dataFile)) {
-                                const dataContent = await readFile(dataFile, "utf-8");
-                                const dataJson = JSON.parse(dataContent);
+                            const imageAssignmentsSetting = db.settings.find(s => s.key === 'imageAssignments');
+                            if (imageAssignmentsSetting) {
+                                let assignments = {};
+                                try {
+                                    assignments = typeof imageAssignmentsSetting.value === 'string'
+                                        ? JSON.parse(imageAssignmentsSetting.value)
+                                        : imageAssignmentsSetting.value || {};
+                                } catch (e) { /* ignore */ }
 
-                                // Remove from team members
-                                if (dataJson.team) {
-                                    dataJson.team = dataJson.team.filter((member: any) => member.image !== imageUrl);
+                                if (assignments[imageUrl]) {
+                                    delete assignments[imageUrl];
+                                    imageAssignmentsSetting.value = JSON.stringify(assignments);
+                                    log("INFO", `Removed image from imageAssignments: ${imageUrl}`);
                                 }
-
-                                // Remove from imageAssignments
-                                if (dataJson.imageAssignments && dataJson.imageAssignments[imageUrl]) {
-                                    delete dataJson.imageAssignments[imageUrl];
-                                }
-
-                                await writeFile(dataFile, JSON.stringify(dataJson, null, 2), "utf-8");
-                                log("INFO", `Removed image references from data.json: ${imageUrl}`);
                             }
                         } catch (e) {
-                            log("ERROR", `Failed to update data.json: ${e}`);
+                            log("ERROR", `Failed to update imageAssignments: ${e}`);
                         }
 
                         // Remove image reference from team members in database
@@ -1918,17 +1915,22 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                 db.media.splice(mediaIndex, 1);
                 await saveDatabase();
 
-                // Remove from imageAssignments in data.json
+                // Remove from imageAssignments in settings (unified DB)
                 const imageUrl = mediaItem.url;
                 try {
-                    const dataFile = join(BASE_DIR, "data.json");
-                    if (existsSync(dataFile)) {
-                        const dataContent = await readFile(dataFile, "utf-8");
-                        const dataJson = JSON.parse(dataContent);
+                    const imageAssignmentsSetting = db.settings.find(s => s.key === 'imageAssignments');
+                    if (imageAssignmentsSetting) {
+                        let assignments: Record<string, any> = {};
+                        try {
+                            assignments = typeof imageAssignmentsSetting.value === 'string'
+                                ? JSON.parse(imageAssignmentsSetting.value)
+                                : imageAssignmentsSetting.value || {};
+                        } catch (e) { /* ignore */ }
 
-                        if (dataJson.imageAssignments && dataJson.imageAssignments[imageUrl]) {
-                            delete dataJson.imageAssignments[imageUrl];
-                            await writeFile(dataFile, JSON.stringify(dataJson, null, 2), "utf-8");
+                        if (assignments[imageUrl]) {
+                            delete assignments[imageUrl];
+                            imageAssignmentsSetting.value = JSON.stringify(assignments);
+                            await saveDatabase();
                             log("INFO", `Image assignment removed for: ${imageUrl}`);
                         }
                     }
@@ -2298,9 +2300,88 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
 
         // GET /api/sync/status - Get sync status
         if (pathname === "/api/sync/status" && req.method === "GET") {
+            // Get last developer pull timestamp
+            const lastDevPullSetting = db.settings.find(s => s.key === 'last_developer_pull');
+            const lastDevPull = lastDevPullSetting?.value || null;
+
+            // Calculate next scheduled pull (every 24h at 3:00 AM)
+            const now = new Date();
+            const next3AM = new Date(now);
+            next3AM.setHours(3, 0, 0, 0);
+            if (now.getHours() >= 3) {
+                next3AM.setDate(next3AM.getDate() + 1);
+            }
+
             return new Response(JSON.stringify({
                 connections: db.connections,
-                last_syncs: db.sync_log.slice(-10).reverse()
+                last_syncs: db.sync_log.slice(-10).reverse(),
+                developer_sync: {
+                    last_pull: lastDevPull,
+                    next_scheduled_pull: next3AM.toISOString(),
+                    pull_interval_hours: 24
+                },
+                database_source: USE_TURSO ? 'turso' : 'json'
+            }), { headers: jsonHeaders });
+        }
+
+        // GET /api/sync/developer-pull - Developer pulls all data (every 24h or on demand)
+        if (pathname === "/api/sync/developer-pull" && req.method === "GET") {
+            const params = new URL(req.url).searchParams;
+            const force = params.get("force") === "true";
+            const websiteId = params.get("website_id") || "ws_iustus";
+
+            // Check last pull timestamp
+            const lastPullSetting = db.settings.find(s => s.key === 'last_developer_pull' && s.website_id === websiteId);
+            const lastPull = lastPullSetting?.value ? new Date(lastPullSetting.value) : null;
+            const now = new Date();
+
+            // Check if 24h have passed (unless force=true)
+            if (!force && lastPull) {
+                const hoursSinceLastPull = (now.getTime() - lastPull.getTime()) / (1000 * 60 * 60);
+                if (hoursSinceLastPull < 24) {
+                    return new Response(JSON.stringify({
+                        success: false,
+                        message: `Next pull available in ${Math.ceil(24 - hoursSinceLastPull)} hours`,
+                        last_pull: lastPull.toISOString(),
+                        next_pull_available: new Date(lastPull.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+                        use_force: "Add ?force=true to override"
+                    }), { headers: jsonHeaders });
+                }
+            }
+
+            // Update last pull timestamp
+            if (lastPullSetting) {
+                lastPullSetting.value = now.toISOString();
+            } else {
+                db.settings.push({
+                    id: `set_last_dev_pull_${Date.now()}`,
+                    website_id: websiteId,
+                    key: 'last_developer_pull',
+                    value: now.toISOString()
+                });
+            }
+            await saveDatabase();
+
+            // Log the pull
+            addSyncLog("server", "dev_admin", "developer_pull", "success");
+
+            // Return all data for developer
+            return new Response(JSON.stringify({
+                success: true,
+                pull_type: force ? "forced" : "scheduled",
+                timestamp: now.toISOString(),
+                data: {
+                    websites: db.websites,
+                    pages: db.pages,
+                    blocks: db.blocks,
+                    collections: db.collections,
+                    items: db.items,
+                    media: db.media,
+                    settings: db.settings.filter(s => s.website_id === websiteId),
+                    connections: db.connections,
+                    sync_log: db.sync_log.slice(-50)
+                },
+                database_source: USE_TURSO ? 'turso' : 'json'
             }), { headers: jsonHeaders });
         }
 
@@ -3362,37 +3443,49 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
         }
 
         // ==========================================
-        // LEGACY COMPATIBILITY
+        // UNIFIED DATA ENDPOINTS (Replaces Legacy)
         // ==========================================
 
-        // GET /api/data - Legacy endpoint
+        // GET /api/data - Unified data endpoint (reads from single source: Turso/db)
         if (pathname === "/api/data" && req.method === "GET") {
             const websiteId = "ws_iustus";
-            // Load imageAssignments from data.json
+
+            // Get imageAssignments from settings (now stored in DB)
+            const imageAssignmentsSetting = db.settings.find(s => s.key === 'imageAssignments');
             let imageAssignments = {};
-            try {
-                const dataFile = join(BASE_DIR, "data.json");
-                if (existsSync(dataFile)) {
-                    const dataContent = await readFile(dataFile, "utf-8");
-                    const dataJson = JSON.parse(dataContent);
-                    imageAssignments = dataJson.imageAssignments || {};
+            if (imageAssignmentsSetting) {
+                try {
+                    imageAssignments = typeof imageAssignmentsSetting.value === 'string'
+                        ? JSON.parse(imageAssignmentsSetting.value)
+                        : imageAssignmentsSetting.value;
+                } catch (e) {
+                    imageAssignments = {};
                 }
-            } catch (e) {
-                // Ignore errors
             }
+
+            // Map category names for backwards compatibility
+            const mapCategory = (cat: string) => {
+                const mapping: Record<string, string[]> = {
+                    'leadership': ['Global Leadership', 'leadership'],
+                    'ceo': ['CEO', 'ceo'],
+                    'cooRegional': ['COO & Regional Heads', 'cooRegional']
+                };
+                return mapping[cat] || [cat];
+            };
+
             return new Response(JSON.stringify({
                 team: {
                     leadership: db.items.filter(i => {
                         const col = db.collections.find(c => c.id === i.collection_id);
-                        return col?.name === "Team" && i.data.category === "leadership";
+                        return col?.name === "Team" && mapCategory('leadership').includes(i.data.category);
                     }).map(i => i.data),
                     ceo: db.items.filter(i => {
                         const col = db.collections.find(c => c.id === i.collection_id);
-                        return col?.name === "Team" && i.data.category === "ceo";
+                        return col?.name === "Team" && mapCategory('ceo').includes(i.data.category);
                     }).map(i => i.data),
                     cooRegional: db.items.filter(i => {
                         const col = db.collections.find(c => c.id === i.collection_id);
-                        return col?.name === "Team" && i.data.category === "cooRegional";
+                        return col?.name === "Team" && mapCategory('cooRegional').includes(i.data.category);
                     }).map(i => i.data)
                 },
                 products: db.items.filter(i => {
@@ -3404,17 +3497,65 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     return col?.name === "Standorte";
                 }).map(i => i.data),
                 settings: Object.fromEntries(db.settings.map(s => [s.key, s.value])),
-                imageAssignments
+                imageAssignments,
+                // Source info for debugging
+                _source: USE_TURSO ? 'turso' : 'json'
             }), { headers: jsonHeaders });
         }
 
-        // POST /api/data - Legacy endpoint
+        // POST /api/data - Unified data endpoint (writes to single source: Turso/db)
         if (pathname === "/api/data" && req.method === "POST") {
-            const body = await req.json();
-            // Store data in data.json (includes imageAssignments)
-            const dataFile = join(BASE_DIR, "data.json");
-            await writeFile(dataFile, JSON.stringify(body, null, 2), "utf-8");
-            return new Response(JSON.stringify({ success: true }), { headers: jsonHeaders });
+            try {
+                const body = await req.json();
+                const websiteId = "ws_iustus";
+
+                // Store imageAssignments in settings (in DB, not data.json)
+                if (body.imageAssignments) {
+                    const existingSetting = db.settings.find(s => s.key === 'imageAssignments' && s.website_id === websiteId);
+                    if (existingSetting) {
+                        existingSetting.value = JSON.stringify(body.imageAssignments);
+                    } else {
+                        db.settings.push({
+                            id: `set_imageAssignments_${Date.now()}`,
+                            website_id: websiteId,
+                            key: 'imageAssignments',
+                            value: JSON.stringify(body.imageAssignments)
+                        });
+                    }
+                }
+
+                // Update other settings if provided
+                if (body.settings) {
+                    for (const [key, value] of Object.entries(body.settings)) {
+                        const existing = db.settings.find(s => s.key === key && s.website_id === websiteId);
+                        if (existing) {
+                            existing.value = typeof value === 'string' ? value : JSON.stringify(value);
+                        } else {
+                            db.settings.push({
+                                id: `set_${key}_${Date.now()}`,
+                                website_id: websiteId,
+                                key,
+                                value: typeof value === 'string' ? value : JSON.stringify(value)
+                            });
+                        }
+                    }
+                }
+
+                // Save to database (Turso or JSON)
+                await saveDatabase();
+                scheduleGitSync("Data update via /api/data");
+
+                return new Response(JSON.stringify({
+                    success: true,
+                    _source: USE_TURSO ? 'turso' : 'json'
+                }), { headers: jsonHeaders });
+            } catch (e: any) {
+                log("ERROR", `POST /api/data failed: ${e?.message || e}`);
+                return new Response(JSON.stringify({
+                    success: false,
+                    error: e?.message || String(e)
+                }), { status: 500, headers: jsonHeaders });
+            }
         }
 
         // ==========================================
