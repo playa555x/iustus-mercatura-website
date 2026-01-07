@@ -1553,126 +1553,103 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
             }
         }
 
-        // GET /api/content - Extract all content sections from index.html
+        // GET /api/content - Read content from database.json blocks (single source of truth)
         if (pathname === "/api/content" && req.method === "GET") {
             try {
-                const indexPath = join(BASE_DIR, "index.html");
-                const html = await readFile(indexPath, "utf-8");
+                // Helper to find block by type
+                const getBlock = (type: string) => db.blocks?.find((b: any) => b.type === type)?.data || {};
 
-                // Helper function to extract text content
-                const extractText = (selector: string, context?: string): string => {
-                    const searchHtml = context || html;
-                    const patterns: Record<string, RegExp> = {
-                        '.hero-label': /<span class="hero-label"[^>]*>([\s\S]*?)<\/span>/,
-                        '.hero-title .title-line:nth-child(1)': /<span class="title-line"[^>]*>(.*?)<\/span>/,
-                        '.hero-description': /<p class="hero-description"[^>]*>([\s\S]*?)<\/p>/,
-                        '.section-label': /<span class="section-label"[^>]*>([^<]+)<\/span>/,
-                        '.section-title': /<h2 class="section-title"[^>]*>([\s\S]*?)<\/h2>/,
-                        '.lead': /<p class="lead"[^>]*>([\s\S]*?)<\/p>/,
-                        '.ceo-quote': /<blockquote class="ceo-quote"[^>]*>([\s\S]*?)<\/blockquote>/,
-                        '.footer-tagline': /<p class="footer-tagline"[^>]*>([^<]+)<\/p>/,
-                    };
-                    const pattern = patterns[selector];
-                    if (pattern) {
-                        const match = searchHtml.match(pattern);
-                        return match ? match[1].replace(/<[^>]+>/g, '').trim() : '';
-                    }
-                    return '';
-                };
-
-                // Extract Hero Section
-                const heroSection = html.match(/<section class="hero-section"[^>]*>([\s\S]*?)<\/section>/);
-                const heroHtml = heroSection ? heroSection[1] : '';
-
-                const titleLines = heroHtml.match(/<span class="title-line"[^>]*>(.*?)<\/span>/g) || [];
+                // Build content from database blocks
+                const heroBlock = getBlock('hero');
                 const hero = {
-                    label: extractText('.hero-label', heroHtml).replace(/◆\s*/, '').trim(),
-                    titleLine1: titleLines[0]?.replace(/<[^>]+>/g, '').trim() || '',
-                    titleLine2: titleLines[1]?.replace(/<[^>]+>/g, '').trim() || '',
-                    titleLine3: titleLines[2]?.replace(/<[^>]+>/g, '').trim() || '',
-                    description: extractText('.hero-description', heroHtml),
-                    button1: (heroHtml.match(/<a[^>]*class="[^"]*btn-primary[^"]*"[^>]*>([\s\S]*?)<\/a>/) || [])[1]?.replace(/<[^>]+>/g, '').trim() || '',
-                    button2: (heroHtml.match(/<a[^>]*class="[^"]*btn-secondary[^"]*"[^>]*>([\s\S]*?)<\/a>/) || [])[1]?.replace(/<[^>]+>/g, '').trim() || ''
+                    label: heroBlock.label || 'Global Commodity Trading',
+                    titleLine1: heroBlock.titleLines?.[0] || heroBlock.title?.split(' ')?.[0] || '',
+                    titleLine2: heroBlock.titleLines?.[1] || '',
+                    titleLine3: heroBlock.titleLines?.[2] || '',
+                    description: heroBlock.description || '',
+                    button1: heroBlock.buttonPrimary?.text || '',
+                    button2: heroBlock.buttonSecondary?.text || ''
                 };
 
-                // Extract About Section
-                const aboutSection = html.match(/<section[^>]*id="about"[^>]*>([\s\S]*?)<\/section>/);
-                const aboutHtml = aboutSection ? aboutSection[1] : '';
-
-                const featureItems = aboutHtml.match(/<div class="feature-item">([\s\S]*?)<\/div>\s*<\/div>/g) || [];
-                const features: { title: string; desc: string }[] = [];
-                featureItems.forEach(item => {
-                    const titleMatch = item.match(/<h4>([^<]+)<\/h4>/);
-                    const descMatch = item.match(/<p>([^<]+)<\/p>/);
-                    if (titleMatch) {
-                        features.push({
-                            title: titleMatch[1].trim(),
-                            desc: descMatch ? descMatch[1].trim() : ''
-                        });
-                    }
-                });
-
+                const aboutBlock = getBlock('about');
                 const about = {
-                    sectionLabel: (aboutHtml.match(/<span class="section-label"[^>]*>([^<]+)<\/span>/) || [])[1]?.trim() || 'About Us',
-                    title: (aboutHtml.match(/<h2 class="section-title"[^>]*>([\s\S]*?)<\/h2>/) || [])[1]?.replace(/<[^>]+>/g, '').trim() || '',
-                    leadText: (aboutHtml.match(/<p class="lead"[^>]*>([\s\S]*?)<\/p>/) || [])[1]?.trim() || '',
-                    description: (aboutHtml.match(/<p class="lead"[^>]*>[\s\S]*?<\/p>\s*<p>([\s\S]*?)<\/p>/) || [])[1]?.trim() || '',
-                    feature1Title: features[0]?.title || '',
-                    feature1Desc: features[0]?.desc || '',
-                    feature2Title: features[1]?.title || '',
-                    feature2Desc: features[1]?.desc || '',
-                    feature3Title: features[2]?.title || '',
-                    feature3Desc: features[2]?.desc || ''
+                    sectionLabel: aboutBlock.sectionLabel || 'About Us',
+                    title: (aboutBlock.title || '').replace(/<[^>]+>/g, ''),
+                    leadText: aboutBlock.leadText || '',
+                    description: aboutBlock.description || '',
+                    feature1Title: aboutBlock.features?.[0]?.title || '',
+                    feature1Desc: aboutBlock.features?.[0]?.description || '',
+                    feature2Title: aboutBlock.features?.[1]?.title || '',
+                    feature2Desc: aboutBlock.features?.[1]?.description || '',
+                    feature3Title: aboutBlock.features?.[2]?.title || '',
+                    feature3Desc: aboutBlock.features?.[2]?.description || ''
                 };
 
-                // Extract CEO Section
-                const ceoSection = html.match(/<section class="ceo-section"[^>]*>([\s\S]*?)<\/section>/);
-                const ceoHtml = ceoSection ? ceoSection[1] : '';
-
+                const ceoBlock = getBlock('ceo');
                 const ceo = {
-                    sectionLabel: (ceoHtml.match(/<span class="section-label"[^>]*>([^<]+)<\/span>/) || [])[1]?.trim() || 'CEO Message',
-                    quote: (ceoHtml.match(/<blockquote class="ceo-quote"[^>]*>([\s\S]*?)<\/blockquote>/) || [])[1]?.trim() || '',
-                    name: (ceoHtml.match(/<span class="ceo-name"[^>]*>([^<]+)<\/span>/) || [])[1]?.trim() || 'Dr. Gerhard Kral',
-                    role: (ceoHtml.match(/<span class="ceo-role"[^>]*>([^<]+)<\/span>/) || [])[1]?.trim() || 'Group CEO & Founder'
+                    sectionLabel: ceoBlock.sectionLabel || 'CEO Message',
+                    quote: ceoBlock.quote || '',
+                    name: ceoBlock.name || 'Dr. Gerhard Kral',
+                    role: ceoBlock.role || 'Group CEO & Founder'
                 };
 
-                // Extract Contact Section
-                const contactSection = html.match(/<section[^>]*id="contact"[^>]*>([\s\S]*?)<\/section>/);
-                const contactHtml = contactSection ? contactSection[1] : '';
-
+                const contactBlock = getBlock('contact');
                 const contact = {
-                    sectionLabel: (contactHtml.match(/<span class="section-label"[^>]*>([^<]+)<\/span>/) || [])[1]?.trim() || 'Get In Touch',
-                    title: (contactHtml.match(/<h2 class="section-title"[^>]*>([\s\S]*?)<\/h2>/) || [])[1]?.replace(/<[^>]+>/g, '').trim() || "Let's Work Together",
-                    description: (contactHtml.match(/<p class="section-description"[^>]*>([^<]+)<\/p>/) || [])[1]?.trim() || ''
+                    sectionLabel: contactBlock.sectionLabel || 'Get In Touch',
+                    title: (contactBlock.title || '').replace(/<[^>]+>/g, ''),
+                    description: contactBlock.description || ''
                 };
 
-                // Extract Footer
-                const footerSection = html.match(/<footer[^>]*>([\s\S]*?)<\/footer>/);
-                const footerHtml = footerSection ? footerSection[1] : '';
-
+                const footerBlock = getBlock('footer');
                 const footer = {
-                    tagline: (footerHtml.match(/<p class="footer-tagline"[^>]*>([^<]+)<\/p>/) || [])[1]?.trim() || '',
-                    copyright: (footerHtml.match(/©[^<]+/) || [])[0]?.trim() || ''
+                    tagline: footerBlock.tagline || '',
+                    copyright: footerBlock.copyright || ''
                 };
 
-                // Extract Products Section
-                const productsSection = html.match(/<section[^>]*id="products"[^>]*>([\s\S]*?)<\/section>/);
-                const productsHtml = productsSection ? productsSection[1] : '';
-
+                const productsBlock = getBlock('products');
                 const products = {
-                    sectionLabel: (productsHtml.match(/<span class="section-label"[^>]*>([^<]+)<\/span>/) || [])[1]?.trim() || 'Our Products',
-                    title: (productsHtml.match(/<h2 class="section-title"[^>]*>([\s\S]*?)<\/h2>/) || [])[1]?.replace(/<[^>]+>/g, '').trim() || '',
-                    description: (productsHtml.match(/<p class="section-description"[^>]*>([^<]+)<\/p>/) || [])[1]?.trim() || ''
+                    sectionLabel: productsBlock.sectionLabel || 'Our Products',
+                    title: (productsBlock.title || '').replace(/<[^>]+>/g, ''),
+                    description: productsBlock.description || ''
                 };
 
-                // Extract Services Section
-                const servicesSection = html.match(/<section[^>]*id="services"[^>]*>([\s\S]*?)<\/section>/);
-                const servicesHtml = servicesSection ? servicesSection[1] : '';
+                // Values section
+                const valuesBlock = getBlock('values');
+                const values = {
+                    sectionLabel: valuesBlock.sectionLabel || 'Our Values',
+                    title: (valuesBlock.title || '').replace(/<[^>]+>/g, ''),
+                    values: valuesBlock.values || []
+                };
 
+                // Projects section header
+                const projectsBlock = getBlock('projects');
+                const projectsHeader = {
+                    sectionLabel: projectsBlock.sectionLabel || 'Strategic Initiatives',
+                    title: (projectsBlock.title || '').replace(/<[^>]+>/g, '')
+                };
+
+                // Team section header
+                const teamBlock = getBlock('team');
+                const teamHeader = {
+                    sectionLabel: teamBlock.sectionLabel || 'Our People',
+                    title: (teamBlock.title || '').replace(/<[^>]+>/g, '')
+                };
+
+                // Sustainability section
+                const sustainabilityBlock = getBlock('sustainability');
+                const sustainability = {
+                    sectionLabel: sustainabilityBlock.sectionLabel || 'Our Commitment',
+                    title: (sustainabilityBlock.title || '').replace(/<[^>]+>/g, ''),
+                    intro: sustainabilityBlock.intro || '',
+                    cards: sustainabilityBlock.cards || [],
+                    stats: sustainabilityBlock.stats || []
+                };
+
+                // Services (may not exist)
                 const services = {
-                    sectionLabel: (servicesHtml.match(/<span class="section-label"[^>]*>([^<]+)<\/span>/) || [])[1]?.trim() || 'Our Services',
-                    title: (servicesHtml.match(/<h2 class="section-title"[^>]*>([\s\S]*?)<\/h2>/) || [])[1]?.replace(/<[^>]+>/g, '').trim() || '',
-                    description: (servicesHtml.match(/<p class="section-description"[^>]*>([^<]+)<\/p>/) || [])[1]?.trim() || ''
+                    sectionLabel: 'Our Services',
+                    title: '',
+                    description: ''
                 };
 
                 return new Response(JSON.stringify({
@@ -1683,11 +1660,15 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                         products,
                         services,
                         contact,
-                        footer
+                        footer,
+                        values,
+                        projectsHeader,
+                        teamHeader,
+                        sustainability
                     }
                 }), { headers: jsonHeaders });
             } catch (e) {
-                log("ERROR", `Failed to extract content: ${e}`);
+                log("ERROR", `Failed to read content from database: ${e}`);
                 return new Response(JSON.stringify({ content: {} }), { headers: jsonHeaders });
             }
         }
