@@ -1462,71 +1462,41 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
             }
         }
 
-        // GET /api/cards - Extract cards/features/values from index.html
+        // GET /api/cards - Read cards/features/values from database.json
         if (pathname === "/api/cards" && req.method === "GET") {
             try {
-                const indexPath = join(BASE_DIR, "index.html");
-                const html = await readFile(indexPath, "utf-8");
+                // Helper to find block by type
+                const getBlock = (type: string) => db.blocks?.find((b: any) => b.type === type)?.data || {};
 
-                // Extract Features (About section)
-                const features: any[] = [];
-                const featuresStart = html.indexOf('class="about-features">');
-                if (featuresStart !== -1) {
-                    const featuresEnd = html.indexOf('</div>\n                </div>\n            </div>', featuresStart);
-                    const featuresSection = html.substring(featuresStart, featuresEnd > 0 ? featuresEnd + 50 : featuresStart + 2000);
-                    const featureItems = featuresSection.split('<div class="feature-item">').slice(1);
-                    featureItems.forEach((item, idx) => {
-                        const titleMatch = item.match(/<h4>([^<]+)<\/h4>/);
-                        const descMatch = item.match(/<p>([^<]+)<\/p>/);
-                        if (titleMatch) {
-                            features.push({
-                                id: idx + 1,
-                                title: titleMatch[1].trim(),
-                                description: descMatch ? descMatch[1].trim() : '',
-                                type: 'feature'
-                            });
-                        }
-                    });
-                }
+                // Get features from about block
+                const aboutBlock = getBlock('about');
+                const features = (aboutBlock.features || []).map((f: any, idx: number) => ({
+                    id: idx + 1,
+                    title: f.title || '',
+                    description: f.description || '',
+                    icon: f.icon || '',
+                    type: 'feature'
+                }));
 
-                // Extract Values (value-cards)
-                const values: any[] = [];
-                const valuesCards = html.match(/<div class="value-card"[^>]*>[\s\S]*?<div class="value-number">(\d+)<\/div>\s*<h3>([^<]+)<\/h3>\s*<p>([^<]+)<\/p>/g);
-                if (valuesCards) {
-                    valuesCards.forEach((card, idx) => {
-                        const numMatch = card.match(/<div class="value-number">(\d+)<\/div>/);
-                        const titleMatch = card.match(/<h3>([^<]+)<\/h3>/);
-                        const descMatch = card.match(/<p>([^<]+)<\/p>/);
-                        if (titleMatch) {
-                            values.push({
-                                id: idx + 1,
-                                number: numMatch ? numMatch[1] : String(idx + 1).padStart(2, '0'),
-                                title: titleMatch[1].replace(/&amp;/g, '&').trim(),
-                                description: descMatch ? descMatch[1].trim() : '',
-                                type: 'value'
-                            });
-                        }
-                    });
-                }
+                // Get values from values block
+                const valuesBlock = getBlock('values');
+                const values = (valuesBlock.values || []).map((v: any, idx: number) => ({
+                    id: idx + 1,
+                    number: v.number || String(idx + 1).padStart(2, '0'),
+                    title: v.title || '',
+                    description: v.description || '',
+                    type: 'value'
+                }));
 
-                // Extract Sustainability Cards
-                const sustainability: any[] = [];
-                const sustainSection = html.match(/class="sustainability-grid">([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>\s*<\/section>/);
-                if (sustainSection) {
-                    const sustainCards = sustainSection[1].split('<div class="sustainability-card">').slice(1);
-                    sustainCards.forEach((card, idx) => {
-                        const titleMatch = card.match(/<h3>([^<]+)<\/h3>/);
-                        const descMatch = card.match(/<h3>[^<]+<\/h3>\s*<p>([^<]+)<\/p>/);
-                        if (titleMatch) {
-                            sustainability.push({
-                                id: idx + 1,
-                                title: titleMatch[1].trim(),
-                                description: descMatch ? descMatch[1].trim() : '',
-                                type: 'sustainability'
-                            });
-                        }
-                    });
-                }
+                // Get sustainability cards from sustainability block
+                const sustainBlock = getBlock('sustainability');
+                const sustainability = (sustainBlock.cards || []).map((c: any, idx: number) => ({
+                    id: idx + 1,
+                    title: c.title || '',
+                    description: c.description || '',
+                    icon: c.icon || '',
+                    type: 'sustainability'
+                }));
 
                 return new Response(JSON.stringify({
                     features,
@@ -1534,7 +1504,7 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                     sustainability
                 }), { headers: jsonHeaders });
             } catch (e) {
-                log("ERROR", `Failed to extract cards: ${e}`);
+                log("ERROR", `Failed to read cards from database: ${e}`);
                 return new Response(JSON.stringify({ features: [], values: [], sustainability: [] }), { headers: jsonHeaders });
             }
         }
