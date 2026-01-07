@@ -109,8 +109,8 @@ async function loadDynamicContent() {
         // Update Team Section
         if (data.team) {
             updateTeamSection(data.team);
-            // Cache team data for locations
-            cachedTeamData = data.team;
+            // Cache team data for locations - flatten object to array
+            cachedTeamData = Object.values(data.team).flat();
             // Update CEO Modal with CEO data
             updateCeoModal(data.team);
         }
@@ -1163,9 +1163,9 @@ function updateLocationsSection(locations, teamData) {
     const mapInfoBoxes = document.querySelector('.map-info-boxes');
     if (!mapInfoBoxes || !locations || locations.length === 0) return;
 
-    // Use passed team data or cached data
+    // Use passed team data or cached data - flatten if object
     if (teamData) {
-        cachedTeamData = teamData;
+        cachedTeamData = Array.isArray(teamData) ? teamData : Object.values(teamData).flat();
     }
 
     // Clear existing info boxes
