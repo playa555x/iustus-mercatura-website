@@ -123,6 +123,9 @@
                     <button class="mobile-nav-item" data-section="locations" onclick="adminPanel.navigateToMobile('locations')">
                         <i class="fas fa-map-marker-alt"></i> Locations
                     </button>
+                    <button class="mobile-nav-item" data-section="projects" onclick="adminPanel.navigateToMobile('projects')">
+                        <i class="fas fa-briefcase"></i> Projects
+                    </button>
                     <button class="mobile-nav-item" data-section="settings" onclick="adminPanel.navigateToMobile('settings')">
                         <i class="fas fa-cog"></i> Settings
                     </button>
@@ -156,6 +159,10 @@
                 <button class="nav-btn" data-section="locations">
                     <i class="fas fa-map-marker-alt"></i>
                     <span>Locations</span>
+                </button>
+                <button class="nav-btn" data-section="projects">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Projects</span>
                 </button>
                 <button class="nav-btn" data-section="settings">
                     <i class="fas fa-cog"></i>
@@ -1101,6 +1108,41 @@
                 <div class="locations-container">
                     <div class="locations-grid" id="locationsGrid">
                         <!-- Locations will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section class="admin-section" id="section-projects">
+                <!-- Projects Header Banner -->
+                <div class="section-banner projects-banner">
+                    <div class="banner-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="banner-content">
+                        <h1>Projekte</h1>
+                        <p>Verwalten Sie Ihre strategischen Projekte und Initiativen</p>
+                    </div>
+                    <div class="banner-stats">
+                        <div class="banner-stat">
+                            <span class="stat-num" id="totalProjectsCount">-</span>
+                            <span class="stat-text">Projekte</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Add Button -->
+                <div class="projects-actions-bar" style="padding: 20px; display: flex; justify-content: flex-end;">
+                    <button class="btn-add-location" id="addProjectBtn" onclick="adminPanel.addProject()">
+                        <i class="fas fa-plus-circle"></i>
+                        Neues Projekt
+                    </button>
+                </div>
+
+                <!-- Projects Grid -->
+                <div class="projects-container" style="padding: 0 20px 20px;">
+                    <div class="projects-grid" id="projectsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+                        <!-- Projects will be populated by JavaScript -->
                     </div>
                 </div>
             </section>
