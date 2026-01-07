@@ -1226,6 +1226,7 @@ class AdminPanel {
         this.populateFormFields();
         this.renderTeam();
         this.renderLocations();
+        this.renderProjects();
         this.renderProducts();
         this.renderCards();
         this.updateLastSaved();
@@ -1575,6 +1576,218 @@ class AdminPanel {
                 </div>
             </div>
         `}).join('');
+    }
+
+    // ============================================
+    // PROJECTS RENDERING & MANAGEMENT
+    // ============================================
+    async renderProjects() {
+        const grid = document.getElementById('projectsGrid');
+        const countEl = document.getElementById('totalProjectsCount');
+        if (!grid) return;
+
+        // Load projects from database
+        try {
+            const response = await fetch('/api/public/content');
+            if (!response.ok) return;
+            const result = await response.json();
+            const projects = result.data?.projects || [];
+
+            if (countEl) countEl.textContent = projects.length;
+
+            if (projects.length === 0) {
+                grid.innerHTML = '<p style="color: var(--gray-500); text-align: center; padding: 40px;">Keine Projekte vorhanden. Klicken Sie auf "Neues Projekt" um eines hinzuzufügen.</p>';
+                return;
+            }
+
+            grid.innerHTML = projects.map(proj => `
+                <div class="project-card-admin" data-id="${proj.id}" style="background: var(--gray-50); border-radius: 12px; padding: 20px; border: 1px solid var(--gray-200);">
+                    <div class="project-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 16px; color: var(--gray-900);">${proj.name || 'Unbenannt'}</h4>
+                            <span class="status-badge" style="font-size: 11px; padding: 2px 8px; border-radius: 4px; background: ${proj.status === 'In Umsetzung' ? '#dcfce7' : '#fef3c7'}; color: ${proj.status === 'In Umsetzung' ? '#166534' : '#92400e'};">${proj.status || 'Geplant'}</span>
+                        </div>
+                        <span style="font-size: 13px; color: var(--gray-500);">${proj.year || ''}</span>
+                    </div>
+                    <p style="font-size: 13px; color: var(--gray-600); margin: 0 0 16px 0; line-height: 1.5;">${(proj.description || '').substring(0, 150)}${(proj.description || '').length > 150 ? '...' : ''}</p>
+                    ${proj.stats && proj.stats.length > 0 ? `
+                        <div class="project-stats" style="display: flex; gap: 16px; margin-bottom: 16px;">
+                            ${proj.stats.map(s => `
+                                <div style="text-align: center;">
+                                    <div style="font-size: 18px; font-weight: 600; color: var(--primary-color);">${s.value}</div>
+                                    <div style="font-size: 11px; color: var(--gray-500);">${s.label}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="project-actions" style="display: flex; gap: 8px;">
+                        <button class="card-action-btn" onclick="adminPanel.editProject('${proj.id}')" style="flex: 1; padding: 8px; border: 1px solid var(--gray-300); background: white; border-radius: 6px; cursor: pointer;">
+                            <i class="fas fa-edit"></i> Bearbeiten
+                        </button>
+                        <button class="card-action-btn delete" onclick="adminPanel.deleteProject('${proj.id}')" style="padding: 8px 12px; border: 1px solid #fecaca; background: #fef2f2; border-radius: 6px; cursor: pointer; color: #dc2626;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Error loading projects:', error);
+            grid.innerHTML = '<p style="color: #dc2626; text-align: center; padding: 40px;">Fehler beim Laden der Projekte.</p>';
+        }
+    }
+
+    addProject() {
+        this.openModal('Neues Projekt', `
+            <form id="projectForm" onsubmit="event.preventDefault(); adminPanel.saveProject();">
+                <div class="form-group">
+                    <label>Projektname *</label>
+                    <input type="text" id="projectName" required placeholder="z.B. Iustus Agricultura Uganda PLC">
+                </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label>Jahr</label>
+                        <input type="text" id="projectYear" placeholder="z.B. 2026">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="projectStatus">
+                            <option value="Geplant">Geplant</option>
+                            <option value="In Umsetzung">In Umsetzung</option>
+                            <option value="Abgeschlossen">Abgeschlossen</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Beschreibung</label>
+                    <textarea id="projectDescription" rows="4" placeholder="Projektbeschreibung..."></textarea>
+                </div>
+                <div class="form-actions" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn-secondary" onclick="adminPanel.closeModal()">Abbrechen</button>
+                    <button type="submit" class="btn-primary">Speichern</button>
+                </div>
+            </form>
+        `);
+    }
+
+    async editProject(id) {
+        try {
+            const response = await fetch('/api/public/content');
+            const result = await response.json();
+            const projects = result.data?.projects || [];
+            const proj = projects.find(p => p.id === id);
+            if (!proj) return;
+
+            this.openModal('Projekt bearbeiten', `
+                <form id="projectForm" onsubmit="event.preventDefault(); adminPanel.saveProject('${id}');">
+                    <div class="form-group">
+                        <label>Projektname *</label>
+                        <input type="text" id="projectName" required value="${proj.name || ''}">
+                    </div>
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label>Jahr</label>
+                            <input type="text" id="projectYear" value="${proj.year || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="projectStatus">
+                                <option value="Geplant" ${proj.status === 'Geplant' ? 'selected' : ''}>Geplant</option>
+                                <option value="In Umsetzung" ${proj.status === 'In Umsetzung' ? 'selected' : ''}>In Umsetzung</option>
+                                <option value="Abgeschlossen" ${proj.status === 'Abgeschlossen' ? 'selected' : ''}>Abgeschlossen</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Beschreibung</label>
+                        <textarea id="projectDescription" rows="4">${proj.description || ''}</textarea>
+                    </div>
+                    <div class="form-actions" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
+                        <button type="button" class="btn-secondary" onclick="adminPanel.closeModal()">Abbrechen</button>
+                        <button type="submit" class="btn-primary">Speichern</button>
+                    </div>
+                </form>
+            `);
+        } catch (error) {
+            console.error('Error loading project:', error);
+        }
+    }
+
+    async saveProject(id = null) {
+        const name = document.getElementById('projectName')?.value;
+        const year = document.getElementById('projectYear')?.value;
+        const status = document.getElementById('projectStatus')?.value;
+        const description = document.getElementById('projectDescription')?.value;
+
+        if (!name) {
+            alert('Bitte geben Sie einen Projektnamen ein.');
+            return;
+        }
+
+        try {
+            // Load current database
+            const dbResponse = await fetch('/api/db');
+            const db = await dbResponse.json();
+
+            const projectData = {
+                id: id || `project_${Date.now()}`,
+                collection_id: 'col_projects',
+                website_id: 'ws_iustus',
+                data: { name, year, description, status, stats: [] },
+                order: db.items?.filter(i => i.collection_id === 'col_projects').length || 0
+            };
+
+            if (id) {
+                // Update existing
+                const idx = db.items?.findIndex(i => i.id === id);
+                if (idx !== -1) {
+                    db.items[idx].data = { ...db.items[idx].data, name, year, description, status };
+                }
+            } else {
+                // Add new
+                if (!db.items) db.items = [];
+                db.items.push(projectData);
+            }
+
+            // Save to database
+            const saveResponse = await fetch('/api/db', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(db)
+            });
+
+            if (saveResponse.ok) {
+                this.closeModal();
+                this.renderProjects();
+                this.log(id ? 'Projekt aktualisiert' : 'Neues Projekt erstellt');
+            }
+        } catch (error) {
+            console.error('Error saving project:', error);
+            alert('Fehler beim Speichern des Projekts.');
+        }
+    }
+
+    async deleteProject(id) {
+        if (!confirm('Möchten Sie dieses Projekt wirklich löschen?')) return;
+
+        try {
+            const dbResponse = await fetch('/api/db');
+            const db = await dbResponse.json();
+
+            db.items = db.items?.filter(i => i.id !== id) || [];
+
+            const saveResponse = await fetch('/api/db', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(db)
+            });
+
+            if (saveResponse.ok) {
+                this.renderProjects();
+                this.log('Projekt gelöscht');
+            }
+        } catch (error) {
+            console.error('Error deleting project:', error);
+        }
     }
 
     // Location Image Functions
