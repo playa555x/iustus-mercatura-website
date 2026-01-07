@@ -147,7 +147,10 @@ async function loadDynamicContent() {
 
         // Update Values Section
         if (data.blocks?.values?.values) {
+            console.log('[Dynamic] Updating values section with', data.blocks.values.values.length, 'values');
             updateValuesSection(data.blocks.values.values);
+        } else {
+            console.log('[Dynamic] No values data found in blocks:', data.blocks?.values);
         }
 
         // Update Sustainability Section (full - header, intro, cards, stats)
@@ -369,10 +372,20 @@ function updateHeroStats(stats) {
  * Update values section - generate dynamically from database
  */
 function updateValuesSection(values) {
+    console.log('[Dynamic] updateValuesSection called with:', values);
     const valuesGrid = document.querySelector('.values-grid');
-    if (!valuesGrid || !values || values.length === 0) return;
+    console.log('[Dynamic] valuesGrid element:', valuesGrid);
+    if (!valuesGrid) {
+        console.error('[Dynamic] ERROR: .values-grid element not found!');
+        return;
+    }
+    if (!values || values.length === 0) {
+        console.error('[Dynamic] ERROR: No values data provided!');
+        return;
+    }
 
     // Clear loading placeholder
+    console.log('[Dynamic] Clearing loading placeholder and adding', values.length, 'value cards');
     valuesGrid.innerHTML = '';
 
     // Generate value cards dynamically
