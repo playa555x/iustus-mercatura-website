@@ -150,9 +150,29 @@ async function loadDynamicContent() {
             updateValuesSection(data.blocks.values.values);
         }
 
-        // Update Sustainability Stats
-        if (data.blocks?.sustainability?.stats) {
-            updateSustainabilityStats(data.blocks.sustainability.stats);
+        // Update Sustainability Section (full - header, intro, cards, stats)
+        if (data.blocks?.sustainability) {
+            updateSustainabilitySection(data.blocks.sustainability);
+        }
+
+        // Update Section Headers for all sections
+        if (data.blocks?.products) {
+            updateSectionHeader('.products-section', data.blocks.products);
+        }
+        if (data.blocks?.locations) {
+            updateSectionHeader('.locations-section', data.blocks.locations);
+        }
+        if (data.blocks?.team) {
+            updateSectionHeader('.team-section', data.blocks.team);
+        }
+        if (data.blocks?.values) {
+            updateValuesHeader(data.blocks.values);
+        }
+        if (data.blocks?.projects) {
+            updateSectionHeader('.projects-section', data.blocks.projects);
+        }
+        if (data.blocks?.partners) {
+            updatePartnersSection(data.blocks.partners);
         }
 
         // Update Footer
@@ -714,6 +734,183 @@ function updateContactSection(contactData) {
     }
 
     console.log('[Dynamic] Contact section updated');
+}
+
+/**
+ * Generic function to update section headers
+ */
+function updateSectionHeader(sectionSelector, blockData) {
+    if (!blockData) return;
+
+    const section = document.querySelector(sectionSelector);
+    if (!section) return;
+
+    // Update section label
+    const sectionLabel = section.querySelector('.section-label');
+    if (sectionLabel && blockData.sectionLabel) {
+        sectionLabel.textContent = blockData.sectionLabel;
+    }
+
+    // Update section title (allows HTML for highlight span)
+    const sectionTitle = section.querySelector('.section-title');
+    if (sectionTitle && blockData.title) {
+        sectionTitle.innerHTML = blockData.title;
+    }
+
+    // Update section description if present
+    const sectionDesc = section.querySelector('.section-desc');
+    if (sectionDesc && blockData.description) {
+        sectionDesc.textContent = blockData.description;
+    }
+
+    console.log('[Dynamic] Section header updated:', sectionSelector);
+}
+
+/**
+ * Update Values section header (special layout)
+ */
+function updateValuesHeader(valuesData) {
+    if (!valuesData) return;
+
+    const section = document.querySelector('.values-section');
+    if (!section) return;
+
+    const sectionLabel = section.querySelector('.section-label');
+    if (sectionLabel && valuesData.sectionLabel) {
+        sectionLabel.textContent = valuesData.sectionLabel;
+    }
+
+    const sectionTitle = section.querySelector('.section-title');
+    if (sectionTitle && valuesData.title) {
+        sectionTitle.innerHTML = valuesData.title;
+    }
+
+    console.log('[Dynamic] Values header updated');
+}
+
+/**
+ * Update Partners section (header + logos)
+ */
+function updatePartnersSection(partnersData) {
+    if (!partnersData) return;
+
+    const section = document.querySelector('.partners-section');
+    if (!section) return;
+
+    // Update header
+    const sectionLabel = section.querySelector('.section-label');
+    if (sectionLabel && partnersData.sectionLabel) {
+        sectionLabel.textContent = partnersData.sectionLabel;
+    }
+
+    const sectionTitle = section.querySelector('.section-title');
+    if (sectionTitle && partnersData.title) {
+        sectionTitle.innerHTML = partnersData.title;
+    }
+
+    // Update partner logos
+    if (partnersData.partners && partnersData.partners.length > 0) {
+        const partnersTrack = section.querySelector('.partners-track');
+        if (partnersTrack) {
+            // Generate partner logos (repeat 5x for infinite scroll)
+            const partnerLogos = partnersData.partners.map(name => `
+                <div class="partner-logo">
+                    <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
+                        <text x="60" y="25" text-anchor="middle" font-size="14" font-weight="600">${name}</text>
+                    </svg>
+                </div>
+            `).join('');
+
+            // Repeat for seamless infinite scroll
+            partnersTrack.innerHTML = partnerLogos.repeat(5);
+        }
+    }
+
+    console.log('[Dynamic] Partners section updated');
+}
+
+/**
+ * Update Sustainability section (full - header, intro, cards, stats)
+ */
+function updateSustainabilitySection(sustainData) {
+    if (!sustainData) return;
+
+    const section = document.querySelector('.sustainability-section');
+    if (!section) return;
+
+    // Update header
+    const sectionLabel = section.querySelector('.section-label');
+    if (sectionLabel && sustainData.sectionLabel) {
+        sectionLabel.textContent = sustainData.sectionLabel;
+    }
+
+    const sectionTitle = section.querySelector('.section-title');
+    if (sectionTitle && sustainData.title) {
+        sectionTitle.innerHTML = sustainData.title;
+    }
+
+    // Update intro text
+    const introText = section.querySelector('.sustainability-intro .lead');
+    if (introText && sustainData.intro) {
+        introText.textContent = sustainData.intro;
+    }
+
+    // Update sustainability cards
+    if (sustainData.cards && sustainData.cards.length > 0) {
+        const cardsGrid = section.querySelector('.sustainability-grid');
+        if (cardsGrid) {
+            cardsGrid.innerHTML = sustainData.cards.map(card => `
+                <div class="sustainability-card">
+                    <div class="sustainability-icon">
+                        ${getSustainabilityIcon(card.icon)}
+                    </div>
+                    <h3>${card.title}</h3>
+                    <p>${card.description}</p>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Update stats
+    if (sustainData.stats) {
+        updateSustainabilityStats(sustainData.stats);
+    }
+
+    console.log('[Dynamic] Sustainability section updated');
+}
+
+/**
+ * Get SVG icon for sustainability cards
+ */
+function getSustainabilityIcon(iconType) {
+    const icons = {
+        'layers': `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+        </svg>`,
+        'clock': `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 6v6l4 2"></path>
+        </svg>`,
+        'box': `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>`,
+        'leaf': `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+        </svg>`,
+        'shield': `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>`,
+        'globe': `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>`
+    };
+    return icons[iconType] || icons['shield'];
 }
 
 /**

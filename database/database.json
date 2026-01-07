@@ -73,6 +73,8 @@
       "type": "partners",
       "order": 1,
       "data": {
+        "sectionLabel": "Trusted By",
+        "title": "Our Global <span class=\"highlight\">Partners</span>",
         "partners": [
           "Cargill",
           "Bunge",
@@ -86,25 +88,49 @@
       }
     },
     {
+      "id": "block_projects",
+      "website_id": "ws_iustus",
+      "page_id": "pg_index",
+      "type": "projects",
+      "order": 2,
+      "data": {
+        "sectionLabel": "Strategic Initiatives",
+        "title": "Upcoming <span class=\"highlight\">Projects</span>"
+      }
+    },
+    {
       "id": "block_products",
       "website_id": "ws_iustus",
       "page_id": "pg_index",
       "type": "products",
-      "order": 2
+      "order": 2,
+      "data": {
+        "sectionLabel": "Our Products",
+        "title": "Premium <span class=\"highlight\">Brazilian Commodities</span>",
+        "description": "Sourced ethically, processed meticulously, delivered globally"
+      }
     },
     {
       "id": "block_locations",
       "website_id": "ws_iustus",
       "page_id": "pg_index",
       "type": "locations",
-      "order": 3
+      "order": 3,
+      "data": {
+        "sectionLabel": "Global Presence",
+        "title": "Worldwide <span class=\"highlight\">Operations</span>"
+      }
     },
     {
       "id": "block_team",
       "website_id": "ws_iustus",
       "page_id": "pg_index",
       "type": "team",
-      "order": 4
+      "order": 4,
+      "data": {
+        "sectionLabel": "Our People",
+        "title": "Meet Our <span class=\"highlight\">Team</span>"
+      }
     },
     {
       "id": "block_values",
@@ -113,6 +139,8 @@
       "type": "values",
       "order": 5,
       "data": {
+        "sectionLabel": "Our Values",
+        "title": "The Principles of <span class=\"highlight\">Iustus Mercatura</span>",
         "values": [
           {
             "number": "01",
@@ -139,6 +167,31 @@
       "type": "sustainability",
       "order": 6,
       "data": {
+        "sectionLabel": "Our Commitment",
+        "title": "Sustainability & <span class=\"highlight\">Responsibility</span>",
+        "intro": "At Iustus Mercatura, sustainability is not just a goal - it's the foundation of everything we do. We are committed to creating lasting positive impact across our entire supply chain.",
+        "cards": [
+          {
+            "icon": "layers",
+            "title": "UN Global Compact",
+            "description": "We adhere strictly to the United Nations Global Compact principles, ensuring our operations respect human rights, labor standards, and environmental protection."
+          },
+          {
+            "icon": "clock",
+            "title": "ISO 9001 Certified",
+            "description": "Our quality management system meets the highest international standards, ensuring consistent excellence and continuous improvement in all operations."
+          },
+          {
+            "icon": "box",
+            "title": "Ethical Sourcing",
+            "description": "We partner only with producers who share our commitment to fair labor practices, environmental stewardship, and community development."
+          },
+          {
+            "icon": "leaf",
+            "title": "Carbon Reduction",
+            "description": "We're actively working to reduce our carbon footprint through optimized logistics, renewable energy partnerships, and sustainable packaging initiatives."
+          }
+        ],
         "stats": [
           {
             "value": "100%",
