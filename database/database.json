@@ -145,17 +145,17 @@
           {
             "number": "01",
             "title": "Integrity & Transparency",
-            "description": "Fair pricing, ethical sourcing, and an open book with all partners."
+            "description": "We commit to fair pricing, ethical sourcing—especially for Brazilian Sugar—and maintaining an open book with all partners. We measure success by the trust we earn, not just by volume."
           },
           {
             "number": "02",
             "title": "Expertise & Excellence",
-            "description": "Deep-rooted market intelligence and world-class logistical management."
+            "description": "We rely on deep-rooted market intelligence and world-class logistical management. Our specialised team operates with surgical precision, constantly anticipating and mitigating the inherent volatility of global markets."
           },
           {
             "number": "03",
             "title": "Partnership & Prosperity",
-            "description": "Every client and producer as a critical part of a shared, sustainable ecosystem."
+            "description": "We view every client and producer as a critical part of a shared, sustainable ecosystem, aiming to build long-term relationships that foster growth on all sides. Ethical conduct and market leadership are inseparable."
           }
         ]
       }
@@ -221,23 +221,23 @@
       "data": {
         "sectionLabel": "About Us",
         "title": "The Philosophy of <span class=\"highlight\">Just Trade</span>",
-        "leadText": "At Iustus Mercatura Holding Inc., we prioritize integrity, transparency, and long-term partnerships to create lasting value across global markets.",
-        "description": "Our dual-location model in the British Virgin Islands and vibrant economic regions worldwide exemplifies our strategic approach. We are deeply committed to upholding the highest ethical and sustainable business practices, strictly adhering to UN standards and ISO 9001 quality management principles.",
+        "leadText": "At Iustus Mercatura Holding Inc., founded in 2025, we prioritize integrity, transparency, and long-term partnerships to create lasting value across global markets.",
+        "description": "As a privately-owned, international holding company based in the British Virgin Islands, we are committed to ethical business practices and responsible asset management. Our name, which translates from Latin to 'Just Trade' or 'Righteous Commerce,' reflects our dedication to integrity in all our transactions. We strive to be a centralized hub for a diverse array of international investments and subsidiaries, strictly adhering to UN standards and ISO 9001 quality management principles.",
         "features": [
           {
             "icon": "shield",
             "title": "Ethical Trading",
-            "description": "Fair pricing and transparent transactions"
+            "description": "Fair pricing, transparent transactions, and open book with all partners"
           },
           {
             "icon": "globe",
-            "title": "Global Reach",
-            "description": "Operations across 5 continents"
+            "title": "Global Presence",
+            "description": "Operations across South America, USA, Middle East, Asia, and East Africa"
           },
           {
             "icon": "layers",
             "title": "Vertical Integration",
-            "description": "From field to final delivery"
+            "description": "Complete supply chain from field to end customer"
           }
         ],
         "foundedYear": "2025",
@@ -252,7 +252,7 @@
       "order": 8,
       "data": {
         "sectionLabel": "CEO Message",
-        "quote": "We have not only positioned the Holding Company as a strategic management holding, but also moved away from purely trading in food commodities towards establishing the complete supply chain - from the field to the end customer.",
+        "quote": "Under my leadership, the company will drive forward towards vertical integration. This is reflected in our Iustus Agricultura Brasil SA project, the establishment of our own sugar production in Uganda, and the founding of the Iustus Nautic fleet. This not only ensures the sustainability of our supply, but also enables us to offer our customers a comprehensive service—from field to customer.",
         "name": "Dr. Gerhard Kral",
         "role": "Founder & Chief Executive Officer",
         "initials": "GK",
@@ -767,7 +767,7 @@
         "category": "Sugar",
         "image": null,
         "showImage": false,
-        "description": "White Refined Sugar - the pinnacle of sweetness. Meticulously processed for top quality and purity.",
+        "description": "White Refined Sugar IC45 from Brazil – the pinnacle of sweetness! Sourced from Brazil, our sugar is meticulously processed for top quality and purity. Perfect for baking, beverages, or any culinary creation, its fine granules dissolve effortlessly. Experience the unmatched sweetness and clarity of Brazilian IC45.",
         "specs": {
           "Polarization": "Min 99.8%",
           "Color": "Max 45 ICUMSA",
@@ -786,7 +786,7 @@
         "category": "Sugar",
         "image": null,
         "showImage": false,
-        "description": "Very High Polarization sugar ideal for refining, available in IC600 and IC1200 grades.",
+        "description": "Discover SUGAR IC600/1200 VHP from Brazil—premium quality, high-purity sugar perfect for all your culinary and industrial needs. Enjoy consistent sweetness and exceptional taste in every grain. Ideal for refining operations.",
         "specs": {
           "Polarization": "Min 99.4%",
           "Color": "600-1200 ICUMSA",
@@ -805,7 +805,7 @@
         "category": "Grains",
         "image": null,
         "showImage": false,
-        "description": "Premium grade non-GMO soybeans from Brazil's finest agricultural regions.",
+        "description": "Discover the premium quality of Brazilian Yellow Soybeans! Packed with nutrition, our non-GMO soybeans are perfect for a variety of culinary uses. Sustainably farmed and rich in protein, they're ideal for healthy living.",
         "specs": {
           "Protein": "Min 36%",
           "Moisture": "Max 14%",
@@ -824,7 +824,7 @@
         "category": "Grains",
         "image": null,
         "showImage": false,
-        "description": "High-quality feed corn meeting international specifications for animal nutrition.",
+        "description": "Discover the vibrant taste of our yellow corn, sourced from premier plantations worldwide! We ensure top-quality kernels at every step of the supply chain, from field to table. Experience the golden goodness and support sustainable farming practices.",
         "specs": {
           "Moisture": "Max 14%",
           "Foreign Matter": "Max 2%",
@@ -1019,17 +1019,17 @@
       "collection_id": "col_projects",
       "website_id": "ws_iustus",
       "data": {
-        "name": "Uganda Refinery Project",
+        "name": "Iustus Agricultura Uganda PLC",
         "year": "2026",
-        "description": "20-30 acre refinery in Bugembe District with 500,000 MT annual capacity and 250 sq miles of sugarcane plantation.",
+        "description": "The Uganda Refinery Project 2026 represents a major strategic expansion into local value creation across East African markets. Construction will commence in 2026 on a 20-30 acre site in Bugembe District, Eastern Uganda, with expected completion by 2028. The facility will prepare 250 square miles of sugarcane plantation, aligning with our 'Just Trade' commitment by boosting local economic engagement and creating sustainable jobs.",
         "status": "Geplant",
         "stats": [
           {
-            "value": "300.000",
+            "value": "300,000",
             "label": "MT Year 1"
           },
           {
-            "value": "500.000",
+            "value": "500,000",
             "label": "MT Target"
           }
         ]
@@ -1043,12 +1043,16 @@
       "data": {
         "name": "Iustus Agricultura Brazil SA",
         "year": "2025",
-        "description": "Acquisition of 2-3 major refining assets with self-sufficient sugarcane cultivation for complete vertical integration.",
+        "description": "This ambitious project involves the planned acquisition of two or three major refining assets in Brazil, strategically integrated with securing sufficient land for self-sufficient cultivation of sugarcane. By gaining full control of the process—from planting and cultivation through to final refining—we ensure unmatched traceability and enforce our rigorous ethical and environmental standards directly at the source.",
         "status": "In Umsetzung",
         "stats": [
           {
-            "value": "500.000+",
+            "value": "500,000+",
             "label": "MT Annual"
+          },
+          {
+            "value": "2-3",
+            "label": "Refineries"
           }
         ]
       },
@@ -1061,7 +1065,7 @@
       "data": {
         "name": "Iustus Mercatura Finance DIFC LLC",
         "year": "2025",
-        "description": "Full-service financial provider in Dubai International Financial Centre (DIFC), offering Sustainable Farming Finance and Trade Finance solutions. A Category 4 licensed entity pending DFSA regulatory approval.",
+        "description": "The establishment of Iustus Mercatura Finance DIFC LLC in Dubai International Financial Centre represents a strategic expansion of our 'Just Trade' philosophy into the financial sector. This entity will operate as a full-service financial provider dedicated to supporting ethical growth, focusing on specialized Sustainable Farming and Trade Finance solutions with competitive rates for qualified global clients.",
         "status": "Geplant",
         "stats": [
           {
