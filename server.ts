@@ -984,8 +984,26 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                 // Get settings
                 const settings: Record<string, any> = {};
                 db.settings?.forEach((s: any) => {
-                    settings[s.key] = s.value;
+                    // Parse JSON values
+                    try {
+                        settings[s.key] = typeof s.value === 'string' && (s.value.startsWith('{') || s.value.startsWith('['))
+                            ? JSON.parse(s.value)
+                            : s.value;
+                    } catch {
+                        settings[s.key] = s.value;
+                    }
                 });
+
+                // Get page structure separately for easier access
+                const pageStructureSetting = db.settings?.find(s => s.key === 'pageStructure');
+                let pageStructure = null;
+                if (pageStructureSetting) {
+                    try {
+                        pageStructure = typeof pageStructureSetting.value === 'string'
+                            ? JSON.parse(pageStructureSetting.value)
+                            : pageStructureSetting.value;
+                    } catch { /* ignore */ }
+                }
 
                 return new Response(JSON.stringify({
                     success: true,
@@ -996,6 +1014,7 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                         projects,
                         blocks,
                         settings,
+                        pageStructure,
                         lastUpdated: new Date().toISOString()
                     }
                 }), { headers: jsonHeaders });
@@ -3509,7 +3528,7 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                 const body = await req.json();
                 const websiteId = "ws_iustus";
 
-                // Store imageAssignments in settings (in DB, not data.json)
+                // Store imageAssignments in settings (in DB)
                 if (body.imageAssignments) {
                     const existingSetting = db.settings.find(s => s.key === 'imageAssignments' && s.website_id === websiteId);
                     if (existingSetting) {
@@ -3522,6 +3541,22 @@ async function handleAPI(req: Request, pathname: string, headers: Record<string,
                             value: JSON.stringify(body.imageAssignments)
                         });
                     }
+                }
+
+                // Store pageStructure in settings (in DB)
+                if (body.pageStructure) {
+                    const existingStructure = db.settings.find(s => s.key === 'pageStructure' && s.website_id === websiteId);
+                    if (existingStructure) {
+                        existingStructure.value = JSON.stringify(body.pageStructure);
+                    } else {
+                        db.settings.push({
+                            id: `set_pageStructure_${Date.now()}`,
+                            website_id: websiteId,
+                            key: 'pageStructure',
+                            value: JSON.stringify(body.pageStructure)
+                        });
+                    }
+                    log("INFO", `Page structure saved with ${body.pageStructure.sections?.length || 0} sections`);
                 }
 
                 // Update other settings if provided

@@ -193,11 +193,121 @@ async function loadDynamicContent() {
             updateNavigationSection(data.blocks.navigation);
         }
 
+        // Apply Page Structure (section order, visibility, layout)
+        if (data.pageStructure) {
+            applyPageStructure(data.pageStructure);
+        }
+
         return data;
     } catch (error) {
         console.log('[Dynamic] Error loading content:', error.message);
         return null;
     }
+}
+
+/**
+ * Apply page structure from database
+ * Handles section order, visibility, and layout configuration
+ */
+function applyPageStructure(structure) {
+    if (!structure || !structure.sections) {
+        console.log('[Structure] No page structure to apply');
+        return;
+    }
+
+    console.log('[Structure] Applying page structure with', structure.sections.length, 'sections');
+
+    const mainContent = document.querySelector('main') || document.body;
+
+    // Get all sections currently in the DOM
+    const existingSections = Array.from(document.querySelectorAll('section[id], section[class*="-section"]'));
+
+    // Map section IDs to DOM elements
+    const sectionMap = new Map();
+    existingSections.forEach(section => {
+        const id = section.id || section.className.match(/(\w+)-section/)?.[1];
+        if (id) {
+            sectionMap.set(id, section);
+            sectionMap.set(id + '-section', section);
+            sectionMap.set('section_' + id, section);
+        }
+    });
+
+    // Apply visibility (enabled/disabled)
+    structure.sections.forEach(sectionConfig => {
+        const sectionId = sectionConfig.id || sectionConfig.type;
+        const section = sectionMap.get(sectionId) ||
+                       sectionMap.get(sectionConfig.type) ||
+                       document.getElementById(sectionId) ||
+                       document.querySelector(`.${sectionConfig.type}-section`);
+
+        if (section) {
+            // Apply visibility
+            if (sectionConfig.enabled === false) {
+                section.style.display = 'none';
+                console.log('[Structure] Hidden section:', sectionId);
+            } else {
+                section.style.display = '';
+            }
+
+            // Apply custom config (CSS variables, classes)
+            if (sectionConfig.config) {
+                // Apply custom CSS variables
+                if (sectionConfig.config.cssVars) {
+                    Object.entries(sectionConfig.config.cssVars).forEach(([key, value]) => {
+                        section.style.setProperty(`--${key}`, value);
+                    });
+                }
+
+                // Apply custom classes
+                if (sectionConfig.config.customClass) {
+                    section.classList.add(sectionConfig.config.customClass);
+                }
+
+                // Apply layout options
+                if (sectionConfig.config.layout) {
+                    const layout = sectionConfig.config.layout;
+                    if (layout.padding) section.style.padding = layout.padding;
+                    if (layout.margin) section.style.margin = layout.margin;
+                    if (layout.maxWidth) section.style.maxWidth = layout.maxWidth;
+                    if (layout.background) section.style.background = layout.background;
+                }
+            }
+        }
+    });
+
+    // Reorder sections based on structure.sections order
+    const orderedSectionIds = structure.sections
+        .filter(s => s.enabled !== false)
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .map(s => s.id || s.type);
+
+    // Find parent container for sections
+    const firstSection = existingSections[0];
+    const parent = firstSection?.parentElement;
+
+    if (parent && orderedSectionIds.length > 0) {
+        // Reorder by moving sections
+        let lastInserted = null;
+        orderedSectionIds.forEach(sectionId => {
+            const section = sectionMap.get(sectionId) ||
+                           sectionMap.get(sectionId.replace('section_', '')) ||
+                           document.getElementById(sectionId) ||
+                           document.querySelector(`.${sectionId}-section`) ||
+                           document.querySelector(`.${sectionId.replace('section_', '')}-section`);
+
+            if (section && section.parentElement === parent) {
+                if (lastInserted) {
+                    lastInserted.after(section);
+                }
+                lastInserted = section;
+            }
+        });
+
+        console.log('[Structure] Sections reordered');
+    }
+
+    console.log('[Structure] Page structure applied successfully');
 }
 
 /**
